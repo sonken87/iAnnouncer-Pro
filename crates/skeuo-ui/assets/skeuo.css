@@ -1,0 +1,374 @@
+/*
+ * skeuo-ui stylesheet.
+ *
+ * Lighting model: one light source straight above the panel. Every surface
+ * therefore has a bright top edge and a dark bottom edge, raised objects
+ * cast a shadow downward, and recessed objects are shaded on their top
+ * inner edge.
+ *
+ * Palette values come from CSS variables set by ThemeProvider
+ * (--skeuo-<color>-light/main/dark/contrast/glow). Each `.skeuo-color-*`
+ * class maps one palette entry onto the local --c-* variables that the
+ * component rules use.
+ */
+
+.skeuo-root {
+  font-family: var(--skeuo-font);
+  color: #2b2b2b;
+  -webkit-font-smoothing: antialiased;
+}
+
+.skeuo-root *,
+.skeuo-root *::before,
+.skeuo-root *::after {
+  box-sizing: border-box;
+}
+
+.skeuo-color-primary   { --c-light: var(--skeuo-primary-light);   --c-main: var(--skeuo-primary-main);   --c-dark: var(--skeuo-primary-dark);   --c-contrast: var(--skeuo-primary-contrast);   --c-glow: var(--skeuo-primary-glow); }
+.skeuo-color-secondary { --c-light: var(--skeuo-secondary-light); --c-main: var(--skeuo-secondary-main); --c-dark: var(--skeuo-secondary-dark); --c-contrast: var(--skeuo-secondary-contrast); --c-glow: var(--skeuo-secondary-glow); }
+.skeuo-color-success   { --c-light: var(--skeuo-success-light);   --c-main: var(--skeuo-success-main);   --c-dark: var(--skeuo-success-dark);   --c-contrast: var(--skeuo-success-contrast);   --c-glow: var(--skeuo-success-glow); }
+.skeuo-color-error     { --c-light: var(--skeuo-error-light);     --c-main: var(--skeuo-error-main);     --c-dark: var(--skeuo-error-dark);     --c-contrast: var(--skeuo-error-contrast);     --c-glow: var(--skeuo-error-glow); }
+.skeuo-color-warning   { --c-light: var(--skeuo-warning-light);   --c-main: var(--skeuo-warning-main);   --c-dark: var(--skeuo-warning-dark);   --c-contrast: var(--skeuo-warning-contrast);   --c-glow: var(--skeuo-warning-glow); }
+.skeuo-color-info      { --c-light: var(--skeuo-info-light);      --c-main: var(--skeuo-info-main);      --c-dark: var(--skeuo-info-dark);      --c-contrast: var(--skeuo-info-contrast);      --c-glow: var(--skeuo-info-glow); }
+.skeuo-color-neutral   { --c-light: var(--skeuo-neutral-light);   --c-main: var(--skeuo-neutral-main);   --c-dark: var(--skeuo-neutral-dark);   --c-contrast: var(--skeuo-neutral-contrast);   --c-glow: var(--skeuo-neutral-glow); }
+
+/* Ink: the palette color used for lettering on a light surface. Neutral's
+   "dark" is still a light grey, so it uses its contrast color instead. */
+.skeuo-root [class*="skeuo-color-"] { --c-ink: var(--c-dark); }
+.skeuo-root .skeuo-color-neutral { --c-ink: var(--c-contrast); }
+
+/* Light-on-dark labels are stamped in (shadow above); dark-on-light labels
+   are engraved (highlight below). */
+.skeuo-color-primary, .skeuo-color-secondary, .skeuo-color-success,
+.skeuo-color-error, .skeuo-color-info {
+  --c-emboss: 0 -1px 0 rgba(0, 0, 0, 0.35);
+}
+.skeuo-color-warning, .skeuo-color-neutral {
+  --c-emboss: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ------------------------------------------------------------------ */
+/* Button                                                              */
+/* ------------------------------------------------------------------ */
+
+.skeuo-btn {
+  --btn-height: 38px;
+  --btn-pad: 18px;
+  --btn-font: 14px;
+  --focus-ring: 0 0 #0000;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 64px;
+  height: var(--btn-height);
+  padding: 0 var(--btn-pad);
+  border: 1px solid transparent;
+  border-radius: var(--skeuo-radius);
+  font: 600 var(--btn-font) / 1 var(--skeuo-font);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  box-shadow: var(--btn-shadow), var(--focus-ring);
+  transition: transform 80ms ease-out, box-shadow 80ms ease-out, filter 150ms ease;
+}
+
+.skeuo-btn--small  { --btn-height: 30px; --btn-pad: 12px; --btn-font: 13px; }
+.skeuo-btn--large  { --btn-height: 46px; --btn-pad: 24px; --btn-font: 15px; }
+.skeuo-btn--full-width { display: flex; width: 100%; }
+
+.skeuo-btn__label { position: relative; z-index: 1; }
+.skeuo-btn__icon {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  font-size: 1.15em;
+}
+
+.skeuo-btn:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); }
+
+.skeuo-btn:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.85);
+  opacity: 0.5;
+}
+
+/* Contained: glossy plastic key ------------------------------------- */
+
+.skeuo-btn--contained {
+  --btn-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),   /* top bevel catch-light */
+    inset 0 -1px 1px rgba(0, 0, 0, 0.18),      /* bottom bevel */
+    0 1px 1px rgba(0, 0, 0, 0.3),              /* contact shadow */
+    0 4px 7px -2px rgba(0, 0, 0, 0.35);        /* cast shadow */
+  color: var(--c-contrast);
+  text-shadow: var(--c-emboss);
+  border-color: rgba(0, 0, 0, 0.35);
+  background: linear-gradient(180deg, var(--c-light) 0%, var(--c-main) 55%, var(--c-dark) 100%);
+}
+
+/* Specular reflection on the upper half of the key. */
+.skeuo-btn--contained::before {
+  content: "";
+  position: absolute;
+  inset: 1px 1px 50% 1px;
+  border-radius: calc(var(--skeuo-radius) - 1px) calc(var(--skeuo-radius) - 1px) 40% 40% / calc(var(--skeuo-radius) - 1px) calc(var(--skeuo-radius) - 1px) 6px 6px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.08));
+  pointer-events: none;
+  transition: opacity 80ms ease-out;
+}
+
+.skeuo-btn--contained:hover:not(:disabled) { filter: brightness(1.06) saturate(1.05); }
+
+.skeuo-btn--contained:active:not(:disabled) {
+  transform: translateY(1px);
+  --btn-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(0, 0, 0, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.45);
+  background: linear-gradient(180deg, var(--c-dark) 0%, var(--c-main) 45%, var(--c-main) 100%);
+}
+.skeuo-btn--contained:active:not(:disabled)::before { opacity: 0.25; }
+
+/* Outlined: brushed-metal key with colored bezel --------------------- */
+
+.skeuo-btn--outlined {
+  --btn-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 1px 1px rgba(0, 0, 0, 0.25),
+    0 3px 5px -2px rgba(0, 0, 0, 0.3);
+  color: var(--c-ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+  border-color: var(--c-main);
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0 2px,
+      rgba(255, 255, 255, 0.35) 2px 3px,
+      rgba(0, 0, 0, 0.025) 3px 5px),
+    linear-gradient(180deg, #fbfbfb 0%, #e3e3e3 50%, #c9c9c9 100%);
+}
+
+.skeuo-btn--outlined:hover:not(:disabled) { filter: brightness(1.04); }
+
+.skeuo-btn--outlined:active:not(:disabled) {
+  transform: translateY(1px);
+  --btn-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.28),
+    inset 0 1px 1px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.7);
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0 2px,
+      rgba(255, 255, 255, 0.25) 2px 3px,
+      rgba(0, 0, 0, 0.025) 3px 5px),
+    linear-gradient(180deg, #c9c9c9 0%, #dedede 60%, #ececec 100%);
+}
+
+/* Text: label printed on the panel ----------------------------------- */
+
+.skeuo-btn--text {
+  --btn-shadow: 0 0 #0000;
+  --btn-pad: 10px;
+  color: var(--c-ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+  background: transparent;
+}
+
+.skeuo-btn--text:hover:not(:disabled) {
+  --btn-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.16),
+    0 1px 0 rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.035);
+}
+
+.skeuo-btn--text:active:not(:disabled) {
+  --btn-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.07);
+}
+
+/* ------------------------------------------------------------------ */
+/* TextField                                                           */
+/* ------------------------------------------------------------------ */
+
+.skeuo-field {
+  --field-pad-y: 9px;
+  --field-pad-x: 12px;
+  --field-font: 14px;
+  --focus-ring: 0 0 #0000;
+
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+  vertical-align: top;
+}
+
+.skeuo-field--small { --field-pad-y: 6px; --field-pad-x: 10px; --field-font: 13px; }
+.skeuo-field--large { --field-pad-y: 12px; --field-pad-x: 14px; --field-font: 15px; }
+.skeuo-field--full-width { display: flex; width: 100%; }
+
+/* Label: lettering engraved into the panel. */
+.skeuo-field__label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #4b4b4b;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+.skeuo-field__asterisk { color: var(--skeuo-error-main); }
+
+.skeuo-field__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 var(--field-pad-x);
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+.skeuo-field--multiline .skeuo-field__control { align-items: stretch; }
+
+.skeuo-field__input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--field-pad-y) 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: 400 var(--field-font) / 1.4 var(--skeuo-font);
+}
+textarea.skeuo-field__input { resize: vertical; }
+.skeuo-field__input::placeholder { color: rgba(0, 0, 0, 0.35); }
+
+.skeuo-field__adornment {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--field-font);
+  color: #6b6b6b;
+  white-space: nowrap;
+}
+
+.skeuo-field__helper {
+  margin: 0;
+  font-size: 12px;
+  color: #616161;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.skeuo-field:focus-within { --focus-ring: 0 0 0 3px var(--c-glow); }
+
+.skeuo-field--error { --c-main: var(--skeuo-error-main); --c-glow: var(--skeuo-error-glow); }
+.skeuo-field--error .skeuo-field__helper,
+.skeuo-field--error .skeuo-field__label { color: var(--skeuo-error-dark); }
+
+.skeuo-field--disabled { opacity: 0.55; }
+.skeuo-field--disabled .skeuo-field__input { cursor: not-allowed; }
+
+/* Outlined: a well carved into the panel ----------------------------- */
+
+.skeuo-field--outlined .skeuo-field__control {
+  color: #222;
+  border: 1px solid #9c9c9c;
+  border-top-color: #858585;
+  border-bottom-color: #c6c6c6;
+  border-radius: var(--skeuo-radius);
+  background: linear-gradient(180deg, #e2e2e2 0%, #f6f6f6 30%, #fdfdfd 100%);
+  box-shadow:
+    inset 0 2px 3px rgba(0, 0, 0, 0.16),   /* shade under the top lip */
+    inset 0 1px 1px rgba(0, 0, 0, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.9),      /* catch-light on the lower lip */
+    var(--focus-ring);
+}
+.skeuo-field--outlined:focus-within .skeuo-field__control,
+.skeuo-field--outlined.skeuo-field--error .skeuo-field__control {
+  border-color: var(--c-main);
+}
+
+/* Filled: backlit vacuum-fluorescent display ------------------------- */
+
+.skeuo-field--filled {
+  --vfd: #7dffb4;
+  --vfd-glow: rgba(125, 255, 180, 0.55);
+}
+.skeuo-field--filled.skeuo-field--error {
+  --vfd: #ff7a66;
+  --vfd-glow: rgba(255, 122, 102, 0.55);
+}
+
+.skeuo-field--filled .skeuo-field__control {
+  color: var(--vfd);
+  border: 1px solid #000;
+  border-radius: var(--skeuo-radius);
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 0%, rgba(125, 255, 180, 0.07), transparent 70%),
+    linear-gradient(180deg, #08130e 0%, #0f2219 100%);
+  box-shadow:
+    inset 0 3px 6px rgba(0, 0, 0, 0.85),     /* depth behind the glass */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 0 2px #2c2c2c,                       /* black bezel */
+    0 1px 0 2px rgba(255, 255, 255, 0.55),   /* bezel catch-light */
+    var(--focus-ring);
+  overflow: hidden;
+}
+
+/* Scan lines and glass reflection over the display. */
+.skeuo-field--filled .skeuo-field__control::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 45%),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
+}
+
+.skeuo-field--filled .skeuo-field__input {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  letter-spacing: 0.05em;
+  caret-color: var(--vfd);
+  text-shadow: 0 0 6px var(--vfd-glow);
+}
+.skeuo-field--filled .skeuo-field__input::placeholder {
+  color: var(--vfd);
+  opacity: 0.3;
+  text-shadow: none;
+}
+.skeuo-field--filled .skeuo-field__adornment {
+  color: var(--vfd);
+  opacity: 0.75;
+  text-shadow: 0 0 6px var(--vfd-glow);
+}
+/* The halo has to clear the 2px bezel; the digits brighten too. */
+.skeuo-field--filled:focus-within { --focus-ring: 0 0 0 5px var(--c-glow); }
+.skeuo-field--filled:focus-within .skeuo-field__input { text-shadow: 0 0 9px var(--vfd-glow); }
+
+/* Standard: an engraved groove line --------------------------------- */
+
+.skeuo-field--standard .skeuo-field__control {
+  padding: 0 2px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+.skeuo-field--standard:focus-within .skeuo-field__control,
+.skeuo-field--standard.skeuo-field--error .skeuo-field__control {
+  border-bottom-color: var(--c-main);
+  box-shadow: 0 1px 0 var(--c-main), 0 2px 4px -1px var(--c-glow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeuo-btn,
+  .skeuo-btn::before,
+  .skeuo-field__control {
+    transition: none;
+  }
+}
