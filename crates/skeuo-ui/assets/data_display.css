@@ -1,1 +1,712 @@
-/* skeuo-ui — data display. */
+/* skeuo-ui — data display: Typography, Avatar, Badge, Chip, Divider, List,
+ * Table, Tooltip, ImageList. Composes the materials; no new shadows. */
+
+/* ------------------------------------------------------------------ */
+/* Typography — lettering printed on the aluminium                     */
+/* ------------------------------------------------------------------ */
+
+.skeuo-typography { margin: 0; font-family: var(--skeuo-font); }
+
+.skeuo-typography--h1 { font-size: 40px; font-weight: 700; line-height: 1.1;  letter-spacing: -0.022em; }
+.skeuo-typography--h2 { font-size: 32px; font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; }
+.skeuo-typography--h3 { font-size: 26px; font-weight: 600; line-height: 1.16; letter-spacing: -0.018em; }
+.skeuo-typography--h4 { font-size: 22px; font-weight: 600; line-height: 1.2;  letter-spacing: -0.015em; }
+.skeuo-typography--h5 { font-size: 18px; font-weight: 600; line-height: 1.25; letter-spacing: -0.012em; }
+.skeuo-typography--h6 { font-size: 16px; font-weight: 600; line-height: 1.3;  letter-spacing: -0.01em; }
+.skeuo-typography--subtitle1 { font-size: 15px; font-weight: 500; line-height: 1.4; letter-spacing: -0.005em; }
+.skeuo-typography--subtitle2 { font-size: 13px; font-weight: 600; line-height: 1.4; }
+.skeuo-typography--body1 { font-size: 14px; font-weight: 400; line-height: 1.5; }
+.skeuo-typography--body2 { font-size: 13px; font-weight: 400; line-height: 1.45; }
+.skeuo-typography--caption { font-size: 12px; font-weight: 400; line-height: 1.35; }
+.skeuo-typography--overline {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.skeuo-typography--button { font-size: 13px; font-weight: 500; line-height: 1.4; letter-spacing: -0.005em; }
+.skeuo-typography--inherit { font: inherit; letter-spacing: inherit; }
+
+.skeuo-typography--text-primary { color: var(--sk-ink); }
+.skeuo-typography--text-secondary { color: var(--sk-ink-2); }
+.skeuo-typography--text-disabled { color: var(--sk-ink-3); }
+.skeuo-typography--color-inherit { color: inherit; }
+.skeuo-typography--ink { color: var(--c-ink); }
+/* Captions and overlines default to the secondary ink, as labels do. */
+.skeuo-typography--caption.skeuo-typography--text-primary,
+.skeuo-typography--overline.skeuo-typography--text-primary { color: var(--sk-ink-2); }
+
+.skeuo-typography--align-left { text-align: left; }
+.skeuo-typography--align-center { text-align: center; }
+.skeuo-typography--align-right { text-align: right; }
+.skeuo-typography--align-justify { text-align: justify; }
+.skeuo-typography--gutter-bottom { margin-bottom: 0.35em; }
+.skeuo-typography--paragraph { margin-bottom: 12px; }
+.skeuo-typography--no-wrap { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+span.skeuo-typography--caption,
+span.skeuo-typography--overline,
+span.skeuo-typography--button { display: inline-block; }
+
+/* ------------------------------------------------------------------ */
+/* Avatar — a small keycap, or a photo inset in a thin well ring        */
+/* ------------------------------------------------------------------ */
+
+.skeuo-avatar {
+  --avatar-size: 40px;
+  --avatar-radius: 999px;
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border-radius: var(--avatar-radius);
+  font-size: calc(var(--avatar-size) * 0.4);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  overflow: hidden;
+  user-select: none;
+  vertical-align: middle;
+}
+.skeuo-avatar--small { --avatar-size: 28px; --key-travel: 1px; }
+.skeuo-avatar--large { --avatar-size: 56px; --key-travel: 2px; }
+.skeuo-avatar--rounded { --avatar-radius: var(--sk-radius-well); }
+.skeuo-avatar--square { --avatar-radius: 3px; }
+
+/* White letter cap: secondary ink legend, as a modifier key. */
+.skeuo-avatar--letter:not(.skeuo-key--filled) { --key-ink: var(--sk-ink-2); }
+.skeuo-avatar--letter { overflow: visible; }
+.skeuo-avatar__fallback,
+.skeuo-avatar--letter > .skeuo-icon { width: 55%; height: 55%; }
+
+.skeuo-avatar--img { padding: 2px; }
+.skeuo-avatar__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--avatar-radius) - 2px);
+  object-fit: cover;
+}
+
+.skeuo-avatar--surplus { font-size: calc(var(--avatar-size) * 0.34); }
+
+.skeuo-avatar-group {
+  --avatar-overlap: 8px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+.skeuo-avatar-group__item { position: relative; display: inline-flex; }
+.skeuo-avatar-group__item + .skeuo-avatar-group__item { margin-left: calc(-1 * var(--avatar-overlap)); }
+
+/* ------------------------------------------------------------------ */
+/* Badge — an indicator LED on the corner of its child                 */
+/* ------------------------------------------------------------------ */
+
+.skeuo-badge {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  vertical-align: middle;
+}
+
+.skeuo-badge__badge {
+  --badge-inset: 0%;
+  --badge-x: 50%;
+  --badge-y: -50%;
+
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  color: var(--c-contrast);
+  font: 600 11px / 1 var(--skeuo-font);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(var(--badge-x), var(--badge-y));
+  transition: scale var(--sk-medium) var(--sk-ease);
+}
+.skeuo-badge__badge--dot { min-width: 8px; width: 8px; height: 8px; padding: 0; }
+.skeuo-badge__badge--circular { --badge-inset: 14%; }
+
+.skeuo-badge__badge--top-right    { top: var(--badge-inset); right: var(--badge-inset); transform-origin: 100% 0; }
+.skeuo-badge__badge--top-left     { top: var(--badge-inset); left: var(--badge-inset); --badge-x: -50%; transform-origin: 0 0; }
+.skeuo-badge__badge--bottom-right { bottom: var(--badge-inset); right: var(--badge-inset); --badge-y: 50%; transform-origin: 100% 100%; }
+.skeuo-badge__badge--bottom-left  { bottom: var(--badge-inset); left: var(--badge-inset); --badge-x: -50%; --badge-y: 50%; transform-origin: 0 100%; }
+
+.skeuo-badge__badge--invisible { scale: 0; }
+
+/* ------------------------------------------------------------------ */
+/* Chip — a small pill-shaped keycap                                   */
+/* ------------------------------------------------------------------ */
+
+.skeuo-chip {
+  --chip-height: 32px;
+  --chip-pad: 12px;
+  --chip-font: 13px;
+  --chip-avatar: 24px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  height: var(--chip-height);
+  padding: 0 var(--chip-pad);
+  border-radius: 999px;
+  font: 500 var(--chip-font) / 1 var(--skeuo-font);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.skeuo-chip--small {
+  --chip-height: 24px;
+  --chip-pad: 9px;
+  --chip-font: 12px;
+  --chip-avatar: 18px;
+  --key-travel: 1px;
+  gap: 4px;
+}
+
+/* Default (neutral) filled chip: a light grey cap; outlined: white cap
+ * with colored ink and edge, like an outlined button. */
+.skeuo-chip--filled.skeuo-color-neutral { --key-color: var(--sk-alu-lo); }
+.skeuo-chip--outlined { --key-ink: var(--c-ink); --key-edge: var(--c-glow); }
+.skeuo-chip--outlined.skeuo-color-neutral { --key-edge: rgba(0, 0, 0, 0.1); }
+
+.skeuo-chip__label { overflow: hidden; text-overflow: ellipsis; }
+
+.skeuo-chip__icon { display: inline-flex; font-size: 1.15em; margin-left: -3px; }
+.skeuo-chip--outlined .skeuo-chip__icon { color: var(--c-ink); }
+.skeuo-chip__avatar { display: inline-flex; margin-left: calc(4px - var(--chip-pad)); }
+.skeuo-chip__avatar .skeuo-avatar {
+  --avatar-size: var(--chip-avatar);
+  --key-travel: 0.5px;
+  font-size: calc(var(--chip-avatar) * 0.45);
+}
+
+/* The press target covers the whole cap; the delete button sits above it. */
+.skeuo-chip__action {
+  position: static;
+  display: inline-flex;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  outline: none;
+}
+.skeuo-chip__action::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.skeuo-chip__action:disabled { cursor: not-allowed; }
+
+.skeuo-chip--deletable { padding-right: 5px; }
+.skeuo-chip__delete {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: calc(var(--chip-height) - 12px);
+  height: calc(var(--chip-height) - 12px);
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  color: inherit;
+  font-size: calc(var(--chip-height) * 0.4);
+  opacity: 0.7;
+  cursor: pointer;
+  outline: none;
+  transition: opacity var(--sk-medium) ease, background-color var(--sk-medium) ease;
+}
+.skeuo-chip__delete:hover:not(:disabled) { opacity: 1; background: color-mix(in srgb, currentColor 20%, transparent); }
+.skeuo-chip__delete:focus-visible { opacity: 1; box-shadow: 0 0 0 3px var(--c-glow); }
+.skeuo-chip__delete:disabled { cursor: not-allowed; }
+
+/* ------------------------------------------------------------------ */
+/* Divider — the engraved rule                                         */
+/* ------------------------------------------------------------------ */
+
+.skeuo-divider--horizontal.skeuo-divider--inset { margin-left: 72px; }
+.skeuo-divider--horizontal.skeuo-divider--middle { margin-left: 16px; margin-right: 16px; }
+.skeuo-divider--vertical { width: 0; height: auto; min-height: 1em; }
+.skeuo-divider--vertical.skeuo-divider--middle { margin-top: 8px; margin-bottom: 8px; }
+.skeuo-divider--flex-item { align-self: stretch; height: auto; }
+
+.skeuo-divider--with-children {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+.skeuo-divider--with-children.skeuo-divider--vertical {
+  flex-direction: column;
+  width: auto;
+  align-self: stretch;
+  gap: 8px;
+}
+.skeuo-divider__line { flex: 1 1 0; }
+.skeuo-divider--with-children.skeuo-divider--horizontal .skeuo-divider__line { min-width: 12px; }
+.skeuo-divider--with-children.skeuo-divider--vertical .skeuo-divider__line { min-height: 8px; }
+.skeuo-divider--text-left .skeuo-divider__line:first-child { flex: 0 0 8%; }
+.skeuo-divider--text-right .skeuo-divider__line:last-child { flex: 0 0 8%; }
+.skeuo-divider__text { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ------------------------------------------------------------------ */
+/* List — rows printed on the surface                                  */
+/* ------------------------------------------------------------------ */
+
+.skeuo-list {
+  position: relative;
+  margin: 0;
+  padding: 6px 0;
+  list-style: none;
+}
+.skeuo-list--no-padding,
+.skeuo-list--with-subheader { padding-top: 0; }
+.skeuo-list--no-padding { padding-bottom: 0; }
+
+.skeuo-list-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 8px 16px;
+  text-align: left;
+}
+.skeuo-list-item--dense { padding-top: 4px; padding-bottom: 4px; }
+.skeuo-list-item--no-gutters { padding-left: 0; padding-right: 0; }
+.skeuo-list-item.skeuo-list-item--no-padding { padding: 0; }
+.skeuo-list-item--align-start { align-items: flex-start; }
+.skeuo-list-item--align-start > .skeuo-list-item-icon,
+.skeuo-list-item--align-start > .skeuo-list-item-avatar { margin-top: 6px; }
+.skeuo-list-item--with-action { padding-right: 56px; }
+.skeuo-list-item--with-action.skeuo-list-item--no-padding > .skeuo-list-item-button { padding-right: 56px; }
+
+/* Engraved rule under a row (the rule material on the row's edge). */
+.skeuo-list-item--divider {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+  background-clip: padding-box;
+}
+.skeuo-list-item--divider:last-child { border-bottom: 0; box-shadow: none; }
+
+.skeuo-list-item__secondary-action {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transform: translateY(-50%);
+  color: var(--sk-ink-2);
+}
+
+.skeuo-list-item-button {
+  --focus-ring: 0 0 #0000;
+
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: var(--sk-radius-key);
+  background: transparent;
+  color: var(--sk-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  box-shadow: var(--focus-ring);
+  transition: background-color var(--sk-medium) ease;
+}
+.skeuo-list-item-button.skeuo-list-item--dense { padding-top: 4px; padding-bottom: 4px; }
+.skeuo-list-item-button.skeuo-list-item--no-gutters { padding-left: 0; padding-right: 0; }
+.skeuo-list-item-button.skeuo-list-item--divider {
+  border-radius: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75), var(--focus-ring);
+}
+.skeuo-list-item-button:hover:not(:disabled) { background: var(--sk-hover); }
+.skeuo-list-item-button:active:not(:disabled) { background: var(--sk-press); }
+.skeuo-list-item-button:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); z-index: 1; }
+.skeuo-list-item-button--selected,
+.skeuo-list-item-button--selected:hover:not(:disabled) { background: var(--c-tint); }
+.skeuo-list-item-button--selected .skeuo-list-item-icon,
+.skeuo-list-item-button--selected .skeuo-list-item-text__primary { color: var(--c-ink); }
+.skeuo-list-item-button--selected .skeuo-list-item-text__primary { font-weight: 600; }
+.skeuo-list-item-button:disabled { cursor: not-allowed; opacity: 0.45; }
+
+/* Rows sit inset from the plate's edge, like a macOS sidebar. */
+.skeuo-list-item--no-padding > .skeuo-list-item-button { margin: 0 6px; width: calc(100% - 12px); }
+
+.skeuo-list-item-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-width: 36px;
+  color: var(--sk-ink-2);
+  font-size: 18px;
+}
+.skeuo-list-item-avatar { display: inline-flex; flex: none; min-width: 52px; }
+
+.skeuo-list-item-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  margin: 4px 0;
+}
+.skeuo-list-item-text--multiline { margin: 5px 0; gap: 1px; }
+.skeuo-list-item-text--inset { padding-left: 36px; }
+.skeuo-list-item-text__primary { font-size: 14px; line-height: 1.4; color: var(--sk-ink); }
+.skeuo-list-item--dense .skeuo-list-item-text__primary { font-size: 13px; }
+.skeuo-list-item-text__primary,
+.skeuo-list-item-text__secondary { overflow: hidden; text-overflow: ellipsis; }
+
+.skeuo-list-subheader {
+  padding: 12px 16px 6px;
+  list-style: none;
+  background: transparent;
+}
+.skeuo-list-subheader--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--sk-alu-hi);
+}
+/* A list whose subheader opens a chassis follows the plate's corners. */
+.skeuo-list > .skeuo-list-subheader--sticky:first-child {
+  border-radius: var(--sk-radius-chassis) var(--sk-radius-chassis) 0 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.skeuo-list-subheader--colored { color: var(--c-ink); }
+.skeuo-list-subheader--no-gutters { padding-left: 0; padding-right: 0; }
+.skeuo-list-subheader--inset { padding-left: 52px; }
+
+/* ------------------------------------------------------------------ */
+/* Table — printed head, rows separated by engraved rules              */
+/* ------------------------------------------------------------------ */
+
+.skeuo-table-container { width: 100%; overflow: auto; }
+
+.skeuo-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--sk-ink);
+}
+
+.skeuo-table-cell {
+  padding: 12px 16px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+  transition: background-color var(--sk-medium) ease;
+}
+/* The catch-light of the rule above every body / footer row. */
+.skeuo-table-body .skeuo-table-cell,
+.skeuo-table-footer .skeuo-table-cell { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75); }
+.skeuo-table-body:last-child > .skeuo-table-row:last-child > .skeuo-table-cell { border-bottom: 0; }
+.skeuo-table-footer > .skeuo-table-row:last-child > .skeuo-table-cell { border-bottom: 0; }
+
+.skeuo-table-head .skeuo-table-cell--head {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: var(--sk-ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.skeuo-table-row--head .skeuo-table-cell--head { vertical-align: bottom; }
+/* Row headers inside the body read as the row's name. */
+.skeuo-table-body .skeuo-table-cell--head { font-weight: 600; }
+.skeuo-table-cell--footer { font-weight: 600; }
+.skeuo-table-cell--small { padding-top: 6px; padding-bottom: 6px; }
+.skeuo-table-head .skeuo-table-cell--head.skeuo-table-cell--small { padding-top: 8px; padding-bottom: 8px; }
+.skeuo-table-cell--padding-checkbox { width: 48px; padding: 0 0 0 6px; }
+.skeuo-table-cell--padding-none { padding: 0; }
+.skeuo-table-cell--align-left { text-align: left; }
+.skeuo-table-cell--align-center { text-align: center; }
+.skeuo-table-cell--align-right { text-align: right; font-variant-numeric: tabular-nums; }
+.skeuo-table-cell--align-justify { text-align: justify; }
+
+.skeuo-table-cell--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--sk-alu-hi);
+}
+
+.skeuo-table-row--hover:hover > .skeuo-table-cell { background-color: var(--sk-hover); }
+.skeuo-table-row--selected > .skeuo-table-cell { background-color: var(--c-tint); }
+.skeuo-table-row--selected.skeuo-table-row--hover:hover > .skeuo-table-cell {
+  background-color: color-mix(in srgb, var(--c-main) 18%, transparent);
+}
+.skeuo-table-row--clickable { cursor: pointer; }
+
+.skeuo-table-sort-label {
+  --focus-ring: 0 0 #0000;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 -4px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+  box-shadow: var(--focus-ring);
+  transition: color var(--sk-medium) ease;
+}
+.skeuo-table-sort-label:hover { color: var(--sk-ink); }
+.skeuo-table-sort-label:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); }
+.skeuo-table-sort-label--active { color: var(--sk-ink); }
+.skeuo-table-sort-label__icon {
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity var(--sk-medium) ease, transform var(--sk-medium) var(--sk-ease);
+}
+.skeuo-table-sort-label--asc .skeuo-table-sort-label__icon { transform: rotate(-90deg); }
+.skeuo-table-sort-label--desc .skeuo-table-sort-label__icon { transform: rotate(90deg); }
+.skeuo-table-sort-label:hover .skeuo-table-sort-label__icon { opacity: 0.45; }
+.skeuo-table-sort-label--active .skeuo-table-sort-label__icon,
+.skeuo-table-sort-label--active:hover .skeuo-table-sort-label__icon { opacity: 1; }
+.skeuo-table-cell--align-right .skeuo-table-sort-label { flex-direction: row-reverse; }
+
+/* ------------------------------------------------------------------ */
+/* Tooltip — a small floating chassis                                  */
+/* ------------------------------------------------------------------ */
+
+.skeuo-tooltip {
+  --tooltip-gap: 8px;
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+}
+.skeuo-tooltip--arrow { --tooltip-gap: 11px; }
+
+.skeuo-tooltip__popper {
+  position: absolute;
+  z-index: 1500;
+  display: none;
+  pointer-events: none;
+}
+.skeuo-tooltip--interactive > .skeuo-tooltip__popper { pointer-events: auto; }
+
+.skeuo-tooltip--open > .skeuo-tooltip__popper,
+.skeuo-tooltip--auto:not(.skeuo-tooltip--no-hover):hover > .skeuo-tooltip__popper,
+.skeuo-tooltip--auto:not(.skeuo-tooltip--no-focus):has(:focus-visible) > .skeuo-tooltip__popper {
+  display: block;
+}
+
+.skeuo-tooltip--top > .skeuo-tooltip__popper {
+  bottom: 100%;
+  left: 50%;
+  padding-bottom: var(--tooltip-gap);
+  transform: translateX(-50%);
+}
+.skeuo-tooltip--bottom > .skeuo-tooltip__popper {
+  top: 100%;
+  left: 50%;
+  padding-top: var(--tooltip-gap);
+  transform: translateX(-50%);
+}
+.skeuo-tooltip--left > .skeuo-tooltip__popper {
+  right: 100%;
+  top: 50%;
+  padding-right: var(--tooltip-gap);
+  transform: translateY(-50%);
+}
+.skeuo-tooltip--right > .skeuo-tooltip__popper {
+  left: 100%;
+  top: 50%;
+  padding-left: var(--tooltip-gap);
+  transform: translateY(-50%);
+}
+
+.skeuo-tooltip__bubble {
+  position: relative;
+  display: block;
+  width: max-content;
+  max-width: 240px;
+  padding: 5px 10px;
+  border-radius: var(--sk-radius-well);
+  color: var(--sk-ink);
+  font: 500 12px / 1.35 var(--skeuo-font);
+  letter-spacing: 0;
+  text-align: center;
+  white-space: normal;
+  animation: skeuo-rise-in var(--sk-medium) var(--sk-ease);
+}
+
+.skeuo-tooltip__arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 0 solid rgba(0, 0, 0, 0.14);
+  background: var(--sk-alu-hi);
+}
+.skeuo-tooltip--top .skeuo-tooltip__arrow {
+  bottom: -5.5px;
+  left: calc(50% - 5px);
+  border-right-width: 0.5px;
+  border-bottom-width: 0.5px;
+  transform: rotate(45deg);
+}
+.skeuo-tooltip--bottom .skeuo-tooltip__arrow {
+  top: -5.5px;
+  left: calc(50% - 5px);
+  border-top-width: 0.5px;
+  border-left-width: 0.5px;
+  background: var(--sk-key);
+  transform: rotate(45deg);
+}
+.skeuo-tooltip--left .skeuo-tooltip__arrow {
+  right: -5.5px;
+  top: calc(50% - 5px);
+  border-top-width: 0.5px;
+  border-right-width: 0.5px;
+  transform: rotate(45deg);
+}
+.skeuo-tooltip--right .skeuo-tooltip__arrow {
+  left: -5.5px;
+  top: calc(50% - 5px);
+  border-bottom-width: 0.5px;
+  border-left-width: 0.5px;
+  transform: rotate(45deg);
+}
+
+/* ------------------------------------------------------------------ */
+/* ImageList — images inset into wells                                 */
+/* ------------------------------------------------------------------ */
+
+.skeuo-image-list {
+  --image-list-cols: 2;
+  --image-list-gap: 4px;
+
+  display: grid;
+  grid-template-columns: repeat(var(--image-list-cols), minmax(0, 1fr));
+  gap: var(--image-list-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+.skeuo-image-list--masonry {
+  display: block;
+  column-count: var(--image-list-cols);
+  column-gap: var(--image-list-gap);
+}
+
+.skeuo-image-list-item {
+  --bar-below: 0px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border-radius: var(--sk-radius-well);
+}
+.skeuo-image-list--masonry > .skeuo-image-list-item {
+  display: flex;
+  margin-bottom: var(--image-list-gap);
+  break-inside: avoid;
+}
+.skeuo-image-list--woven > .skeuo-image-list-item:nth-of-type(even) {
+  align-self: center;
+  height: 70%;
+}
+
+.skeuo-image-list-item > img {
+  display: block;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: var(--sk-radius-well);
+  object-fit: cover;
+}
+.skeuo-image-list--masonry .skeuo-image-list-item > img { height: auto; }
+
+/* The well's rim drawn over the edge of the photo. */
+.skeuo-image-list-item__rim.skeuo-well {
+  position: absolute;
+  inset: 0 0 var(--bar-below) 0;
+  z-index: 2;
+  background: none;
+  pointer-events: none;
+}
+.skeuo-image-list-item:has(> .skeuo-image-list-item-bar--below) { --bar-below: 46px; }
+
+.skeuo-image-list-item-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.skeuo-image-list-item-bar--bottom,
+.skeuo-image-list-item-bar--top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  padding: 8px 12px;
+  background: rgba(29, 29, 31, 0.62);
+  color: var(--sk-key);
+}
+.skeuo-image-list-item-bar--bottom { bottom: 0; border-radius: 0 0 var(--sk-radius-well) var(--sk-radius-well); }
+.skeuo-image-list-item-bar--top { top: 0; border-radius: var(--sk-radius-well) var(--sk-radius-well) 0 0; }
+.skeuo-image-list-item-bar--below {
+  flex: none;
+  height: var(--bar-below);
+  padding: 6px 2px 0;
+  color: var(--sk-ink);
+}
+.skeuo-image-list-item-bar--action-left { flex-direction: row-reverse; }
+
+.skeuo-image-list-item-bar__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.skeuo-image-list-item-bar__title,
+.skeuo-image-list-item-bar__subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.skeuo-image-list-item-bar__title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; line-height: 1.3; }
+.skeuo-image-list-item-bar__subtitle { font-size: 11.5px; line-height: 1.3; opacity: 0.78; }
+.skeuo-image-list-item-bar--below .skeuo-image-list-item-bar__subtitle { color: var(--sk-ink-2); opacity: 1; }
+.skeuo-image-list-item-bar__action { display: inline-flex; flex: none; color: inherit; }
