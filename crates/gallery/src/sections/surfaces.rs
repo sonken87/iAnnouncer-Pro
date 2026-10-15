@@ -15,12 +15,12 @@ const SURFACES_CSS: &str = r#"
 .sd-bars { display: flex; flex-direction: column; gap: 14px; width: 100%; }
 .sd-bars > .skeuo-appbar { overflow: hidden; }
 .sd-window { position: relative; height: 300px; flex: 1; min-width: 300px; overflow: hidden;
-  border-radius: var(--sk-radius-chassis); border: 0.5px solid rgba(0,0,0,.14);
+  border-radius: var(--sk-radius-chassis); border: 0.5px solid var(--sk-chassis-edge);
   background: linear-gradient(180deg, var(--sk-page-hi), var(--sk-page-lo)); }
 .sd-window__content { padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
-.sd-line { height: 10px; border-radius: 999px; background: rgba(0,0,0,.08); }
+.sd-line { height: 10px; border-radius: 999px; background: var(--sk-shallow); }
 .sd-docked { display: flex; height: 300px; flex: 1; min-width: 300px; overflow: hidden;
-  border-radius: var(--sk-radius-chassis); border: 0.5px solid rgba(0,0,0,.14); }
+  border-radius: var(--sk-radius-chassis); border: 0.5px solid var(--sk-chassis-edge); }
 .sd-docked > .sd-window__content { flex: 1; background: linear-gradient(180deg, var(--sk-page-hi), var(--sk-page-lo)); }
 .sd-nav { display: flex; flex-direction: column; gap: 2px; padding: 12px 8px; }
 .sd-nav .skeuo-btn { justify-content: flex-start; }

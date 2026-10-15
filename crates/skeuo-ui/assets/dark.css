@@ -1,0 +1,113 @@
+/*
+ * skeuo-ui — dark theme: the Space Black Magic Keyboard.
+ *
+ * Black keycaps on dark anodised aluminium, light-grey legends. The light
+ * still comes from above: keycaps keep a faint top sheen, wells are deep
+ * black pits with a faint catch-light on their lower lip, shadows are
+ * heavier because the surfaces are darker.
+ *
+ * Only tokens change here; the materials and components are untouched.
+ * `SKEUO_DARK` is replaced (theme.rs) with the selector of a dark-mode root:
+ * `.skeuo-root[data-skeuo-mode="dark"]`, and the same rules are repeated for
+ * `[data-skeuo-mode="system"]` inside `@media (prefers-color-scheme: dark)`.
+ */
+
+SKEUO_DARK {
+  color-scheme: dark;
+
+  /* Active palette: the dark set. */
+  --skeuo-primary-light: var(--skeuo-dark-primary-light);
+  --skeuo-primary-main: var(--skeuo-dark-primary-main);
+  --skeuo-primary-dark: var(--skeuo-dark-primary-dark);
+  --skeuo-primary-contrast: var(--skeuo-dark-primary-contrast);
+  --skeuo-primary-glow: var(--skeuo-dark-primary-glow);
+  --skeuo-secondary-light: var(--skeuo-dark-secondary-light);
+  --skeuo-secondary-main: var(--skeuo-dark-secondary-main);
+  --skeuo-secondary-dark: var(--skeuo-dark-secondary-dark);
+  --skeuo-secondary-contrast: var(--skeuo-dark-secondary-contrast);
+  --skeuo-secondary-glow: var(--skeuo-dark-secondary-glow);
+  --skeuo-success-light: var(--skeuo-dark-success-light);
+  --skeuo-success-main: var(--skeuo-dark-success-main);
+  --skeuo-success-dark: var(--skeuo-dark-success-dark);
+  --skeuo-success-contrast: var(--skeuo-dark-success-contrast);
+  --skeuo-success-glow: var(--skeuo-dark-success-glow);
+  --skeuo-error-light: var(--skeuo-dark-error-light);
+  --skeuo-error-main: var(--skeuo-dark-error-main);
+  --skeuo-error-dark: var(--skeuo-dark-error-dark);
+  --skeuo-error-contrast: var(--skeuo-dark-error-contrast);
+  --skeuo-error-glow: var(--skeuo-dark-error-glow);
+  --skeuo-warning-light: var(--skeuo-dark-warning-light);
+  --skeuo-warning-main: var(--skeuo-dark-warning-main);
+  --skeuo-warning-dark: var(--skeuo-dark-warning-dark);
+  --skeuo-warning-contrast: var(--skeuo-dark-warning-contrast);
+  --skeuo-warning-glow: var(--skeuo-dark-warning-glow);
+  --skeuo-info-light: var(--skeuo-dark-info-light);
+  --skeuo-info-main: var(--skeuo-dark-info-main);
+  --skeuo-info-dark: var(--skeuo-dark-info-dark);
+  --skeuo-info-contrast: var(--skeuo-dark-info-contrast);
+  --skeuo-info-glow: var(--skeuo-dark-info-glow);
+  --skeuo-neutral-light: var(--skeuo-dark-neutral-light);
+  --skeuo-neutral-main: var(--skeuo-dark-neutral-main);
+  --skeuo-neutral-dark: var(--skeuo-dark-neutral-dark);
+  --skeuo-neutral-contrast: var(--skeuo-dark-neutral-contrast);
+  --skeuo-neutral-glow: var(--skeuo-dark-neutral-glow);
+
+  --sk-ink: #f5f5f7;
+  --sk-ink-2: #a1a1a6;
+  --sk-ink-3: #6e6e73;
+
+  --sk-page-hi: #232326;
+  --sk-page-lo: #18181a;
+  --sk-alu-hi: #3a3a3d;
+  --sk-alu-lo: #2f2f32;
+  --sk-float-hi: #47474a;
+  --sk-float-lo: #3b3b3e;
+  --sk-key: #1e1e20;
+  --sk-key-side: #050506;
+  --sk-key-edge: rgba(255, 255, 255, 0.09);
+  --sk-key-sheen-top: rgba(255, 255, 255, 0.06);
+  --sk-key-sheen-bottom: rgba(0, 0, 0, 0.12);
+  --sk-key-hover: brightness(1.18);
+  --sk-well-top: #121214;
+  --sk-well-mid: #18181a;
+  --sk-well-bottom: #1d1d1f;
+  --sk-well-rim: rgba(0, 0, 0, 0.6);
+  --sk-well-rim-top: rgba(0, 0, 0, 0.8);
+  --sk-well-rim-bottom: rgba(255, 255, 255, 0.07);
+  --sk-well-shade: rgba(0, 0, 0, 0.55);
+  --sk-shallow: rgba(0, 0, 0, 0.28);
+  --sk-shallow-focus: rgba(0, 0, 0, 0.4);
+  --sk-groove-top: #0c0c0d;
+  --sk-groove-bottom: #19191b;
+  --sk-groove-shade: rgba(0, 0, 0, 0.8);
+  --sk-led-off-hi: #4a4a4d;
+  --sk-led-off-lo: #2c2c2e;
+  --sk-cut: rgba(0, 0, 0, 0.5);
+  --sk-catch: rgba(255, 255, 255, 0.06);
+  --sk-catch-strong: rgba(255, 255, 255, 0.08);
+  --sk-chassis-edge: rgba(0, 0, 0, 0.6);
+  --sk-contact: rgba(0, 0, 0, 0.6);
+  --sk-ambient: rgba(0, 0, 0, 0.45);
+  --sk-hairline: rgba(255, 255, 255, 0.1);
+  --sk-hover: rgba(255, 255, 255, 0.07);
+  --sk-press: rgba(255, 255, 255, 0.12);
+  --sk-scrim: rgba(0, 0, 0, 0.55);
+  --sk-sheen: rgba(255, 255, 255, 0.08);
+  --sk-error-ink: var(--skeuo-error-light);
+
+  --sk-elev-1: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 10px -6px rgba(0, 0, 0, 0.7);
+  --sk-elev-2: 0 1px 2px rgba(0, 0, 0, 0.5), 0 12px 28px -14px rgba(0, 0, 0, 0.8);
+  --sk-elev-3: 0 2px 4px rgba(0, 0, 0, 0.45), 0 18px 40px -14px rgba(0, 0, 0, 0.85);
+  --sk-elev-4: 0 4px 10px rgba(0, 0, 0, 0.5), 0 30px 70px -20px rgba(0, 0, 0, 0.9);
+}
+
+/* Lettering in a palette color uses the bright variant on dark metal. */
+SKEUO_DARK,
+SKEUO_DARK [class*="skeuo-color-"] {
+  --c-ink: var(--c-light);
+  --c-tint: color-mix(in srgb, var(--c-main) 24%, transparent);
+}
+SKEUO_DARK .skeuo-color-neutral {
+  --c-ink: var(--c-contrast);
+  --c-tint: rgba(255, 255, 255, 0.08);
+}

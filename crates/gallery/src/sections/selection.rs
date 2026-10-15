@@ -527,7 +527,7 @@ const DEMO_CSS: &str = r#"
 .selection-demo__form { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px 40px; }
 .selection-demo__col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .selection-demo__nested { padding-left: 26px; }
-.selection-demo__summary { margin: 18px 0 0; padding-top: 12px; border-top: 1px solid rgba(0,0,0,.1); }
+.selection-demo__summary { margin: 18px 0 0; padding-top: 12px; border-top: 1px solid var(--sk-hairline); }
 .selection-demo__sliders { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
 .selection-demo__stack { flex: 1 1 420px; min-width: 0; }
 .selection-demo__stack .demo__row { flex-wrap: nowrap; }

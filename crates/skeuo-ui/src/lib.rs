@@ -50,7 +50,9 @@ pub use inputs::*;
 pub use navigation::*;
 pub use selection::*;
 pub use surfaces::*;
-pub use theme::{PaletteColor, STYLESHEET, Theme, ThemeProvider, ThemeProviderProps};
+pub use theme::{
+    Palette, PaletteColor, STYLESHEET, Theme, ThemeMode, ThemeProvider, ThemeProviderProps,
+};
 
 /// Everything a component user needs: `use skeuo_ui::prelude::*;`
 pub mod prelude {
@@ -61,7 +63,7 @@ pub mod prelude {
     pub use crate::navigation::*;
     pub use crate::selection::*;
     pub use crate::surfaces::*;
-    pub use crate::theme::{PaletteColor, Theme, ThemeProvider};
+    pub use crate::theme::{Palette, PaletteColor, Theme, ThemeMode, ThemeProvider};
     pub use crate::{Color, Orientation, Placement, Size};
 }
 

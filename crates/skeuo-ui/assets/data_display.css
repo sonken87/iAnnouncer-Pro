@@ -180,7 +180,7 @@ span.skeuo-typography--button { display: inline-block; }
  * with colored ink and edge, like an outlined button. */
 .skeuo-chip--filled.skeuo-color-neutral { --key-color: var(--sk-alu-lo); }
 .skeuo-chip--outlined { --key-ink: var(--c-ink); --key-edge: var(--c-glow); }
-.skeuo-chip--outlined.skeuo-color-neutral { --key-edge: rgba(0, 0, 0, 0.1); }
+.skeuo-chip--outlined.skeuo-color-neutral { --key-edge: var(--sk-key-edge); }
 
 .skeuo-chip__label { overflow: hidden; text-overflow: ellipsis; }
 
@@ -302,8 +302,8 @@ span.skeuo-typography--button { display: inline-block; }
 
 /* Engraved rule under a row (the rule material on the row's edge). */
 .skeuo-list-item--divider {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid var(--sk-cut);
+  box-shadow: 0 1px 0 var(--sk-catch);
   background-clip: padding-box;
 }
 .skeuo-list-item--divider:last-child { border-bottom: 0; box-shadow: none; }
@@ -346,8 +346,8 @@ span.skeuo-typography--button { display: inline-block; }
 .skeuo-list-item-button.skeuo-list-item--no-gutters { padding-left: 0; padding-right: 0; }
 .skeuo-list-item-button.skeuo-list-item--divider {
   border-radius: 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75), var(--focus-ring);
+  border-bottom: 1px solid var(--sk-cut);
+  box-shadow: 0 1px 0 var(--sk-catch), var(--focus-ring);
 }
 .skeuo-list-item-button:hover:not(:disabled) { background: var(--sk-hover); }
 .skeuo-list-item-button:active:not(:disabled) { background: var(--sk-press); }
@@ -400,7 +400,7 @@ span.skeuo-typography--button { display: inline-block; }
 /* A list whose subheader opens a chassis follows the plate's corners. */
 .skeuo-list > .skeuo-list-subheader--sticky:first-child {
   border-radius: var(--sk-radius-chassis) var(--sk-radius-chassis) 0 0;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 1px 0 var(--sk-catch-strong);
 }
 .skeuo-list-subheader--colored { color: var(--c-ink); }
 .skeuo-list-subheader--no-gutters { padding-left: 0; padding-right: 0; }
@@ -425,12 +425,12 @@ span.skeuo-typography--button { display: inline-block; }
   padding: 12px 16px;
   text-align: left;
   vertical-align: middle;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+  border-bottom: 1px solid var(--sk-cut);
   transition: background-color var(--sk-medium) ease;
 }
 /* The catch-light of the rule above every body / footer row. */
 .skeuo-table-body .skeuo-table-cell,
-.skeuo-table-footer .skeuo-table-cell { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75); }
+.skeuo-table-footer .skeuo-table-cell { box-shadow: inset 0 1px 0 var(--sk-catch); }
 .skeuo-table-body:last-child > .skeuo-table-row:last-child > .skeuo-table-cell { border-bottom: 0; }
 .skeuo-table-footer > .skeuo-table-row:last-child > .skeuo-table-cell { border-bottom: 0; }
 
@@ -571,7 +571,7 @@ span.skeuo-typography--button { display: inline-block; }
   position: absolute;
   width: 10px;
   height: 10px;
-  border: 0 solid rgba(0, 0, 0, 0.14);
+  border: 0 solid var(--sk-chassis-edge);
   background: var(--sk-alu-hi);
 }
 .skeuo-tooltip--top .skeuo-tooltip__arrow {

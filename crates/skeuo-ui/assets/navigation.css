@@ -302,9 +302,9 @@
 .skeuo-step-label--active { color: var(--sk-ink); font-weight: 600; }
 .skeuo-step-label--completed { color: var(--sk-ink); }
 .skeuo-step-label--disabled { color: var(--sk-ink-3); }
-.skeuo-step-label--error { color: var(--skeuo-error-dark); }
+.skeuo-step-label--error { color: var(--sk-error-ink); }
 .skeuo-step-label__text { display: inline-flex; flex-direction: column; gap: 1px; }
-.skeuo-step-label--error .skeuo-step-label__optional { color: var(--skeuo-error-dark); }
+.skeuo-step-label--error .skeuo-step-label__optional { color: var(--sk-error-ink); }
 
 /* The indicator: a small round keycap with a number legend. */
 .skeuo-step-icon {

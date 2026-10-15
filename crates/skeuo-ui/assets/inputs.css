@@ -36,7 +36,7 @@
   --key-ink: var(--c-ink);
   --key-edge: var(--c-glow);
 }
-.skeuo-btn--outlined.skeuo-color-neutral { --key-edge: rgba(0, 0, 0, 0.1); }
+.skeuo-btn--outlined.skeuo-color-neutral { --key-edge: var(--sk-key-edge); }
 
 /* Text: lettering printed on the aluminium; pressing shades it. */
 .skeuo-btn--text {
@@ -113,7 +113,7 @@ textarea.skeuo-field__input { resize: vertical; }
 
 .skeuo-field--error { --c-main: var(--skeuo-error-main); --c-glow: var(--skeuo-error-glow); }
 .skeuo-field--error .skeuo-field__helper,
-.skeuo-field--error .skeuo-field__label { color: var(--skeuo-error-dark); }
+.skeuo-field--error .skeuo-field__label { color: var(--sk-error-ink); }
 .skeuo-field--error .skeuo-well { border-color: var(--c-main); }
 
 .skeuo-field--disabled { opacity: 0.55; }
@@ -122,8 +122,8 @@ textarea.skeuo-field__input { resize: vertical; }
 /* Standard: an engraved line instead of a well. */
 .skeuo-field--standard .skeuo-field__control {
   padding: 0 2px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid var(--sk-well-rim-top);
+  box-shadow: 0 1px 0 var(--sk-catch-strong);
   transition: border-color var(--sk-medium) ease, box-shadow var(--sk-medium) ease;
 }
 .skeuo-field--standard:focus-within .skeuo-field__control,
@@ -185,12 +185,12 @@ textarea.skeuo-field__input { resize: vertical; }
 /* Text groups: printed legends separated by engraved rules. */
 .skeuo-btn-group--text > * + * { margin: 0; }
 .skeuo-btn-group--text.skeuo-btn-group--horizontal > .skeuo-btn:not(:last-child) {
-  border-right: 1px solid rgba(0, 0, 0, 0.13);
-  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.75), var(--focus-ring);
+  border-right: 1px solid var(--sk-cut);
+  box-shadow: 1px 0 0 var(--sk-catch), var(--focus-ring);
 }
 .skeuo-btn-group--text.skeuo-btn-group--vertical > .skeuo-btn:not(:last-child) {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75), var(--focus-ring);
+  border-bottom: 1px solid var(--sk-cut);
+  box-shadow: 0 1px 0 var(--sk-catch), var(--focus-ring);
 }
 
 /* ------------------------------------------------------------------ */

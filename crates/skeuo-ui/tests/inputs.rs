@@ -141,13 +141,16 @@ fn text_field_error_multiline_and_adornments() {
 fn theme_provider_injects_stylesheet_and_vars() {
     let html = render(|| {
         let mut theme = Theme::default();
-        theme.primary.main = "#123456".into();
+        theme.light.primary.main = "#123456".into();
         rsx! {
             ThemeProvider { theme, Button { "x" } }
         }
     });
     assert!(html.contains(".skeuo-key--filled"), "stylesheet missing");
-    assert!(html.contains("--skeuo-primary-main:#123456"), "{html}");
+    assert!(
+        html.contains("--skeuo-light-primary-main:#123456"),
+        "{html}"
+    );
     assert!(html.contains("skeuo-root"), "{html}");
 }
 

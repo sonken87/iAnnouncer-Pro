@@ -9,19 +9,27 @@ pub mod sections;
 /// The window background (the "desk") and the gallery's own layout. The
 /// components themselves are styled entirely by skeuo-ui.
 const PAGE_CSS: &str = r#"
-html { min-height: 100%; background: linear-gradient(180deg, #e6e7ea 0%, #d6d7db 100%); }
-body { margin: 0; }
-.gallery { display: flex; min-height: 100vh; }
+html, body { margin: 0; min-height: 100%; }
+html { background: #d6d7db; }
+html:has(.skeuo-root[data-skeuo-mode="dark"]) { background: #18181a; }
+@media (prefers-color-scheme: dark) { html:has(.skeuo-root[data-skeuo-mode="system"]) { background: #18181a; } }
+.gallery {
+  display: flex; min-height: 100vh;
+  background: linear-gradient(180deg, var(--sk-page-hi) 0%, var(--sk-page-lo) 100%);
+}
 .gallery__nav {
   position: sticky; top: 0; align-self: flex-start;
   flex: none; width: 216px; height: 100vh; padding: 22px 12px;
   overflow-y: auto;
-  border-right: 1px solid rgba(0,0,0,.1);
-  box-shadow: 1px 0 0 rgba(255,255,255,.6);
+  border-right: 1px solid var(--sk-cut);
+  box-shadow: 1px 0 0 var(--sk-catch);
 }
 .gallery__brand { padding: 0 10px 18px; }
 .gallery__brand b { display: block; font-size: 17px; letter-spacing: -.01em; }
 .gallery__brand span { font-size: 12px; color: var(--sk-ink-2); }
+.gallery__mode { padding: 0 4px 18px; }
+.gallery__mode .skeuo-tabs__tray { width: 100%; }
+.gallery__mode .skeuo-tab { flex: 1; }
 .gallery__nav-item {
   display: flex; align-items: center; gap: 10px; width: 100%;
   margin-bottom: 4px; padding: 8px 10px; border: 0; border-radius: 8px;
@@ -30,8 +38,8 @@ body { margin: 0; }
 }
 .gallery__nav-item:hover { background: var(--sk-hover); }
 .gallery__nav-item[aria-current="page"] {
-  background: rgba(255,255,255,.7);
-  box-shadow: 0 0 0 .5px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.08);
+  background: var(--sk-key);
+  box-shadow: 0 0 0 .5px var(--sk-key-edge), 0 1px 2px var(--sk-ambient);
 }
 .gallery__main { flex: 1; min-width: 0; padding: 30px 32px 64px; }
 .gallery__main > h1 { margin: 0 0 4px; font-size: 26px; letter-spacing: -.02em; }
@@ -125,35 +133,56 @@ impl Page {
     }
 }
 
-/// The interactive gallery app.
+/// The interactive gallery app. Follows the OS appearance until the user
+/// picks one in the sidebar.
 #[component]
 pub fn App() -> Element {
     let page = use_signal(|| Page::Inputs);
+    let mode = use_signal(|| ThemeMode::System);
     rsx! {
-        Shell { page }
+        Shell { page, mode }
     }
 }
 
-/// The gallery fixed on one page (used for static snapshots).
+/// The gallery fixed on one page and appearance (used for static snapshots).
 #[component]
-pub fn GalleryShell(page: Page) -> Element {
+pub fn GalleryShell(page: Page, #[props(default)] mode: ThemeMode) -> Element {
     let page = use_signal(|| page);
+    let mode = use_signal(|| mode);
     rsx! {
-        Shell { page }
+        Shell { page, mode }
     }
 }
 
 #[component]
-fn Shell(page: Signal<Page>) -> Element {
+fn Shell(page: Signal<Page>, mode: Signal<ThemeMode>) -> Element {
     let current = page();
+    let theme = Theme::default().with_mode(mode());
     rsx! {
         style { {PAGE_CSS} }
-        ThemeProvider {
+        ThemeProvider { theme,
             div { class: "gallery",
                 nav { class: "gallery__nav", aria_label: "Component categories",
                     div { class: "gallery__brand",
                         b { "skeuo-ui" }
                         span { "Magic Keyboard × MUI" }
+                    }
+                    div { class: "gallery__mode",
+                        Tabs {
+                            value: mode().as_str(),
+                            onchange: move |v: String| {
+                                mode.set(match v.as_str() {
+                                    "light" => ThemeMode::Light,
+                                    "dark" => ThemeMode::Dark,
+                                    _ => ThemeMode::System,
+                                })
+                            },
+                            size: Size::Small,
+                            aria_label: "Appearance",
+                            Tab { value: "light", label: "Light" }
+                            Tab { value: "dark", label: "Dark" }
+                            Tab { value: "system", label: "Auto" }
+                        }
                     }
                     for p in Page::ALL {
                         button {

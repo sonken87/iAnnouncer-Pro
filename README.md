@@ -2,11 +2,12 @@
 
 用 Rust（[Dioxus](https://dioxuslabs.com) 0.7）编写的**拟物化** UI 组件库，用来替代 MUI。
 
-- **设计语言：Apple Magic Keyboard。** 哑光喷砂铝、低键程平顶键帽、刻进金属的凹槽；无高光、无浮雕字。统一顶部光源。所有组件都由同一套「材质」组合而成，规则见 [`DESIGN.md`](DESIGN.md)。
+- **设计语言：Apple Magic Keyboard，浅色 / 深色（Space Black）两套主题，可跟随系统。** 哑光喷砂铝、低键程平顶键帽、刻进金属的凹槽；无高光、无浮雕字。统一顶部光源。所有组件都由同一套「材质」组合而成，规则见 [`DESIGN.md`](DESIGN.md)。
 - **API 对齐 MUI。** 组件名和属性名与 MUI 一致（`variant`、`color`、`size`、`disabled`、`helper_text`、`onchange`……），支持受控 / 非受控。
 - **跨平台。** 同一套组件可运行在 Web（WASM）、桌面（Windows / macOS / Linux）和移动端，支持 SSR。样式是纯 CSS，`ThemeProvider` 自动注入。
 
-![gallery](docs/gallery.png)
+![浅色](docs/gallery.png)
+![深色](docs/gallery-dark.png)
 
 ## 组件
 
@@ -49,12 +50,29 @@ fn App() -> Element {
 }
 ```
 
-自定义主题（相当于 `createTheme`）：
+### 浅色 / 深色主题
+
+两套外观：**浅色**（银色铝 + 白色键帽）和 **深色 Space Black**（深色铝 + 黑色键帽，浅灰字符）。
 
 ```rust
-let mut theme = Theme::default();
-// light / main / dark（键帽侧边）/ 文字色 / 焦点光晕
-theme.primary = PaletteColor::new("#ff9f0a", "#c93400", "#8f2500", "#fff", "rgba(201,52,0,.35)");
+ThemeProvider { theme: Theme::default(), … }   // 浅色（默认）
+ThemeProvider { theme: Theme::dark(), … }      // 深色
+ThemeProvider { theme: Theme::system(), … }    // 跟随系统（prefers-color-scheme）
+
+// 运行时切换：把模式放进 signal
+let mut mode = use_signal(|| ThemeMode::System);
+rsx! { ThemeProvider { theme: Theme::default().with_mode(mode()), … } }
+```
+
+### 自定义主题（相当于 `createTheme`）
+
+浅色和深色各有一套调色板，可以分别修改：
+
+```rust
+let mut theme = Theme::system();
+// light（亮色，深色模式下的文字色）/ main（键帽颜色）/ dark（键帽侧边）/ 键帽文字色 / 焦点光晕
+theme.light.primary = PaletteColor::new("#ff9f0a", "#c93400", "#8f2500", "#fff", "rgba(201,52,0,.35)");
+theme.dark.primary  = PaletteColor::new("#ffb340", "#ff9f0a", "#a35f00", "#1d1d1f", "rgba(255,159,10,.45)");
 theme.radius = 6.0;
 rsx! { ThemeProvider { theme, /* … */ } }
 ```
@@ -89,6 +107,7 @@ DESIGN.md                    设计语言与材质规范
 crates/skeuo-ui/
   assets/tokens.css          设计变量（颜色、圆角、动效）
   assets/materials.css       材质：键帽 / 凹槽 / 轨道 / 铝面板 / 刻线 / 指示灯
+  assets/dark.css            深色主题（Space Black）的设计变量
   assets/<分类>.css          各分类组件样式
   src/<分类>/                组件源码（inputs, selection, data_display, feedback, surfaces, navigation）
   tests/<分类>.rs            测试

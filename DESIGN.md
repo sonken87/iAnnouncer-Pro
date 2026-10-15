@@ -50,6 +50,30 @@ closer to the light) and enter with the `skeuo-rise-in` animation.
      **glow** (`--c-glow`) focus ring.
 - Neutral text: `--sk-ink` (primary), `--sk-ink-2` (secondary), `--sk-ink-3` (placeholder/disabled).
 
+## Dark theme — Space Black
+
+`ThemeMode::Dark` (or `System` when the OS is dark) is the Space Black Magic
+Keyboard: black keycaps on dark anodised aluminium with light-grey legends.
+The light still comes from above, so the materials keep their geometry; only
+tokens change (`assets/dark.css`):
+
+| | Light | Dark |
+|---|---|---|
+| chassis | silver aluminium `#f1f2f4 → #e3e4e7` | dark aluminium `#3a3a3d → #2f2f32` |
+| keycap | white `#fbfbfc`, grey side | black `#1e1e20`, near-black side, faint top sheen |
+| well / groove | light floor, soft shade under the lip | black pit, heavy shade, faint catch-light on the lower lip |
+| ink | `#1d1d1f` / `#6e6e73` / `#a1a1a6` | `#f5f5f7` / `#a1a1a6` / `#6e6e73` |
+| colored lettering | palette `main` | palette `light` (bright variant) |
+| shadows | soft | heavier (darker surfaces need more contrast) |
+
+Rules for component CSS, so both modes keep working:
+- Never hard-code a surface, ink, edge or shadow color; use the `--sk-*` tokens
+  (`--sk-cut` / `--sk-catch` for engraved lines, `--sk-key-edge`,
+  `--sk-chassis-edge`, `--sk-elev-N`, `--sk-error-ink`, …).
+- Lettering in a palette color uses `--c-ink`, never `--c-dark`.
+- Each mode has its own palette (`Theme.light`, `Theme.dark`); the root carries
+  both, and the stylesheet selects one by `data-skeuo-mode`.
+
 ## Shape, type, motion
 
 - Radii: keycap `--sk-radius-key` (6px), well `--sk-radius-well` (8px),
