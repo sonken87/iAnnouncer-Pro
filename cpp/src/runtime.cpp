@@ -193,6 +193,7 @@ std::string Runtime::handle(std::string_view message) {
             e.ctrl = d->flag("ctrl");
             e.alt = d->flag("alt");
             e.meta = d->flag("meta");
+            e.related_inside = d->flag("relatedInside");
         }
         dispatch(ids, e);
     }

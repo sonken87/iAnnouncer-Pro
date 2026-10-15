@@ -95,10 +95,12 @@
     return chain;
   }
 
-  function payload(e, type) {
+  function payload(e, first) {
     const t = e.target || {};
+    const related = e.relatedTarget;
     return {
-      type,
+      type: first.type,
+      relatedInside: !!(related && first.el.contains(related)),
       value: typeof t.value === "string" ? t.value : "",
       checked: !!t.checked,
       key: e.key || "",
@@ -117,7 +119,7 @@
     const chain = chainFor(e);
     if (!chain.length) return;
     if (e.type === "input") lastInput.set(e.target, ++inputCounter);
-    queue.push({ chain, payload: payload(e, chain[0].type), mark: inputCounter });
+    queue.push({ chain, payload: payload(e, chain[0]), mark: inputCounter });
     pump();
   }
 

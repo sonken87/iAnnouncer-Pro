@@ -25,6 +25,10 @@ struct Event {
     bool ctrl = false;
     bool alt = false;
     bool meta = false;
+    /// focus/blur/mouseenter/mouseleave: whether the other element involved
+    /// (`relatedTarget`) is inside the listening element. A container's "blur"
+    /// with `related_inside` set is focus moving between its own children.
+    bool related_inside = false;
 };
 
 using Handler = std::function<void(const Event&)>;

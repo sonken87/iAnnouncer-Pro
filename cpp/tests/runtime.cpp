@@ -120,3 +120,11 @@ TEST(icons_render_svg) {
     CONTAINS(html, "<title>Rated</title>");
     CONTAINS(to_html(Icon(IconName::Close)), R"(aria-hidden="true")");
 }
+
+TEST(event_related_inside_is_parsed) {
+    bool inside = false;
+    Runtime rt([&] { return el("div").on("blur", [&](const Event& e) { inside = e.related_inside; }); });
+    rt.render();
+    rt.handle(R"({"t":"event","h":[0],"e":{"type":"blur","relatedInside":true}})");
+    CHECK(inside);
+}
