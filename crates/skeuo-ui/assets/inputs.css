@@ -1,4 +1,6 @@
-/* skeuo-ui — inputs: Button, TextField (and the rest of the inputs module). */
+/* skeuo-ui — inputs: Button (+ loading), ButtonGroup, IconButton, Fab,
+ * ToggleButton(Group), TextField, TextareaAutosize, Select, NativeSelect,
+ * Autocomplete, TransferList. */
 
 /* ------------------------------------------------------------------ */
 /* Button — a keycap (.skeuo-key), or printed lettering for `text`      */
@@ -129,3 +131,467 @@ textarea.skeuo-field__input { resize: vertical; }
   border-bottom-color: var(--c-main);
   box-shadow: 0 1px 0 var(--c-main), 0 2px 4px -1px var(--c-glow);
 }
+
+/* ------------------------------------------------------------------ */
+/* Button — loading (MUI LoadingButton)                                */
+/* ------------------------------------------------------------------ */
+
+/* A tiny spinner printed in the legend color. */
+.skeuo-spinner {
+  display: inline-block;
+  flex: none;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 999px;
+  opacity: 0.85;
+  animation: skeuo-spin 0.75s linear infinite;
+}
+@keyframes skeuo-spin {
+  to { transform: rotate(360deg); }
+}
+
+.skeuo-btn--loading { position: relative; cursor: progress; }
+/* Loading is busy, not unavailable: keep the key's color. */
+.skeuo-btn--loading:disabled { cursor: progress; filter: none; opacity: 0.7; }
+.skeuo-btn--loading-center > :not(.skeuo-btn__loader) { visibility: hidden; }
+.skeuo-btn__loader { display: inline-flex; align-items: center; justify-content: center; }
+.skeuo-btn__loader--center { position: absolute; inset: 0; }
+
+/* ------------------------------------------------------------------ */
+/* ButtonGroup / ToggleButtonGroup — keys sharing one slot              */
+/* ------------------------------------------------------------------ */
+
+.skeuo-btn-group {
+  display: inline-flex;
+  vertical-align: middle;
+  isolation: isolate;
+}
+.skeuo-btn-group--vertical { flex-direction: column; }
+.skeuo-btn-group--full-width { display: flex; width: 100%; }
+.skeuo-btn-group--full-width > * { flex: 1 1 0; }
+
+/* Joined keys: a hairline seam between them, inner corners square. */
+.skeuo-btn-group--horizontal > * + * { margin-left: 1px; }
+.skeuo-btn-group--vertical > * + * { margin-top: 1px; }
+.skeuo-btn-group--horizontal > :not(:first-child) { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.skeuo-btn-group--horizontal > :not(:last-child) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.skeuo-btn-group--vertical > :not(:first-child) { border-top-left-radius: 0; border-top-right-radius: 0; }
+.skeuo-btn-group--vertical > :not(:last-child) { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+/* Raise the focused key so its ring is not covered by its neighbour. */
+.skeuo-btn-group > :focus-visible { z-index: 1; }
+
+/* Text groups: printed legends separated by engraved rules. */
+.skeuo-btn-group--text > * + * { margin: 0; }
+.skeuo-btn-group--text.skeuo-btn-group--horizontal > .skeuo-btn:not(:last-child) {
+  border-right: 1px solid rgba(0, 0, 0, 0.13);
+  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.75), var(--focus-ring);
+}
+.skeuo-btn-group--text.skeuo-btn-group--vertical > .skeuo-btn:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75), var(--focus-ring);
+}
+
+/* ------------------------------------------------------------------ */
+/* IconButton                                                          */
+/* ------------------------------------------------------------------ */
+
+.skeuo-icon-btn {
+  --ib-size: 34px;
+  --ib-icon: 18px;
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--ib-size);
+  height: var(--ib-size);
+  padding: 0;
+  font-size: var(--ib-icon);
+  line-height: 1;
+  vertical-align: middle;
+}
+.skeuo-icon-btn--small { --ib-size: 28px; --ib-icon: 16px; --key-travel: 1px; }
+.skeuo-icon-btn--large { --ib-size: 44px; --ib-icon: 22px; --key-travel: 2px; }
+.skeuo-icon-btn--edge-start { margin-left: calc(var(--ib-size) * -0.3); }
+.skeuo-icon-btn--edge-end { margin-right: calc(var(--ib-size) * -0.3); }
+
+.skeuo-icon-btn--outlined { --key-ink: var(--c-ink); }
+.skeuo-icon-btn--outlined.skeuo-color-neutral { --key-ink: var(--sk-ink); }
+
+/* Text: the icon printed on the aluminium, a round wash under the finger. */
+.skeuo-icon-btn--text {
+  --focus-ring: 0 0 #0000;
+  border: 0;
+  border-radius: 999px;
+  color: var(--c-ink);
+  background: transparent;
+  box-shadow: var(--focus-ring);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--sk-medium) ease;
+}
+.skeuo-icon-btn--text.skeuo-color-neutral { color: var(--sk-ink-2); }
+.skeuo-icon-btn--text:hover:not(:disabled) { background: var(--sk-hover); }
+.skeuo-icon-btn--text:active:not(:disabled) { background: var(--sk-press); }
+.skeuo-icon-btn--text:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); }
+.skeuo-icon-btn--text:disabled { cursor: not-allowed; opacity: 0.45; }
+
+/* ------------------------------------------------------------------ */
+/* Fab — a large round keycap with a deeper travel                     */
+/* ------------------------------------------------------------------ */
+
+.skeuo-fab {
+  --fab-size: 56px;
+  --key-travel: 3px;
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: var(--fab-size);
+  height: var(--fab-size);
+  padding: 0;
+  font: 500 14px / 1 var(--skeuo-font);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.skeuo-fab .skeuo-icon { font-size: calc(var(--fab-size) * 0.42); }
+.skeuo-fab--medium { --fab-size: 48px; --key-travel: 2.5px; }
+.skeuo-fab--small { --fab-size: 40px; --key-travel: 2px; }
+
+.skeuo-fab--extended {
+  width: auto;
+  min-width: var(--fab-size);
+  height: calc(var(--fab-size) - 8px);
+  padding: 0 calc(var(--fab-size) * 0.36);
+}
+.skeuo-fab--extended.skeuo-fab--small { height: 34px; font-size: 13px; }
+.skeuo-fab--extended .skeuo-icon { font-size: 20px; margin-left: -4px; }
+
+/* ------------------------------------------------------------------ */
+/* ToggleButton — white keycap, latched down while selected            */
+/* ------------------------------------------------------------------ */
+
+.skeuo-toggle {
+  --tg-height: 34px;
+  --tg-pad: 11px;
+  --key-ink: var(--sk-ink-2);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: var(--tg-height);
+  height: var(--tg-height);
+  padding: 0 var(--tg-pad);
+  font: 500 13px / 1 var(--skeuo-font);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.skeuo-toggle .skeuo-icon { font-size: 17px; }
+.skeuo-toggle--small { --tg-height: 28px; --tg-pad: 8px; --key-travel: 1px; font-size: 12px; }
+.skeuo-toggle--small .skeuo-icon { font-size: 15px; }
+.skeuo-toggle--large { --tg-height: 44px; --tg-pad: 15px; --key-travel: 2px; font-size: 15px; }
+.skeuo-toggle--large .skeuo-icon { font-size: 21px; }
+.skeuo-toggle--full-width { flex: 1 1 0; }
+/* Selected: latched down (.skeuo-key--down) with the legend lit in color. */
+.skeuo-toggle--selected { --key-ink: var(--c-ink); }
+
+/* ------------------------------------------------------------------ */
+/* Select / NativeSelect — a well with a chevron                       */
+/* ------------------------------------------------------------------ */
+
+.skeuo-select__anchor { position: relative; }
+
+.skeuo-select__trigger { cursor: pointer; outline: none; user-select: none; }
+.skeuo-field--disabled .skeuo-select__trigger { cursor: not-allowed; }
+
+.skeuo-select__value {
+  flex: 1;
+  min-width: 0;
+  padding: var(--field-pad-y) 0;
+  overflow: hidden;
+  color: var(--sk-ink);
+  font: 400 var(--field-font) / 1.4 var(--skeuo-font);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.skeuo-select__placeholder { color: var(--sk-ink-3); }
+
+.skeuo-select__chevron {
+  flex: none;
+  color: var(--sk-ink-2);
+  font-size: 16px;
+  transition: transform var(--sk-medium) var(--sk-ease);
+}
+.skeuo-select--open .skeuo-select__chevron { transform: rotate(180deg); }
+
+/* An open select keeps its rim lit, even when focus is elsewhere. */
+.skeuo-select--open .skeuo-well--focusable {
+  --focus-ring: 0 0 0 3px var(--c-glow);
+  border-color: var(--c-main);
+}
+.skeuo-select--open.skeuo-field--standard .skeuo-field__control {
+  border-bottom-color: var(--c-main);
+  box-shadow: 0 1px 0 var(--c-main), 0 2px 4px -1px var(--c-glow);
+}
+
+/* The open list: a floating aluminium plate (chassis level 3). */
+.skeuo-select__listbox {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 1300;
+  min-width: 100%;
+  max-height: 264px;
+  margin: 0;
+  padding: 5px;
+  overflow-y: auto;
+  list-style: none;
+  transform-origin: top center;
+  animation: skeuo-rise-in var(--sk-slow) var(--sk-ease);
+}
+
+.skeuo-select__option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px 6px 6px;
+  border-radius: calc(var(--sk-radius-chassis) - 5px);
+  color: var(--sk-ink);
+  font: 400 var(--field-font) / 1.4 var(--skeuo-font);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+.skeuo-select__option--active,
+.skeuo-select__option:hover { background: var(--sk-hover); }
+.skeuo-select__option--selected { background: var(--c-tint); font-weight: 500; }
+.skeuo-select__option--selected.skeuo-select__option--active,
+.skeuo-select__option--selected:hover {
+  background: linear-gradient(var(--sk-hover), var(--sk-hover)), var(--c-tint);
+}
+.skeuo-select__option.skeuo-select__option--disabled { color: var(--sk-ink-3); background: none; cursor: not-allowed; }
+.skeuo-select__check {
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  width: 20px;
+  color: var(--c-ink);
+  font-size: 15px;
+}
+.skeuo-select__check .skeuo-icon { stroke-width: 2.4; }
+.skeuo-select__empty {
+  padding: 7px 12px;
+  color: var(--sk-ink-2);
+  font-size: 13px;
+}
+
+/* NativeSelect: the platform <select>, unstyled, sitting in the well. */
+.skeuo-native-select .skeuo-field__control { padding: 0; }
+.skeuo-native-select__input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--field-pad-y) calc(var(--field-pad-x) + 22px) var(--field-pad-y) var(--field-pad-x);
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--sk-ink);
+  font: 400 var(--field-font) / 1.4 var(--skeuo-font);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.skeuo-native-select.skeuo-field--standard .skeuo-native-select__input { padding-left: 2px; }
+.skeuo-native-select .skeuo-select__chevron {
+  position: absolute;
+  right: var(--field-pad-x);
+  pointer-events: none;
+}
+.skeuo-native-select__input:disabled { cursor: not-allowed; }
+
+/* ------------------------------------------------------------------ */
+/* Autocomplete — a well with suggestions and keycap tag pills          */
+/* ------------------------------------------------------------------ */
+
+.skeuo-autocomplete__control { flex-wrap: wrap; gap: 4px 6px; padding-right: 5px; }
+.skeuo-autocomplete__input { min-width: 64px; }
+.skeuo-autocomplete--has-tags .skeuo-autocomplete__control { padding-top: 4px; padding-bottom: 4px; padding-left: 5px; }
+.skeuo-autocomplete--has-tags .skeuo-autocomplete__input { padding: calc(var(--field-pad-y) - 4px) 0; }
+
+.skeuo-autocomplete__tag {
+  --key-travel: 1px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  height: calc(var(--field-font) * 1.4 + var(--field-pad-y) * 2 - 10px);
+  padding: 0 3px 0 9px;
+  border-radius: 999px;
+  font: 500 calc(var(--field-font) - 1px) / 1 var(--skeuo-font);
+  white-space: nowrap;
+}
+.skeuo-autocomplete__tag:not(:has(button)) { padding-right: 9px; }
+.skeuo-autocomplete__tag-label { overflow: hidden; text-overflow: ellipsis; }
+.skeuo-autocomplete__tag-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sk-ink-3);
+  font-size: 11px;
+  cursor: pointer;
+}
+.skeuo-autocomplete__tag-remove:hover { background: var(--sk-hover); color: var(--sk-ink); }
+.skeuo-autocomplete__tag-remove .skeuo-icon { stroke-width: 2.6; }
+
+.skeuo-autocomplete__button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sk-ink-2);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color var(--sk-medium) ease;
+}
+.skeuo-autocomplete__button:hover:not(:disabled) { background: var(--sk-hover); }
+.skeuo-autocomplete__button:active:not(:disabled) { background: var(--sk-press); }
+.skeuo-autocomplete__button:disabled { cursor: not-allowed; }
+.skeuo-autocomplete__button + .skeuo-autocomplete__button { margin-left: -4px; }
+/* As in MUI, the clear button shows while the field is hovered or focused. */
+.skeuo-autocomplete__clear { visibility: hidden; }
+.skeuo-autocomplete:hover .skeuo-autocomplete__clear,
+.skeuo-autocomplete:focus-within .skeuo-autocomplete__clear { visibility: visible; }
+
+/* ------------------------------------------------------------------ */
+/* TransferList — two wells of checkable rows, keycaps between          */
+/* ------------------------------------------------------------------ */
+
+.skeuo-transfer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.skeuo-transfer__side {
+  display: flex;
+  flex: 1 1 200px;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.skeuo-transfer__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+}
+.skeuo-transfer__title { font-size: 13px; font-weight: 600; }
+.skeuo-transfer__header .skeuo-caption { margin-left: auto; }
+.skeuo-transfer__list {
+  height: 224px;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+}
+.skeuo-transfer__row-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: calc(var(--sk-radius-well) - 3px);
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.skeuo-transfer__row-label:hover { background: var(--sk-hover); }
+.skeuo-transfer__row--checked .skeuo-transfer__row-label { background: var(--c-tint); }
+.skeuo-transfer__empty { padding: 12px; text-align: center; }
+.skeuo-transfer__moves { display: flex; flex-direction: column; gap: 8px; }
+.skeuo-transfer__move { min-width: 0; width: 40px; padding: 0; font-size: 16px; }
+.skeuo-transfer--disabled .skeuo-transfer__row-label { cursor: not-allowed; opacity: 0.55; }
+
+/* The small checkbox cap: a native checkbox laid over a tiny keycap. */
+.skeuo-transfer__check {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+.skeuo-transfer__native {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.skeuo-transfer__cap {
+  --key-travel: 1px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+}
+.skeuo-transfer__cap .skeuo-icon { stroke-width: 3; }
+.skeuo-transfer__native:focus-visible + .skeuo-transfer__cap { --focus-ring: 0 0 0 3px var(--c-glow); }
+.skeuo-transfer__native:disabled { cursor: not-allowed; }
+.skeuo-transfer__native:disabled + .skeuo-transfer__cap { filter: grayscale(0.6); opacity: 0.45; }
+
+@media (max-width: 640px) {
+  .skeuo-transfer { flex-direction: column; align-items: stretch; }
+  .skeuo-transfer__side { flex-basis: auto; }
+  .skeuo-transfer__moves { flex-direction: row; justify-content: center; }
+  .skeuo-transfer__moves .skeuo-icon { transform: rotate(90deg); }
+}
+
+/* ------------------------------------------------------------------ */
+/* TextareaAutosize — the TextField well, growing with its content     */
+/* ------------------------------------------------------------------ */
+
+.skeuo-textarea {
+  display: block;
+  width: 100%;
+  min-width: 220px;
+  min-height: calc(var(--ta-min-rows, 1) * 1.4em + 18px);
+  padding: 8px 11px;
+  color: var(--sk-ink);
+  font: 400 14px / 1.4 var(--skeuo-font);
+  outline: none;
+  resize: none;
+  field-sizing: content;
+}
+.skeuo-textarea--bounded {
+  max-height: calc(var(--ta-max-rows) * 1.4em + 18px);
+  overflow-y: auto;
+}
+.skeuo-textarea::placeholder { color: var(--sk-ink-3); }
+.skeuo-textarea:disabled { cursor: not-allowed; opacity: 0.55; }
