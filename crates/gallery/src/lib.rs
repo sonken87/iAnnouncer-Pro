@@ -4,15 +4,10 @@
 use dioxus::prelude::*;
 use skeuo_ui::prelude::*;
 
-/// Panel background the components sit on: brushed aluminium.
+/// Page background: the bead-blasted aluminium of a Magic Keyboard.
 const PAGE_CSS: &str = r#"
-html, body { margin: 0; min-height: 100%; }
-body {
-  background:
-    repeating-linear-gradient(90deg, rgba(255,255,255,0) 0 2px, rgba(255,255,255,.18) 2px 3px, rgba(0,0,0,.02) 3px 5px),
-    linear-gradient(180deg, #e9e9e9 0%, #d5d5d5 100%);
-  background-attachment: fixed;
-}
+html { min-height: 100%; background: linear-gradient(180deg, #e6e7ea 0%, #d6d7db 100%); }
+body { margin: 0; }
 .gallery { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
 .gallery h1 {
   margin: 0 0 4px; font-size: 26px; color: #3a3a3a;
@@ -21,10 +16,13 @@ body {
 .gallery > p { margin: 0 0 28px; color: #666; text-shadow: 0 1px 0 rgba(255,255,255,.7); }
 .plate {
   margin-bottom: 24px; padding: 20px 22px 24px;
-  border-radius: 12px; border: 1px solid rgba(0,0,0,.18);
-  background: linear-gradient(180deg, #f4f4f4, #e4e4e4);
-  box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(0,0,0,.18), 0 6px 14px -6px rgba(0,0,0,.25);
+  border-radius: 18px; border: 0.5px solid rgba(0,0,0,.14);
+  background: linear-gradient(180deg, #eff0f2, #e3e4e7);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 1px 2px rgba(0,0,0,.12), 0 12px 28px -14px rgba(0,0,0,.35);
 }
+.keys { display: flex; flex-wrap: wrap; gap: 6px; }
+.keys .skeuo-btn { min-width: 46px; height: 46px; padding: 0 10px; font-weight: 400; }
+.keys .wide { min-width: 84px; justify-content: flex-start; align-items: flex-end; padding-bottom: 8px; }
 .plate h2 {
   margin: 0 0 16px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
   color: #555; text-shadow: 0 1px 0 #fff;
@@ -49,7 +47,7 @@ pub fn Showcase() -> Element {
         ThemeProvider {
             div { class: "gallery",
                 h1 { "skeuo-ui" }
-                p { "Skeuomorphic Dioxus components with an MUI-style API." }
+                p { "Skeuomorphic Dioxus components in the Magic Keyboard design language, with an MUI-style API." }
 
                 section { class: "plate",
                     h2 { "Button" }
@@ -83,6 +81,17 @@ pub fn Showcase() -> Element {
                         Button { color: Color::Error, start_icon: rsx! { "●" }, "Record" }
                         Button { variant: ButtonVariant::Outlined, color: Color::Neutral, end_icon: rsx! { "▶" }, "Play" }
                         Button { color: Color::Success, end_icon: rsx! { "→" }, "On Air" }
+                    }
+                    div { class: "row",
+                        span { class: "row-label", "keyboard" }
+                        div { class: "keys",
+                            Button { variant: ButtonVariant::Outlined, color: Color::Neutral, class: "wide", "esc" }
+                            for k in ["F1", "F2", "F3", "F4"] {
+                                Button { variant: ButtonVariant::Outlined, color: Color::Neutral, "{k}" }
+                            }
+                            Button { variant: ButtonVariant::Outlined, color: Color::Neutral, class: "wide", "⌘ command" }
+                            Button { variant: ButtonVariant::Outlined, color: Color::Neutral, class: "wide", "return" }
+                        }
                     }
                     p { class: "readout", "Clicked {clicks} times" }
                 }

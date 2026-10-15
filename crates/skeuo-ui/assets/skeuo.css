@@ -1,10 +1,10 @@
 /*
  * skeuo-ui stylesheet.
  *
- * Lighting model: one light source straight above the panel. Every surface
- * therefore has a bright top edge and a dark bottom edge, raised objects
- * cast a shadow downward, and recessed objects are shaded on their top
- * inner edge.
+ * Design language: Apple's Magic Keyboard. Matte aluminium surfaces, flat
+ * low-profile keycaps, short travel, no gloss. One light source straight
+ * above: raised objects cast a soft shadow downward, recessed objects are
+ * shaded on their top inner edge.
  *
  * Palette values come from CSS variables set by ThemeProvider
  * (--skeuo-<color>-light/main/dark/contrast/glow). Each `.skeuo-color-*`
@@ -32,167 +32,127 @@
 .skeuo-color-info      { --c-light: var(--skeuo-info-light);      --c-main: var(--skeuo-info-main);      --c-dark: var(--skeuo-info-dark);      --c-contrast: var(--skeuo-info-contrast);      --c-glow: var(--skeuo-info-glow); }
 .skeuo-color-neutral   { --c-light: var(--skeuo-neutral-light);   --c-main: var(--skeuo-neutral-main);   --c-dark: var(--skeuo-neutral-dark);   --c-contrast: var(--skeuo-neutral-contrast);   --c-glow: var(--skeuo-neutral-glow); }
 
-/* Ink: the palette color used for lettering on a light surface. Neutral's
-   "dark" is still a light grey, so it uses its contrast color instead. */
-.skeuo-root [class*="skeuo-color-"] { --c-ink: var(--c-dark); }
+/* Ink: the palette color used for lettering on a light surface. */
+.skeuo-root [class*="skeuo-color-"] { --c-ink: var(--c-main); }
+.skeuo-root .skeuo-color-warning { --c-ink: var(--c-dark); }
 .skeuo-root .skeuo-color-neutral { --c-ink: var(--c-contrast); }
-
-/* Light-on-dark labels are stamped in (shadow above); dark-on-light labels
-   are engraved (highlight below). */
-.skeuo-color-primary, .skeuo-color-secondary, .skeuo-color-success,
-.skeuo-color-error, .skeuo-color-info {
-  --c-emboss: 0 -1px 0 rgba(0, 0, 0, 0.35);
-}
-.skeuo-color-warning, .skeuo-color-neutral {
-  --c-emboss: 0 1px 0 rgba(255, 255, 255, 0.6);
-}
 
 /* ------------------------------------------------------------------ */
 /* Button                                                              */
 /* ------------------------------------------------------------------ */
 
+/*
+ * A keycap in the Magic Keyboard style: a flat, matte top with no gloss and
+ * no embossed lettering, a thin visible side (the key's travel), and a soft
+ * contact shadow on the aluminium. Pressing moves the cap down by its travel
+ * while the side shrinks, so the bottom edge stays put, as on a real key.
+ *
+ * Variants only set the --key-* variables; the geometry is shared.
+ */
 .skeuo-btn {
-  --btn-height: 38px;
-  --btn-pad: 18px;
-  --btn-font: 14px;
+  --btn-height: 34px;
+  --btn-pad: 16px;
+  --btn-font: 13px;
+  --key-radius: max(calc(var(--skeuo-radius) - 2px), 0px);
+  --key-travel: 1.5px;
+  --key-color: #fbfbfc;
+  --key-side: #c6c7cb;
+  --key-edge: rgba(0, 0, 0, 0.1);
+  --key-ink: #1d1d1f;
   --focus-ring: 0 0 #0000;
 
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   min-width: 64px;
   height: var(--btn-height);
   padding: 0 var(--btn-pad);
-  border: 1px solid transparent;
-  border-radius: var(--skeuo-radius);
-  font: 600 var(--btn-font) / 1 var(--skeuo-font);
-  letter-spacing: 0.02em;
+  border: 0;
+  border-radius: var(--key-radius);
+  font: 500 var(--btn-font) / 1 var(--skeuo-font);
+  letter-spacing: -0.005em;
   white-space: nowrap;
+  color: var(--key-ink);
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   outline: none;
-  box-shadow: var(--btn-shadow), var(--focus-ring);
-  transition: transform 80ms ease-out, box-shadow 80ms ease-out, filter 150ms ease;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.025)),
+    var(--key-color);
+  box-shadow:
+    inset 0 0 0 0.5px var(--key-edge),                          /* cap edge */
+    0 var(--key-travel) 0 var(--key-side),                      /* cap side */
+    0 calc(var(--key-travel) + 0.5px) 1.5px rgba(0, 0, 0, 0.2), /* contact */
+    0 calc(var(--key-travel) + 2px) 6px -2px rgba(0, 0, 0, 0.16),
+    var(--focus-ring);
+  transition: transform 60ms ease-out, box-shadow 60ms ease-out, filter 120ms ease;
 }
 
-.skeuo-btn--small  { --btn-height: 30px; --btn-pad: 12px; --btn-font: 13px; }
-.skeuo-btn--large  { --btn-height: 46px; --btn-pad: 24px; --btn-font: 15px; }
+.skeuo-btn--small  { --btn-height: 28px; --btn-pad: 12px; --btn-font: 12px; --key-travel: 1px; }
+.skeuo-btn--large  { --btn-height: 44px; --btn-pad: 22px; --btn-font: 15px; --key-travel: 2px; }
 .skeuo-btn--full-width { display: flex; width: 100%; }
 
-.skeuo-btn__label { position: relative; z-index: 1; }
 .skeuo-btn__icon {
-  position: relative;
-  z-index: 1;
   display: inline-flex;
-  font-size: 1.15em;
+  font-size: 1.1em;
 }
 
+.skeuo-btn:hover:not(:disabled) { filter: brightness(1.035); }
+
+.skeuo-btn:active:not(:disabled) {
+  transform: translateY(calc(var(--key-travel) - 0.5px));
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.045), rgba(0, 0, 0, 0.015)),
+    var(--key-color);
+  box-shadow:
+    inset 0 0 0 0.5px var(--key-edge),
+    0 0.5px 0 var(--key-side),
+    0 1px 1px rgba(0, 0, 0, 0.16),
+    var(--focus-ring);
+}
+
+/* macOS-style focus ring, keyboard focus only. */
 .skeuo-btn:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); }
 
 .skeuo-btn:disabled {
   cursor: not-allowed;
-  filter: grayscale(0.85);
-  opacity: 0.5;
+  filter: grayscale(0.6);
+  opacity: 0.45;
 }
 
-/* Contained: glossy plastic key ------------------------------------- */
-
+/* Contained: a keycap in the palette color, white legend. */
 .skeuo-btn--contained {
-  --btn-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),   /* top bevel catch-light */
-    inset 0 -1px 1px rgba(0, 0, 0, 0.18),      /* bottom bevel */
-    0 1px 1px rgba(0, 0, 0, 0.3),              /* contact shadow */
-    0 4px 7px -2px rgba(0, 0, 0, 0.35);        /* cast shadow */
-  color: var(--c-contrast);
-  text-shadow: var(--c-emboss);
-  border-color: rgba(0, 0, 0, 0.35);
-  background: linear-gradient(180deg, var(--c-light) 0%, var(--c-main) 55%, var(--c-dark) 100%);
+  --key-color: var(--c-main);
+  --key-side: var(--c-dark);
+  --key-edge: rgba(0, 0, 0, 0.12);
+  --key-ink: var(--c-contrast);
 }
 
-/* Specular reflection on the upper half of the key. */
-.skeuo-btn--contained::before {
-  content: "";
-  position: absolute;
-  inset: 1px 1px 50% 1px;
-  border-radius: calc(var(--skeuo-radius) - 1px) calc(var(--skeuo-radius) - 1px) 40% 40% / calc(var(--skeuo-radius) - 1px) calc(var(--skeuo-radius) - 1px) 6px 6px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.08));
-  pointer-events: none;
-  transition: opacity 80ms ease-out;
-}
-
-.skeuo-btn--contained:hover:not(:disabled) { filter: brightness(1.06) saturate(1.05); }
-
-.skeuo-btn--contained:active:not(:disabled) {
-  transform: translateY(1px);
-  --btn-shadow:
-    inset 0 2px 5px rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px rgba(0, 0, 0, 0.3),
-    0 1px 0 rgba(255, 255, 255, 0.45);
-  background: linear-gradient(180deg, var(--c-dark) 0%, var(--c-main) 45%, var(--c-main) 100%);
-}
-.skeuo-btn--contained:active:not(:disabled)::before { opacity: 0.25; }
-
-/* Outlined: brushed-metal key with colored bezel --------------------- */
-
+/* Outlined: the classic white keycap with a colored legend and edge. */
 .skeuo-btn--outlined {
-  --btn-shadow:
-    inset 0 1px 0 #ffffff,
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.35),
-    0 1px 1px rgba(0, 0, 0, 0.25),
-    0 3px 5px -2px rgba(0, 0, 0, 0.3);
-  color: var(--c-ink);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
-  border-color: var(--c-main);
-  background:
-    repeating-linear-gradient(90deg,
-      rgba(255, 255, 255, 0) 0 2px,
-      rgba(255, 255, 255, 0.35) 2px 3px,
-      rgba(0, 0, 0, 0.025) 3px 5px),
-    linear-gradient(180deg, #fbfbfb 0%, #e3e3e3 50%, #c9c9c9 100%);
+  --key-ink: var(--c-ink);
+  --key-edge: var(--c-glow);
 }
+.skeuo-btn--outlined.skeuo-color-neutral { --key-edge: rgba(0, 0, 0, 0.1); }
 
-.skeuo-btn--outlined:hover:not(:disabled) { filter: brightness(1.04); }
-
-.skeuo-btn--outlined:active:not(:disabled) {
-  transform: translateY(1px);
-  --btn-shadow:
-    inset 0 2px 4px rgba(0, 0, 0, 0.28),
-    inset 0 1px 1px rgba(0, 0, 0, 0.2),
-    0 1px 0 rgba(255, 255, 255, 0.7);
-  background:
-    repeating-linear-gradient(90deg,
-      rgba(255, 255, 255, 0) 0 2px,
-      rgba(255, 255, 255, 0.25) 2px 3px,
-      rgba(0, 0, 0, 0.025) 3px 5px),
-    linear-gradient(180deg, #c9c9c9 0%, #dedede 60%, #ececec 100%);
-}
-
-/* Text: label printed on the panel ----------------------------------- */
-
+/* Text: a legend printed on the aluminium; pressing shades it. */
 .skeuo-btn--text {
-  --btn-shadow: 0 0 #0000;
   --btn-pad: 10px;
-  color: var(--c-ink);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+  --key-ink: var(--c-ink);
   background: transparent;
+  box-shadow: var(--focus-ring);
 }
-
 .skeuo-btn--text:hover:not(:disabled) {
-  --btn-shadow:
-    inset 0 1px 2px rgba(0, 0, 0, 0.16),
-    0 1px 0 rgba(255, 255, 255, 0.7);
-  background: rgba(0, 0, 0, 0.035);
+  filter: none;
+  background: rgba(0, 0, 0, 0.05);
 }
-
 .skeuo-btn--text:active:not(:disabled) {
-  --btn-shadow:
-    inset 0 2px 4px rgba(0, 0, 0, 0.28),
-    0 1px 0 rgba(255, 255, 255, 0.7);
-  background: rgba(0, 0, 0, 0.07);
+  transform: none;
+  background: rgba(0, 0, 0, 0.09);
+  box-shadow: var(--focus-ring);
 }
 
 /* ------------------------------------------------------------------ */
@@ -367,7 +327,6 @@ textarea.skeuo-field__input { resize: vertical; }
 
 @media (prefers-reduced-motion: reduce) {
   .skeuo-btn,
-  .skeuo-btn::before,
   .skeuo-field__control {
     transition: none;
   }

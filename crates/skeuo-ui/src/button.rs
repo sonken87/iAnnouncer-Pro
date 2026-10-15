@@ -5,12 +5,12 @@ use crate::{Color, Size, classes};
 /// Button style, mirroring MUI's `variant` names.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 pub enum ButtonVariant {
-    /// Glossy raised plastic key in the palette color.
+    /// Keycap in the palette color with a white legend.
     #[default]
     Contained,
-    /// Brushed-metal key with a colored bezel and engraved label.
+    /// White keycap with a colored legend and edge.
     Outlined,
-    /// Label printed on the panel; sinks into a shallow recess on hover.
+    /// Legend printed on the aluminium, no keycap.
     Text,
 }
 
@@ -24,7 +24,7 @@ impl ButtonVariant {
     }
 }
 
-/// A push button. Mirrors MUI's `<Button>`.
+/// A push button drawn as a Magic Keyboard keycap. Mirrors MUI's `<Button>`.
 ///
 /// Any global HTML attribute (`id`, `title`, `aria-*`, `style`, …) is passed
 /// through to the underlying `<button>`.

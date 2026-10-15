@@ -50,13 +50,17 @@ pub struct Theme {
 impl Default for Theme {
     fn default() -> Self {
         Self {
-            primary: PaletteColor::new("#6cb2ff", "#2475d6", "#0f4a96", "#ffffff", "rgba(36,117,214,.45)"),
-            secondary: PaletteColor::new("#bb95f2", "#7c4cc6", "#4f2a8c", "#ffffff", "rgba(124,76,198,.45)"),
-            success: PaletteColor::new("#8bd876", "#3f9c2d", "#236716", "#ffffff", "rgba(63,156,45,.45)"),
-            error: PaletteColor::new("#ff8577", "#d43b2d", "#8c1c12", "#ffffff", "rgba(212,59,45,.45)"),
-            warning: PaletteColor::new("#ffd875", "#f0a81c", "#b0700a", "#3a2500", "rgba(240,168,28,.5)"),
-            info: PaletteColor::new("#7bd8f4", "#1b9ac4", "#0b6487", "#ffffff", "rgba(27,154,196,.45)"),
-            neutral: PaletteColor::new("#fbfbfb", "#d9d9d9", "#a8a8a8", "#2e2e2e", "rgba(120,120,120,.4)"),
+            // Apple system colors. `main` is the increased-contrast variant so
+            // white legends stay legible; `light` is the regular one; `dark`
+            // is the keycap side.
+            primary: PaletteColor::new("#0a84ff", "#0071e3", "#00519f", "#ffffff", "rgba(0,113,227,.35)"),
+            secondary: PaletteColor::new("#bf5af2", "#8944ab", "#622f7c", "#ffffff", "rgba(137,68,171,.35)"),
+            success: PaletteColor::new("#34c759", "#248a3d", "#18652b", "#ffffff", "rgba(36,138,61,.35)"),
+            error: PaletteColor::new("#ff453a", "#d70015", "#9b0010", "#ffffff", "rgba(215,0,21,.32)"),
+            warning: PaletteColor::new("#ffb340", "#ff9f0a", "#a35f00", "#1d1d1f", "rgba(255,159,10,.4)"),
+            info: PaletteColor::new("#5ac8fa", "#0071a4", "#004f73", "#ffffff", "rgba(0,113,164,.35)"),
+            // White keycap; focus uses the accent blue, as on macOS.
+            neutral: PaletteColor::new("#ffffff", "#fbfbfc", "#c6c7cb", "#1d1d1f", "rgba(0,113,227,.35)"),
             radius: 8.0,
             font_family: r#"-apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", "Hiragino Sans", "Microsoft YaHei", sans-serif"#.into(),
         }

@@ -3,7 +3,7 @@
 用 Rust（[Dioxus](https://dioxuslabs.com) 0.7）编写的**拟物化** UI 组件库，目标是替代 MUI。
 
 - **API 对齐 MUI**：`variant`、`color`、`size`、`disabled`、`label`、`helper_text`、`error`……从 MUI 迁移只需改语法。
-- **拟物化外观**：统一顶部光源；凸起物体向下投影、顶边有高光，凹陷物体顶部内缘有阴影。组件被当作真实物件来画（塑料按键、拉丝金属、面板凹槽、背光显示屏）。
+- **拟物化外观，设计语言参照 Apple Magic Keyboard**：哑光喷砂铝、低键程的平顶键帽、无高光无浮雕；统一顶部光源，凸起物体向下投出柔和阴影，凹陷物体顶部内缘有阴影。配色采用 Apple 系统色（高对比度版本）。
 - **跨平台**：同一套组件可运行在 Web（WASM）、桌面和移动端，也支持 SSR。样式是纯 CSS，不需要额外构建步骤。
 
 ![gallery](docs/gallery.png)
@@ -14,9 +14,11 @@
 
 | variant | 外观 |
 |---|---|
-| `Contained`（默认） | 带高光的凸起塑料按键，按下时下沉 |
-| `Outlined` | 拉丝金属按键，彩色边框，刻字标签 |
-| `Text` | 印在面板上的文字，悬停时出现浅凹槽 |
+| `Contained`（默认） | 彩色键帽，白色字符 |
+| `Outlined` | 经典白色键帽，彩色字符和描边（`Neutral` 色即标准 Magic Keyboard 按键） |
+| `Text` | 直接印在铝面板上的字符，没有键帽 |
+
+所有按键都有一条很薄的键帽侧边（即键程），按下时键帽下移、侧边收起，底边位置不变，和真实按键一样。键盘聚焦时显示 macOS 风格的焦点环。
 
 属性：`color`（Primary / Secondary / Success / Error / Warning / Info / Neutral）、`size`、`disabled`、`full_width`、`r#type`、`start_icon`、`end_icon`、`onclick`、`class`。任意 HTML 全局属性（`id`、`aria_label`、`style`……）会透传到 `<button>`。
 
@@ -61,7 +63,8 @@ fn App() -> Element {
 
 ```rust
 let mut theme = Theme::default();
-theme.primary = PaletteColor::new("#ffb36b", "#e8730c", "#9c4600", "#fff", "rgba(232,115,12,.45)");
+// light / main / dark（键帽侧边）/ 文字色 / 焦点光晕
+theme.primary = PaletteColor::new("#ff9f0a", "#c93400", "#8f2500", "#fff", "rgba(201,52,0,.35)");
 theme.radius = 4.0;
 rsx! { ThemeProvider { theme, /* … */ } }
 ```
