@@ -15,7 +15,7 @@ pub enum TextFieldVariant {
 }
 
 impl TextFieldVariant {
-    fn as_str(self) -> &'static str {
+    pub(crate) fn as_str(self) -> &'static str {
         match self {
             TextFieldVariant::Outlined => "outlined",
             TextFieldVariant::Filled => "filled",
