@@ -42,7 +42,7 @@ Node TextField(const TextFieldProps& props) {
         props.multiline ? "skeuo-field--multiline" : "",
         props.cls,
     }));
-    if (!props.style.empty()) root.style(props.style);
+    root.attr("style", props.style);  // always present, as in the Rust markup
 
     if (props.label) {
         Node label = el("label").cls("skeuo-field__label skeuo-label").attr("for", input_id).child(*props.label);
