@@ -12,6 +12,7 @@ namespace skeuo {
 
 void HookScope::begin() {
     counters_.clear();
+    prefixes_.clear();
     for (auto& [_, slot] : slots_) slot.touched = false;
 }
 
@@ -22,9 +23,19 @@ void HookScope::end() {
     }
 }
 
+void HookScope::push_key(std::string_view key) {
+    std::string prefix = prefixes_.empty() ? std::string() : prefixes_.back();
+    prefixes_.push_back(prefix + std::string(key) + "/");
+}
+
+void HookScope::pop_key() {
+    if (!prefixes_.empty()) prefixes_.pop_back();
+}
+
 std::string HookScope::next_key(std::string_view kind) {
-    int n = counters_[std::string(kind)]++;
-    return std::string(kind) + "#" + std::to_string(n);
+    std::string scoped = (prefixes_.empty() ? std::string() : prefixes_.back()) + std::string(kind);
+    int n = counters_[scoped]++;
+    return scoped + "#" + std::to_string(n);
 }
 
 std::string HookScope::unique_id(std::string_view prefix) {
@@ -58,6 +69,14 @@ struct ScopeGuard {
 HookScope& current_hooks() { return active_scope ? *active_scope : fallback_scope(); }
 
 std::string use_unique_id(std::string_view prefix) { return current_hooks().unique_id(prefix); }
+
+KeyScope::KeyScope(std::string_view key) { current_hooks().push_key(key); }
+KeyScope::~KeyScope() { current_hooks().pop_key(); }
+
+Node keyed(std::string_view key, const std::function<Node()>& fn) {
+    KeyScope scope(key);
+    return fn();
+}
 
 // ---------------------------------------------------------------- HTML
 

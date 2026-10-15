@@ -152,7 +152,9 @@ Node shell(State& state) {
     Node main = el("main").cls("gallery__main");
     main.child(el("h1").child(std::string(page_title(state.page))));
     main.child(el("p").child(std::string(page_intro(state.page))));
-    main.child(page_body(state.page));
+    // Each page keeps its component state under its own key, so nothing
+    // carries over between pages and a page starts fresh when re-entered.
+    main.child(keyed(page_slug(state.page), [&] { return page_body(state.page); }));
 
     return Node{
         el("style").child(raw_html(kPageCss)),

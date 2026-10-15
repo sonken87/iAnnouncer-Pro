@@ -128,3 +128,32 @@ TEST(event_related_inside_is_parsed) {
     rt.handle(R"({"t":"event","h":[0],"e":{"type":"blur","relatedInside":true}})");
     CHECK(inside);
 }
+
+TEST(key_scopes_separate_state_of_same_kind) {
+    int page = 0;
+    Runtime rt([&] {
+        return keyed(page == 0 ? "a" : "b", [&] {
+            std::string& v = use_state<std::string>("field", [&] { return std::string(page == 0 ? "A" : "B"); });
+            return el("p").child(v);
+        });
+    });
+    CONTAINS(rt.render(), ">A<");
+    page = 1;
+    CONTAINS(rt.render(), ">B<");  // not page a's slot
+    page = 0;
+    CONTAINS(rt.render(), ">A<");  // page a starts fresh
+    // Nested scopes and keyed list items.
+    std::vector<std::string> items = {"x", "y"};
+    Runtime list([&] {
+        Node ul = el("ul");
+        for (auto& it : items) {
+            KeyScope k(it);
+            int& n = use_state<int>("row", [&] { return int(it[0]); });
+            ul.child(el("li").child(std::to_string(n)));
+        }
+        return ul;
+    });
+    CONTAINS(list.render(), "<li>120</li><li>121</li>");
+    items = {"y"};  // removing x must not give y x's state
+    CONTAINS(list.render(), "<ul><li>121</li></ul>");
+}

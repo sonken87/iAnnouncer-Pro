@@ -23,10 +23,17 @@ namespace skeuo {
 /// n-th `use_state` call of a given kind in a render gets the same slot every
 /// render (like React hooks). Slots not used during a render are dropped, so a
 /// component that disappears starts fresh when it comes back.
+///
+/// Positions are counted inside the current key scope (see `KeyScope`), so
+/// independent parts of the UI (pages, list items) should each be rendered
+/// in their own scope; otherwise state can move between components when the
+/// UI around them changes.
 class HookScope {
 public:
     void begin();
     void end();
+    void push_key(std::string_view key);
+    void pop_key();
 
     template <class T, class Init>
     T& slot(std::string_view kind, Init&& init) {
@@ -50,6 +57,7 @@ private:
 
     std::unordered_map<std::string, Slot> slots_;
     std::unordered_map<std::string, int> counters_;
+    std::vector<std::string> prefixes_;
     unsigned long long next_id_ = 0;
 };
 
@@ -66,6 +74,24 @@ T& use_state(std::string_view kind, Init&& init) {
 
 /// A DOM id unique in the process and stable while the component is rendered.
 std::string use_unique_id(std::string_view prefix);
+
+/// Gives the hooks used while it is alive their own namespace, like React's
+/// `key`: state belongs to the key, not to the position on the page.
+///
+///   for (auto& item : items) {
+///       KeyScope k(item.id);
+///       list.child(Row(item));   // Row's use_state is per item
+///   }
+class KeyScope {
+public:
+    explicit KeyScope(std::string_view key);
+    ~KeyScope();
+    KeyScope(const KeyScope&) = delete;
+    KeyScope& operator=(const KeyScope&) = delete;
+};
+
+/// Renders `fn` inside a KeyScope: `keyed("page-inputs", [] { return InputsPage(); })`.
+Node keyed(std::string_view key, const std::function<Node()>& fn);
 
 class Runtime {
 public:
