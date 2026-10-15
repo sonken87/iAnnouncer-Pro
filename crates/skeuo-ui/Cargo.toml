@@ -6,7 +6,9 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
-dioxus = { workspace = true, features = ["macro", "html", "signals", "hooks"] }
+# `mounted`: overlays focus themselves via onmounted (off by default on web
+# when dioxus default features are disabled).
+dioxus = { workspace = true, features = ["macro", "html", "signals", "hooks", "mounted"] }
 
 [dev-dependencies]
 dioxus-ssr = "0.7.10"

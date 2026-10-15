@@ -144,7 +144,8 @@ pub fn Drawer(props: DrawerProps) -> Element {
                 div {
                     class: paper,
                     role: "dialog",
-                    aria_modal: "true",
+                    // An in-flow preview doesn't block the page.
+                    aria_modal: if inline { "false" } else { "true" },
                     tabindex: "-1",
                     onmounted: move |e: MountedEvent| {
                         if !inline {

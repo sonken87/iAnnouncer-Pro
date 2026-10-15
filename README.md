@@ -1,38 +1,26 @@
 # skeuo-ui
 
-用 Rust（[Dioxus](https://dioxuslabs.com) 0.7）编写的**拟物化** UI 组件库，目标是替代 MUI。
+用 Rust（[Dioxus](https://dioxuslabs.com) 0.7）编写的**拟物化** UI 组件库，用来替代 MUI。
 
-- **API 对齐 MUI**：`variant`、`color`、`size`、`disabled`、`label`、`helper_text`、`error`……从 MUI 迁移只需改语法。
-- **拟物化外观，设计语言参照 Apple Magic Keyboard**：哑光喷砂铝、低键程的平顶键帽、无高光无浮雕；统一顶部光源，凸起物体向下投出柔和阴影，凹陷物体顶部内缘有阴影。配色采用 Apple 系统色（高对比度版本）。
-- **跨平台**：同一套组件可运行在 Web（WASM）、桌面和移动端，也支持 SSR。样式是纯 CSS，不需要额外构建步骤。
+- **设计语言：Apple Magic Keyboard。** 哑光喷砂铝、低键程平顶键帽、刻进金属的凹槽；无高光、无浮雕字。统一顶部光源。所有组件都由同一套「材质」组合而成，规则见 [`DESIGN.md`](DESIGN.md)。
+- **API 对齐 MUI。** 组件名和属性名与 MUI 一致（`variant`、`color`、`size`、`disabled`、`helper_text`、`onchange`……），支持受控 / 非受控。
+- **跨平台。** 同一套组件可运行在 Web（WASM）、桌面（Windows / macOS / Linux）和移动端，支持 SSR。样式是纯 CSS，`ThemeProvider` 自动注入。
 
 ![gallery](docs/gallery.png)
 
 ## 组件
 
-### Button（对应 MUI `<Button>`）
-
-| variant | 外观 |
+| 分类 | 组件 |
 |---|---|
-| `Contained`（默认） | 彩色键帽，白色字符 |
-| `Outlined` | 经典白色键帽，彩色字符和描边（`Neutral` 色即标准 Magic Keyboard 按键） |
-| `Text` | 直接印在铝面板上的字符，没有键帽 |
+| 输入 Inputs | Button（含 loading）、IconButton、Fab、ButtonGroup、ToggleButton / ToggleButtonGroup、TextField、TextareaAutosize、Select、NativeSelect、Autocomplete、TransferList |
+| 选择与表单 Selection | Checkbox、Radio / RadioGroup、Switch、Slider（单值 / 区间 / 刻度 / 竖直）、Rating、FormControl、FormLabel、FormControlLabel、FormGroup、FormHelperText |
+| 数据展示 Data display | Typography、Avatar / AvatarGroup、Badge、Chip、Divider、List 全家、Table 全家（含排序）、Tooltip、ImageList |
+| 反馈 Feedback | Alert / AlertTitle、Backdrop、Modal、Dialog 全家、CircularProgress、LinearProgress、Skeleton、Snackbar |
+| 容器与布局 Surfaces & layout | Paper、Card 全家、Accordion 全家、AppBar、Toolbar、Drawer、SkeuoBox（即 MUI `Box`）、Container、Stack、Grid（v2） |
+| 导航 Navigation | Tabs / Tab / TabPanel、Breadcrumbs、Link、Menu / MenuItem / MenuList、Popover、Pagination、Stepper 全家、MobileStepper、BottomNavigation、SpeedDial、Timeline |
+| 其他 | Icon（40 个内置图标）、ThemeProvider / Theme（对应 `createTheme`） |
 
-所有按键都有一条很薄的键帽侧边（即键程），按下时键帽下移、侧边收起，底边位置不变，和真实按键一样。键盘聚焦时显示 macOS 风格的焦点环。
-
-属性：`color`（Primary / Secondary / Success / Error / Warning / Info / Neutral）、`size`、`disabled`、`full_width`、`r#type`、`start_icon`、`end_icon`、`onclick`、`class`。任意 HTML 全局属性（`id`、`aria_label`、`style`……）会透传到 `<button>`。
-
-### TextField（对应 MUI `<TextField>`）
-
-| variant | 外观 |
-|---|---|
-| `Outlined`（默认） | 刻进面板的凹槽输入框 |
-| `Filled` | 黑色边框里的背光荧光显示屏（VFD） |
-| `Standard` | 面板上的一条刻线 |
-
-属性：`label`、`value` / `default_value`（受控 / 非受控）、`placeholder`、`helper_text`、`error`、`disabled`、`required`、`read_only`、`full_width`、`multiline` + `rows`、`r#type`、`name`、`id`（不传则自动生成）、`autocomplete`、`autofocus`、`start_adornment`、`end_adornment`、`color`（焦点光晕颜色）、`size`，以及事件 `oninput` / `onchange` / `onkeydown` / `onfocus` / `onblur`。
-
-`label` 和 `helper_text` 会自动通过 `for`、`aria-describedby` 关联；设置 `error` 时会同时设置 `aria-invalid`。
+与 MUI 的差异：每个组件的文档注释里都写明了（例如 Select 的选项以数据传入而不是 `MenuItem` 子元素；MUI 的 `Box` 改名为 `SkeuoBox`，以免遮蔽 Rust 的 `Box`）。
 
 ## 使用
 
@@ -42,6 +30,7 @@ use skeuo_ui::prelude::*;
 
 fn App() -> Element {
     let mut name = use_signal(String::new);
+    let mut on_air = use_signal(|| false);
     rsx! {
         // 相当于 MUI 的 ThemeProvider + CssBaseline，在应用最外层包一次即可
         ThemeProvider {
@@ -49,11 +38,12 @@ fn App() -> Element {
                 label: "Name",
                 value: name(),
                 oninput: move |e: FormEvent| name.set(e.value()),
-                helper_text: "Required",
-                required: true,
+            }
+            FormControlLabel {
+                control: rsx! { Switch { checked: on_air(), onchange: move |e: FormEvent| on_air.set(e.checked()) } },
+                label: "On air",
             }
             Button { onclick: move |_| save(), "Save" }
-            Button { variant: ButtonVariant::Outlined, color: Color::Error, "Delete" }
         }
     }
 }
@@ -65,23 +55,44 @@ fn App() -> Element {
 let mut theme = Theme::default();
 // light / main / dark（键帽侧边）/ 文字色 / 焦点光晕
 theme.primary = PaletteColor::new("#ff9f0a", "#c93400", "#8f2500", "#fff", "rgba(201,52,0,.35)");
-theme.radius = 4.0;
+theme.radius = 6.0;
 rsx! { ThemeProvider { theme, /* … */ } }
+```
+
+## 示例程序（Gallery）
+
+```bash
+# Windows 桌面版（在 Linux 上交叉编译，生成 dist/skeuo-ui-gallery-windows-x64.zip）
+./scripts/build-windows.sh
+
+# 在本机桌面运行（Windows / macOS 直接可用；Linux 需要 webkit2gtk）
+cargo run -p gallery --no-default-features --features desktop
+
+# 浏览器运行（需要 dioxus-cli）
+dx serve -p gallery
+
+# 不需要任何工具链：把每个页面渲染成静态 HTML
+cargo run -p gallery --example snapshot -- snapshots/
 ```
 
 ## 开发
 
 ```bash
-cargo test --workspace                       # SSR 渲染测试
-dx serve -p gallery                          # 在浏览器中运行组件展示页（需要 dioxus-cli）
-dx serve -p gallery --features desktop --no-default-features   # 桌面版
-cargo run -p gallery --example snapshot -- gallery.html         # 不装 dx，直接渲染出静态 HTML
+cargo test --workspace     # 各分类的 SSR 渲染测试
+cargo clippy --workspace --all-targets
 ```
 
 ## 目录
 
 ```
-crates/skeuo-ui/    组件库（src/ 组件，assets/skeuo.css 样式）
-crates/gallery/     组件展示页
-design/             设计稿（toggle-switch.cdr：三段拨杆开关）
+DESIGN.md                    设计语言与材质规范
+crates/skeuo-ui/
+  assets/tokens.css          设计变量（颜色、圆角、动效）
+  assets/materials.css       材质：键帽 / 凹槽 / 轨道 / 铝面板 / 刻线 / 指示灯
+  assets/<分类>.css          各分类组件样式
+  src/<分类>/                组件源码（inputs, selection, data_display, feedback, surfaces, navigation）
+  tests/<分类>.rs            测试
+crates/gallery/              示例程序（每个分类一个页面）
+scripts/build-windows.sh     Windows 打包脚本
+design/                      设计稿（toggle-switch.cdr）
 ```
