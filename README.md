@@ -4,6 +4,7 @@
 
 - **设计语言：Apple Magic Keyboard，浅色 / 深色（Space Black）两套主题，可跟随系统。** 哑光喷砂铝、低键程平顶键帽、刻进金属的凹槽；无高光、无浮雕字。统一顶部光源。所有组件都由同一套「材质」组合而成，规则见 [`DESIGN.md`](DESIGN.md)。
 - **API 对齐 MUI。** 组件名和属性名与 MUI 一致（`variant`、`color`、`size`、`disabled`、`helper_text`、`onchange`……），支持受控 / 非受控。
+- **两种实现，外观一致：** Rust（Dioxus，本页）和 **C++20**（[`cpp/`](cpp/README.md)，WebView2 窗口）。两者共用同一份样式表，组件和 API 一一对应。
 - **跨平台。** 同一套组件可运行在 Web（WASM）、桌面（Windows / macOS / Linux）和移动端，支持 SSR。样式是纯 CSS，`ThemeProvider` 自动注入。
 
 ![浅色](docs/gallery.png)
@@ -112,6 +113,8 @@ crates/skeuo-ui/
   src/<分类>/                组件源码（inputs, selection, data_display, feedback, surfaces, navigation）
   tests/<分类>.rs            测试
 crates/gallery/              示例程序（每个分类一个页面）
-scripts/build-windows.sh     Windows 打包脚本
+scripts/build-windows.sh     Windows 打包脚本（Rust 版）
+scripts/build-windows-cpp.sh Windows 打包脚本（C++ 版）
+cpp/                         C++20 版本（见 cpp/README.md）
 design/                      设计稿（toggle-switch.cdr）
 ```
