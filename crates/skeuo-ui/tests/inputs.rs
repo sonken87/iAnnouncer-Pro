@@ -12,7 +12,7 @@ fn button_default_classes_and_type() {
     let html = render(|| rsx! { Button { "Save" } });
     assert!(
         html.contains(
-            r#"class="skeuo-btn skeuo-btn--contained skeuo-color-primary skeuo-btn--medium""#
+            r#"class="skeuo-key skeuo-key--pressable skeuo-key--filled skeuo-btn skeuo-btn--contained skeuo-color-primary skeuo-btn--medium""#
         ),
         "{html}"
     );
@@ -146,7 +146,7 @@ fn theme_provider_injects_stylesheet_and_vars() {
             ThemeProvider { theme, Button { "x" } }
         }
     });
-    assert!(html.contains(".skeuo-btn--contained"), "stylesheet missing");
+    assert!(html.contains(".skeuo-key--filled"), "stylesheet missing");
     assert!(html.contains("--skeuo-primary-main:#123456"), "{html}");
     assert!(html.contains("skeuo-root"), "{html}");
 }

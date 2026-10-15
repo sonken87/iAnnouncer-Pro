@@ -59,12 +59,17 @@ pub struct ButtonProps {
 #[component]
 pub fn Button(props: ButtonProps) -> Element {
     let variant = format!("skeuo-btn--{}", props.variant.as_str());
-    let color = format!("skeuo-color-{}", props.color.as_str());
     let size = format!("skeuo-btn--{}", props.size.as_str());
+    let material = match props.variant {
+        ButtonVariant::Contained => "skeuo-key skeuo-key--pressable skeuo-key--filled",
+        ButtonVariant::Outlined => "skeuo-key skeuo-key--pressable",
+        ButtonVariant::Text => "",
+    };
     let class = classes([
+        material,
         "skeuo-btn",
         &variant,
-        &color,
+        props.color.class(),
         &size,
         if props.full_width {
             "skeuo-btn--full-width"

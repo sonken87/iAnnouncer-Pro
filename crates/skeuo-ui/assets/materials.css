@@ -1,0 +1,265 @@
+/*
+ * skeuo-ui — materials.
+ *
+ * Every component is assembled from these few physical materials. Do not
+ * invent new shadows or gradients in component CSS; compose these classes
+ * and set their variables instead. See DESIGN.md.
+ *
+ *   .skeuo-key      raised keycap: pressable things, thumbs, knobs
+ *   .skeuo-well     recessed well: anything you type into or that holds a value
+ *   .skeuo-groove   narrow recessed channel: tracks (slider, switch, progress)
+ *   .skeuo-chassis  raised aluminium plate: surfaces, bars, menus, dialogs
+ *   .skeuo-rule     engraved hairline: dividers
+ *   .skeuo-led      indicator light: badges, status dots
+ *   .skeuo-label / .skeuo-caption  printed lettering
+ *   .skeuo-scrim    dimming layer behind modal surfaces
+ */
+
+/* ------------------------------------------------------------------ */
+/* Keycap                                                              */
+/* ------------------------------------------------------------------ */
+
+/* A Magic Keyboard keycap: flat matte top, a thin visible side whose
+ * height is the key travel, and a soft contact shadow. When pressed the cap
+ * moves down by its travel while the side collapses, so the bottom edge
+ * stays put. Set --key-* to restyle; never change the geometry. */
+.skeuo-key {
+  --key-travel: 1.5px;
+  --key-color: var(--sk-key);
+  --key-side: var(--sk-key-side);
+  --key-edge: rgba(0, 0, 0, 0.1);
+  --key-ink: var(--sk-ink);
+  --focus-ring: 0 0 #0000;
+
+  position: relative;
+  border: 0;
+  border-radius: var(--sk-radius-key);
+  color: var(--key-ink);
+  font-family: var(--skeuo-font);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.025)),
+    var(--key-color);
+  box-shadow:
+    inset 0 0 0 0.5px var(--key-edge),                          /* cap edge */
+    0 var(--key-travel) 0 var(--key-side),                      /* cap side */
+    0 calc(var(--key-travel) + 0.5px) 1.5px rgba(0, 0, 0, 0.2), /* contact */
+    0 calc(var(--key-travel) + 2px) 6px -2px rgba(0, 0, 0, 0.16),
+    var(--focus-ring);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--sk-fast) ease-out,
+    box-shadow var(--sk-fast) ease-out,
+    background-color var(--sk-medium) var(--sk-ease),
+    filter 120ms ease;
+}
+
+/* Interactive keys. */
+.skeuo-key--pressable { cursor: pointer; user-select: none; }
+.skeuo-key--pressable:hover:not(:disabled):not([aria-disabled="true"]) { filter: brightness(1.035); }
+
+/* Pressed: while held, or latched down (.skeuo-key--down, e.g. a selected
+ * toggle button or the active segment). */
+.skeuo-key--pressable:active:not(:disabled):not([aria-disabled="true"]),
+.skeuo-key--down {
+  transform: translateY(calc(var(--key-travel) - 0.5px));
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.045), rgba(0, 0, 0, 0.015)),
+    var(--key-color);
+  box-shadow:
+    inset 0 0 0 0.5px var(--key-edge),
+    0 0.5px 0 var(--key-side),
+    0 1px 1px rgba(0, 0, 0, 0.16),
+    var(--focus-ring);
+}
+
+/* Colored keycap: palette color top, darker side, contrast legend. */
+.skeuo-key--filled {
+  --key-color: var(--c-main);
+  --key-side: var(--c-dark);
+  --key-edge: rgba(0, 0, 0, 0.12);
+  --key-ink: var(--c-contrast);
+}
+
+/* Small round knob (slider / switch thumbs, radio caps). */
+.skeuo-key--round { border-radius: 999px; }
+
+/* macOS-style focus ring, keyboard focus only. */
+.skeuo-key:focus-visible,
+.skeuo-key--focus-within:has(:focus-visible) {
+  --focus-ring: 0 0 0 3px var(--c-glow);
+}
+
+.skeuo-key:disabled,
+.skeuo-key[aria-disabled="true"] {
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+  opacity: 0.45;
+}
+
+/* ------------------------------------------------------------------ */
+/* Well                                                                */
+/* ------------------------------------------------------------------ */
+
+/* A well cut into the aluminium: darker top lip with a shade under it, a
+ * catch-light on the bottom lip. Text fields, selects, segmented controls,
+ * list boxes. */
+.skeuo-well {
+  --focus-ring: 0 0 #0000;
+
+  border: 1px solid rgba(0, 0, 0, 0.33);
+  border-top-color: rgba(0, 0, 0, 0.42);
+  border-bottom-color: rgba(0, 0, 0, 0.16);
+  border-radius: var(--sk-radius-well);
+  background: linear-gradient(180deg, #e7e7ea 0%, #f6f6f7 30%, #fdfdfd 100%);
+  box-shadow:
+    inset 0 2px 3px rgba(0, 0, 0, 0.14),
+    inset 0 1px 1px rgba(0, 0, 0, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    var(--focus-ring);
+  transition: box-shadow var(--sk-medium) ease, border-color var(--sk-medium) ease;
+}
+
+/* Wells that take focus light their rim in the palette color. */
+.skeuo-well--focusable:focus-within {
+  --focus-ring: 0 0 0 3px var(--c-glow);
+  border-color: var(--c-main);
+}
+
+/* A shallow, borderless recess (MUI "filled" variants, segmented control
+ * backgrounds). */
+.skeuo-well--shallow {
+  border-color: transparent;
+  background: rgba(0, 0, 0, 0.06);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.8),
+    var(--focus-ring);
+}
+.skeuo-well--shallow.skeuo-well--focusable:focus-within {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* ------------------------------------------------------------------ */
+/* Groove                                                              */
+/* ------------------------------------------------------------------ */
+
+/* A narrow rounded channel: slider rails, switch tracks, progress bars.
+ * Fill it with .skeuo-groove__fill (palette color, lit from above). */
+.skeuo-groove {
+  position: relative;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #cfd0d4, #e2e3e6);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.85);
+}
+.skeuo-groove__fill {
+  border-radius: inherit;
+  background: linear-gradient(180deg, var(--c-light), var(--c-main) 70%);
+  box-shadow:
+    inset 0 1px 1px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.15);
+}
+
+/* ------------------------------------------------------------------ */
+/* Chassis                                                             */
+/* ------------------------------------------------------------------ */
+
+/* A raised plate of aluminium. Elevation only changes the cast shadow.
+ *   0 flush · 1 resting card · 2 raised panel · 3 menu/popover · 4 dialog */
+.skeuo-chassis {
+  border-radius: var(--sk-radius-chassis);
+  border: 0.5px solid rgba(0, 0, 0, 0.14);
+  background: linear-gradient(180deg, var(--sk-alu-hi), var(--sk-alu-lo));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    var(--elev-shadow, 0 1px 2px rgba(0, 0, 0, 0.12), 0 4px 10px -6px rgba(0, 0, 0, 0.25));
+}
+.skeuo-elev-0 { --elev-shadow: 0 0 #0000; }
+.skeuo-elev-1 { --elev-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 4px 10px -6px rgba(0, 0, 0, 0.25); }
+.skeuo-elev-2 { --elev-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 12px 28px -14px rgba(0, 0, 0, 0.35); }
+.skeuo-elev-3 { --elev-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 18px 40px -14px rgba(0, 0, 0, 0.4); }
+.skeuo-elev-4 { --elev-shadow: 0 4px 10px rgba(0, 0, 0, 0.12), 0 30px 70px -20px rgba(0, 0, 0, 0.5); }
+
+/* Floating surfaces (menus, popovers, tooltips, dialogs) are a touch
+ * lighter so they read as closer to the light. */
+.skeuo-chassis--float {
+  background: linear-gradient(180deg, #f8f8fa, #eeeff1);
+}
+
+/* Square-cornered chassis (app bars, drawers glued to the window edge). */
+.skeuo-chassis--square { border-radius: 0; }
+
+/* ------------------------------------------------------------------ */
+/* Rule, LED, lettering, scrim                                         */
+/* ------------------------------------------------------------------ */
+
+/* An engraved hairline: dark cut with a catch-light under it. */
+.skeuo-rule {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.13);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+.skeuo-rule--vertical {
+  align-self: stretch;
+  border-top: 0;
+  border-left: 1px solid rgba(0, 0, 0, 0.13);
+  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.75);
+}
+
+/* An indicator light, like the caps-lock LED. */
+.skeuo-led {
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 35%, var(--c-light), var(--c-main) 75%);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.25),
+    0 0 6px var(--c-glow);
+}
+.skeuo-led--off {
+  background: radial-gradient(circle at 50% 35%, #d7d8db, #b9babe 75%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Lettering printed on the aluminium. */
+.skeuo-label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--sk-ink-2);
+}
+.skeuo-caption {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--sk-ink-2);
+}
+
+/* Dims everything behind a modal surface. */
+.skeuo-scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--sk-scrim);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  animation: skeuo-fade-in var(--sk-medium) var(--sk-ease);
+}
+
+@keyframes skeuo-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Floating surfaces appear by rising slightly toward the light. */
+@keyframes skeuo-rise-in {
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Icons inherit color and size from the lettering they sit next to. */
+.skeuo-icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: -0.125em;
+}

@@ -1,0 +1,131 @@
+/* skeuo-ui — inputs: Button, TextField (and the rest of the inputs module). */
+
+/* ------------------------------------------------------------------ */
+/* Button — a keycap (.skeuo-key), or printed lettering for `text`      */
+/* ------------------------------------------------------------------ */
+
+.skeuo-btn {
+  --btn-height: 34px;
+  --btn-pad: 16px;
+  --btn-font: 13px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 64px;
+  height: var(--btn-height);
+  padding: 0 var(--btn-pad);
+  font: 500 var(--btn-font) / 1 var(--skeuo-font);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.skeuo-btn--small  { --btn-height: 28px; --btn-pad: 12px; --btn-font: 12px; --key-travel: 1px; }
+.skeuo-btn--large  { --btn-height: 44px; --btn-pad: 22px; --btn-font: 15px; --key-travel: 2px; }
+.skeuo-btn--full-width { display: flex; width: 100%; }
+
+.skeuo-btn__icon { display: inline-flex; font-size: 1.1em; }
+
+/* Outlined: the white keycap with a colored legend and edge. */
+.skeuo-btn--outlined {
+  --key-ink: var(--c-ink);
+  --key-edge: var(--c-glow);
+}
+.skeuo-btn--outlined.skeuo-color-neutral { --key-edge: rgba(0, 0, 0, 0.1); }
+
+/* Text: lettering printed on the aluminium; pressing shades it. */
+.skeuo-btn--text {
+  --btn-pad: 10px;
+  --focus-ring: 0 0 #0000;
+  border: 0;
+  border-radius: var(--sk-radius-key);
+  color: var(--c-ink);
+  background: transparent;
+  box-shadow: var(--focus-ring);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: background-color var(--sk-medium) ease;
+}
+.skeuo-btn--text:hover:not(:disabled) { background: var(--sk-hover); }
+.skeuo-btn--text:active:not(:disabled) { background: var(--sk-press); }
+.skeuo-btn--text:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); }
+.skeuo-btn--text:disabled { cursor: not-allowed; opacity: 0.45; }
+
+/* ------------------------------------------------------------------ */
+/* TextField — a well (.skeuo-well) with printed label                 */
+/* ------------------------------------------------------------------ */
+
+.skeuo-field {
+  --field-pad-y: 8px;
+  --field-pad-x: 11px;
+  --field-font: 14px;
+
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+  vertical-align: top;
+}
+
+.skeuo-field--small { --field-pad-y: 5px; --field-pad-x: 9px; --field-font: 13px; }
+.skeuo-field--large { --field-pad-y: 11px; --field-pad-x: 13px; --field-font: 15px; }
+.skeuo-field--full-width { display: flex; width: 100%; }
+
+.skeuo-field__asterisk { color: var(--skeuo-error-main); }
+
+.skeuo-field__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 var(--field-pad-x);
+}
+.skeuo-field--multiline .skeuo-field__control { align-items: stretch; }
+
+.skeuo-field__input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--field-pad-y) 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--sk-ink);
+  font: 400 var(--field-font) / 1.4 var(--skeuo-font);
+}
+textarea.skeuo-field__input { resize: vertical; }
+.skeuo-field__input::placeholder { color: var(--sk-ink-3); }
+
+.skeuo-field__adornment {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--field-font);
+  color: var(--sk-ink-2);
+  white-space: nowrap;
+}
+
+.skeuo-field__helper { margin: 0; }
+
+.skeuo-field--error { --c-main: var(--skeuo-error-main); --c-glow: var(--skeuo-error-glow); }
+.skeuo-field--error .skeuo-field__helper,
+.skeuo-field--error .skeuo-field__label { color: var(--skeuo-error-dark); }
+.skeuo-field--error .skeuo-well { border-color: var(--c-main); }
+
+.skeuo-field--disabled { opacity: 0.55; }
+.skeuo-field--disabled .skeuo-field__input { cursor: not-allowed; }
+
+/* Standard: an engraved line instead of a well. */
+.skeuo-field--standard .skeuo-field__control {
+  padding: 0 2px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+  transition: border-color var(--sk-medium) ease, box-shadow var(--sk-medium) ease;
+}
+.skeuo-field--standard:focus-within .skeuo-field__control,
+.skeuo-field--standard.skeuo-field--error .skeuo-field__control {
+  border-bottom-color: var(--c-main);
+  box-shadow: 0 1px 0 var(--c-main), 0 2px 4px -1px var(--c-glow);
+}

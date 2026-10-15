@@ -1,10 +1,11 @@
-//! Skeuomorphic UI components for Dioxus.
+//! Skeuomorphic UI components for Dioxus, in the design language of Apple's
+//! Magic Keyboard, with an API that mirrors MUI.
 //!
 //! The component APIs follow MUI (`variant`, `color`, `size`, `disabled`,
 //! `label`, `helper_text`, …) so that code written against MUI ports over
-//! with minimal changes. The look is skeuomorphic: every component is lit
-//! by a single light source at the top, and is drawn as a physical object
-//! (plastic key, brushed metal, carved well, backlit display).
+//! with minimal changes. Every component is built from the same few
+//! physical materials (keycap, well, aluminium chassis, groove, LED); see
+//! `DESIGN.md` at the repository root.
 //!
 //! Wrap your app in [`ThemeProvider`] once; it injects the stylesheet and
 //! the palette CSS variables.
@@ -28,19 +29,40 @@
 //! }
 //! ```
 
-mod button;
-mod text_field;
+use std::sync::atomic::{AtomicUsize, Ordering};
+
+use dioxus::prelude::*;
+
+mod icons;
 mod theme;
 
-pub use button::{Button, ButtonProps, ButtonVariant};
-pub use text_field::{TextField, TextFieldProps, TextFieldVariant};
+pub mod data_display;
+pub mod feedback;
+pub mod inputs;
+pub mod navigation;
+pub mod selection;
+pub mod surfaces;
+
+pub use data_display::*;
+pub use feedback::*;
+pub use icons::{Icon, IconName, IconProps};
+pub use inputs::*;
+pub use navigation::*;
+pub use selection::*;
+pub use surfaces::*;
 pub use theme::{PaletteColor, STYLESHEET, Theme, ThemeProvider, ThemeProviderProps};
 
+/// Everything a component user needs: `use skeuo_ui::prelude::*;`
 pub mod prelude {
-    pub use crate::{
-        Button, ButtonVariant, Color, PaletteColor, Size, TextField, TextFieldVariant, Theme,
-        ThemeProvider,
-    };
+    pub use crate::data_display::*;
+    pub use crate::feedback::*;
+    pub use crate::icons::{Icon, IconName};
+    pub use crate::inputs::*;
+    pub use crate::navigation::*;
+    pub use crate::selection::*;
+    pub use crate::surfaces::*;
+    pub use crate::theme::{PaletteColor, Theme, ThemeProvider};
+    pub use crate::{Color, Orientation, Placement, Size};
 }
 
 /// Palette color of a component, as in MUI's `color` prop.
@@ -53,8 +75,7 @@ pub enum Color {
     Error,
     Warning,
     Info,
-    /// Brushed aluminium / silver. Not in MUI; the natural "no color" of a
-    /// physical control.
+    /// The white keycap / plain aluminium. MUI's `inherit` / `default`.
     Neutral,
 }
 
@@ -80,6 +101,20 @@ impl Color {
             Color::Neutral => "neutral",
         }
     }
+
+    /// The `skeuo-color-*` class that maps this palette entry onto the
+    /// `--c-*` CSS variables.
+    pub fn class(self) -> &'static str {
+        match self {
+            Color::Primary => "skeuo-color-primary",
+            Color::Secondary => "skeuo-color-secondary",
+            Color::Success => "skeuo-color-success",
+            Color::Error => "skeuo-color-error",
+            Color::Warning => "skeuo-color-warning",
+            Color::Info => "skeuo-color-info",
+            Color::Neutral => "skeuo-color-neutral",
+        }
+    }
 }
 
 /// Component size, as in MUI's `size` prop.
@@ -101,11 +136,58 @@ impl Size {
     }
 }
 
+/// Layout direction, as in MUI's `orientation` prop.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub enum Orientation {
+    #[default]
+    Horizontal,
+    Vertical,
+}
+
+impl Orientation {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Orientation::Horizontal => "horizontal",
+            Orientation::Vertical => "vertical",
+        }
+    }
+}
+
+/// Where a floating element sits relative to its anchor (MUI `placement`).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub enum Placement {
+    Top,
+    #[default]
+    Bottom,
+    Left,
+    Right,
+}
+
+impl Placement {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Placement::Top => "top",
+            Placement::Bottom => "bottom",
+            Placement::Left => "left",
+            Placement::Right => "right",
+        }
+    }
+}
+
 /// Joins the non-empty class names with spaces.
-pub(crate) fn classes<'a>(parts: impl IntoIterator<Item = &'a str>) -> String {
+pub fn classes<'a>(parts: impl IntoIterator<Item = &'a str>) -> String {
     parts
         .into_iter()
         .filter(|p| !p.is_empty())
         .collect::<Vec<_>>()
         .join(" ")
+}
+
+static NEXT_ID: AtomicUsize = AtomicUsize::new(0);
+
+/// A DOM id that is unique in the process and stable for the lifetime of
+/// the component, e.g. to link a label to its input.
+pub fn use_unique_id(prefix: &str) -> String {
+    let prefix = prefix.to_string();
+    use_hook(move || format!("{prefix}-{}", NEXT_ID.fetch_add(1, Ordering::Relaxed)))
 }

@@ -1,18 +1,16 @@
-use std::sync::atomic::{AtomicUsize, Ordering};
-
 use dioxus::prelude::*;
 
-use crate::{Color, Size, classes};
+use crate::{Color, Size, classes, use_unique_id};
 
 /// Field style, mirroring MUI's `variant` names.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
 pub enum TextFieldVariant {
-    /// A well carved into the panel, lit from above.
+    /// A well cut into the aluminium.
     #[default]
     Outlined,
-    /// A backlit display (VFD) behind a black bezel.
+    /// A shallow, borderless recess.
     Filled,
-    /// An engraved groove line on the panel.
+    /// An engraved line on the aluminium.
     Standard,
 }
 
@@ -92,12 +90,9 @@ pub struct TextFieldProps {
     pub onblur: Option<EventHandler<FocusEvent>>,
 }
 
-static NEXT_ID: AtomicUsize = AtomicUsize::new(0);
-
 #[component]
 pub fn TextField(props: TextFieldProps) -> Element {
-    let generated_id =
-        use_hook(|| format!("skeuo-field-{}", NEXT_ID.fetch_add(1, Ordering::Relaxed)));
+    let generated_id = use_unique_id("skeuo-field");
     let input_id = props.id.clone().unwrap_or(generated_id);
     let helper_id = format!("{input_id}-helper");
     let described_by = props.helper_text.as_ref().map(|_| helper_id.clone());
@@ -108,12 +103,18 @@ pub fn TextField(props: TextFieldProps) -> Element {
     let value = props.value.clone().or(default_value);
 
     let variant = format!("skeuo-field--{}", props.variant.as_str());
-    let color = format!("skeuo-color-{}", props.color.as_str());
     let size = format!("skeuo-field--{}", props.size.as_str());
+    let control_class = match props.variant {
+        TextFieldVariant::Outlined => "skeuo-field__control skeuo-well skeuo-well--focusable",
+        TextFieldVariant::Filled => {
+            "skeuo-field__control skeuo-well skeuo-well--shallow skeuo-well--focusable"
+        }
+        TextFieldVariant::Standard => "skeuo-field__control",
+    };
     let class = classes([
         "skeuo-field",
         &variant,
-        &color,
+        props.color.class(),
         &size,
         if props.error {
             "skeuo-field--error"
@@ -167,14 +168,14 @@ pub fn TextField(props: TextFieldProps) -> Element {
     rsx! {
         div { class, style: props.style,
             if let Some(label) = props.label {
-                label { class: "skeuo-field__label", r#for: input_id.clone(),
+                label { class: "skeuo-field__label skeuo-label", r#for: input_id.clone(),
                     "{label}"
                     if props.required {
                         span { class: "skeuo-field__asterisk", aria_hidden: "true", " *" }
                     }
                 }
             }
-            div { class: "skeuo-field__control",
+            div { class: control_class,
                 if let Some(adornment) = props.start_adornment {
                     span { class: "skeuo-field__adornment skeuo-field__adornment--start", {adornment} }
                 }
@@ -225,7 +226,7 @@ pub fn TextField(props: TextFieldProps) -> Element {
                 }
             }
             if let Some(text) = props.helper_text {
-                p { class: "skeuo-field__helper", id: helper_id, "{text}" }
+                p { class: "skeuo-field__helper skeuo-caption", id: helper_id, "{text}" }
             }
         }
     }

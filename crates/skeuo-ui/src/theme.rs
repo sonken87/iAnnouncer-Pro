@@ -4,7 +4,16 @@ use crate::Color;
 
 /// The component stylesheet. [`ThemeProvider`] injects it; it is exported
 /// for apps that prefer to ship it as a static asset instead.
-pub const STYLESHEET: &str = include_str!("../assets/skeuo.css");
+pub const STYLESHEET: &str = concat!(
+    include_str!("../assets/tokens.css"),
+    include_str!("../assets/materials.css"),
+    include_str!("../assets/inputs.css"),
+    include_str!("../assets/selection.css"),
+    include_str!("../assets/data_display.css"),
+    include_str!("../assets/feedback.css"),
+    include_str!("../assets/surfaces.css"),
+    include_str!("../assets/navigation.css"),
+);
 
 /// One palette entry, as in MUI's `palette.primary`.
 ///

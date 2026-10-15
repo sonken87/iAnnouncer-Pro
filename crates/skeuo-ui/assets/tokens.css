@@ -1,0 +1,93 @@
+/*
+ * skeuo-ui — design tokens.
+ *
+ * Design language: Apple's Magic Keyboard. Matte bead-blasted aluminium,
+ * flat low-profile keycaps with short travel, no gloss, no embossed text.
+ * One light source straight above: raised objects cast a soft shadow
+ * downward, recessed objects are shaded on their top inner edge.
+ *
+ * Palette values come from CSS variables set by ThemeProvider
+ * (--skeuo-<color>-light/main/dark/contrast/glow). Each `.skeuo-color-*`
+ * class maps one palette entry onto the local --c-* variables that the
+ * component rules read. `.skeuo-root` sets them to primary, so --c-* always
+ * has a value.
+ */
+
+.skeuo-root {
+  /* Ink (lettering) */
+  --sk-ink: #1d1d1f;          /* legends, values */
+  --sk-ink-2: #6e6e73;        /* labels, secondary text */
+  --sk-ink-3: #a1a1a6;        /* placeholders, disabled text */
+
+  /* Surfaces */
+  --sk-page-hi: #e6e7ea;      /* the desk / window background */
+  --sk-page-lo: #d6d7db;
+  --sk-alu-hi: #f1f2f4;       /* aluminium chassis (cards, bars, menus) */
+  --sk-alu-lo: #e3e4e7;
+  --sk-key: #fbfbfc;          /* white keycap top */
+  --sk-key-side: #c6c7cb;     /* white keycap side */
+  --sk-hairline: rgba(0, 0, 0, 0.1);
+  --sk-hover: rgba(0, 0, 0, 0.05);   /* hover wash on aluminium */
+  --sk-press: rgba(0, 0, 0, 0.09);   /* pressed wash on aluminium */
+  --sk-scrim: rgba(29, 29, 31, 0.32);
+
+  /* Geometry */
+  --sk-radius-key: max(calc(var(--skeuo-radius) - 2px), 0px);
+  --sk-radius-well: var(--skeuo-radius);
+  --sk-radius-chassis: calc(var(--skeuo-radius) * 1.75);
+
+  /* Motion */
+  --sk-ease: cubic-bezier(0.3, 0.7, 0.4, 1);
+  --sk-fast: 60ms;     /* key travel */
+  --sk-medium: 160ms;  /* state changes */
+  --sk-slow: 260ms;    /* panels opening */
+
+  --c-light: var(--skeuo-primary-light);
+  --c-main: var(--skeuo-primary-main);
+  --c-dark: var(--skeuo-primary-dark);
+  --c-contrast: var(--skeuo-primary-contrast);
+  --c-glow: var(--skeuo-primary-glow);
+
+  font-family: var(--skeuo-font);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--sk-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.skeuo-root *,
+.skeuo-root *::before,
+.skeuo-root *::after {
+  box-sizing: border-box;
+}
+
+.skeuo-color-primary   { --c-light: var(--skeuo-primary-light);   --c-main: var(--skeuo-primary-main);   --c-dark: var(--skeuo-primary-dark);   --c-contrast: var(--skeuo-primary-contrast);   --c-glow: var(--skeuo-primary-glow); }
+.skeuo-color-secondary { --c-light: var(--skeuo-secondary-light); --c-main: var(--skeuo-secondary-main); --c-dark: var(--skeuo-secondary-dark); --c-contrast: var(--skeuo-secondary-contrast); --c-glow: var(--skeuo-secondary-glow); }
+.skeuo-color-success   { --c-light: var(--skeuo-success-light);   --c-main: var(--skeuo-success-main);   --c-dark: var(--skeuo-success-dark);   --c-contrast: var(--skeuo-success-contrast);   --c-glow: var(--skeuo-success-glow); }
+.skeuo-color-error     { --c-light: var(--skeuo-error-light);     --c-main: var(--skeuo-error-main);     --c-dark: var(--skeuo-error-dark);     --c-contrast: var(--skeuo-error-contrast);     --c-glow: var(--skeuo-error-glow); }
+.skeuo-color-warning   { --c-light: var(--skeuo-warning-light);   --c-main: var(--skeuo-warning-main);   --c-dark: var(--skeuo-warning-dark);   --c-contrast: var(--skeuo-warning-contrast);   --c-glow: var(--skeuo-warning-glow); }
+.skeuo-color-info      { --c-light: var(--skeuo-info-light);      --c-main: var(--skeuo-info-main);      --c-dark: var(--skeuo-info-dark);      --c-contrast: var(--skeuo-info-contrast);      --c-glow: var(--skeuo-info-glow); }
+.skeuo-color-neutral   { --c-light: var(--skeuo-neutral-light);   --c-main: var(--skeuo-neutral-main);   --c-dark: var(--skeuo-neutral-dark);   --c-contrast: var(--skeuo-neutral-contrast);   --c-glow: var(--skeuo-neutral-glow); }
+
+/* Derived per-color values.
+ *   --c-ink:  the color used for lettering on a light surface
+ *   --c-tint: a faint wash of the color (selected rows, soft chips, alerts) */
+.skeuo-root,
+.skeuo-root [class*="skeuo-color-"] {
+  --c-ink: var(--c-main);
+  --c-tint: color-mix(in srgb, var(--c-main) 12%, transparent);
+}
+.skeuo-root .skeuo-color-warning { --c-ink: var(--c-dark); }
+.skeuo-root .skeuo-color-neutral {
+  --c-ink: var(--c-contrast);
+  --c-tint: rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeuo-root *,
+  .skeuo-root *::before,
+  .skeuo-root *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}
