@@ -68,17 +68,19 @@ pub enum Page {
     Feedback,
     Surfaces,
     Navigation,
+    Map,
     Icons,
 }
 
 impl Page {
-    pub const ALL: [Page; 7] = [
+    pub const ALL: [Page; 8] = [
         Page::Inputs,
         Page::Selection,
         Page::DataDisplay,
         Page::Feedback,
         Page::Surfaces,
         Page::Navigation,
+        Page::Map,
         Page::Icons,
     ];
 
@@ -90,6 +92,7 @@ impl Page {
             Page::Feedback => "Feedback",
             Page::Surfaces => "Surfaces & layout",
             Page::Navigation => "Navigation",
+            Page::Map => "Map & aviation",
             Page::Icons => "Icons",
         }
     }
@@ -102,6 +105,7 @@ impl Page {
             Page::Feedback => "feedback",
             Page::Surfaces => "surfaces",
             Page::Navigation => "navigation",
+            Page::Map => "map",
             Page::Icons => "icons",
         }
     }
@@ -114,6 +118,7 @@ impl Page {
             Page::Feedback => IconName::Notifications,
             Page::Surfaces => IconName::Copy,
             Page::Navigation => IconName::ArrowForward,
+            Page::Map => IconName::Plane,
             Page::Icons => IconName::Star,
         }
     }
@@ -128,6 +133,9 @@ impl Page {
             Page::Feedback => "Alerts, progress, dialogs and transient messages.",
             Page::Surfaces => "Aluminium plates that hold content, and the layout primitives.",
             Page::Navigation => "Moving between views: tabs, menus, steppers, pagination and more.",
+            Page::Map => {
+                "Slippy maps for flight planning: routes, navaids, aircraft and a navigation log."
+            }
             Page::Icons => "The built-in icon set, drawn to sit beside SF Pro legends.",
         }
     }
@@ -204,6 +212,7 @@ fn Shell(page: Signal<Page>, mode: Signal<ThemeMode>) -> Element {
                         Page::Feedback => rsx! { sections::FeedbackSection {} },
                         Page::Surfaces => rsx! { sections::SurfacesSection {} },
                         Page::Navigation => rsx! { sections::NavigationSection {} },
+                        Page::Map => rsx! { sections::MapSection {} },
                         Page::Icons => rsx! { sections::IconsSection {} },
                     }
                 }

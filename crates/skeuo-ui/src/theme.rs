@@ -14,6 +14,8 @@ const BASE_CSS: &str = concat!(
     include_str!("../assets/feedback.css"),
     include_str!("../assets/surfaces.css"),
     include_str!("../assets/navigation.css"),
+    include_str!("../assets/vendor/leaflet/leaflet.css"),
+    include_str!("../assets/map.css"),
 );
 
 /// Dark tokens, written against the `SKEUO_DARK` selector placeholder.

@@ -30,6 +30,7 @@ pub enum IconName {
     Info,
     LastPage,
     Mail,
+    Map,
     Menu,
     Mic,
     MoreHoriz,
@@ -37,6 +38,7 @@ pub enum IconName {
     Notifications,
     Pause,
     Person,
+    Plane,
     Play,
     Remove,
     Search,
@@ -48,7 +50,7 @@ pub enum IconName {
 }
 
 impl IconName {
-    pub const ALL: [IconName; 40] = [
+    pub const ALL: [IconName; 42] = [
         IconName::Add,
         IconName::ArrowBack,
         IconName::ArrowForward,
@@ -74,6 +76,7 @@ impl IconName {
         IconName::Info,
         IconName::LastPage,
         IconName::Mail,
+        IconName::Map,
         IconName::Menu,
         IconName::Mic,
         IconName::MoreHoriz,
@@ -81,6 +84,7 @@ impl IconName {
         IconName::Notifications,
         IconName::Pause,
         IconName::Person,
+        IconName::Plane,
         IconName::Play,
         IconName::Remove,
         IconName::Search,
@@ -120,6 +124,7 @@ impl IconName {
             IconName::Info => "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5v.5",
             IconName::LastPage => "M7 6l6 6-6 6M17 6v12",
             IconName::Mail => "M3.5 6h17v12h-17zM4 6.5l8 6.5 8-6.5",
+            IconName::Map => "M9 4.5L3.5 6.5v13l5.5-2 6 2 5.5-2v-13l-5.5 2zM9 4.5v13M15 6.5v13",
             IconName::Menu => "M4 7h16M4 12h16M4 17h16",
             IconName::Mic => {
                 "M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zM6 11a6 6 0 0 0 12 0M12 17v3.5"
@@ -129,6 +134,9 @@ impl IconName {
             IconName::Notifications => "M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15zM10 20.5h4",
             IconName::Pause => "M9 5.5v13M15 5.5v13",
             IconName::Person => "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4.5 20a7.5 7.5 0 0 1 15 0",
+            IconName::Plane => {
+                "M12 2.5c.9 0 1.5.8 1.5 1.8v5.2l7.5 4.3v2l-7.5-2.3v4.6l2.2 1.6v1.6L12 20.4l-3.7.9v-1.6l2.2-1.6v-4.6L3 15.8v-2l7.5-4.3V4.3c0-1 .6-1.8 1.5-1.8z"
+            }
             IconName::Play => "M8 5.5v13l10-6.5z",
             IconName::Remove => "M5 12h14",
             IconName::Search => "M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM15.5 15.5L20 20",
@@ -147,7 +155,7 @@ impl IconName {
     pub fn filled(self) -> bool {
         matches!(
             self,
-            IconName::Dot | IconName::Favorite | IconName::Play | IconName::Star
+            IconName::Dot | IconName::Favorite | IconName::Plane | IconName::Play | IconName::Star
         )
     }
 }

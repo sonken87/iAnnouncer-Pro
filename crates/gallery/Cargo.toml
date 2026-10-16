@@ -9,11 +9,14 @@ license.workspace = true
 [dependencies]
 dioxus = { workspace = true, features = ["macro", "html", "signals", "hooks", "launch"] }
 skeuo-ui = { path = "../skeuo-ui" }
+# See crates/skeuo-ui/Cargo.toml: dioxus-web needs web-sys's `Location`; the
+# native build of the web feature (snapshots) needs it too.
+web-sys = { version = "0.3", features = ["Location"], optional = true }
 
 [dev-dependencies]
 dioxus-ssr = "0.7.10"
 
 [features]
 default = ["web"]
-web = ["dioxus/web"]
+web = ["dioxus/web", "dep:web-sys"]
 desktop = ["dioxus/desktop"]

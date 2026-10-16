@@ -508,3 +508,41 @@ ul.skeuo-stack, ol.skeuo-stack { margin: 0; padding: 0; list-style: none; }
   }
   .skeuo-grid--xl-offset-auto { margin-left: auto; }
 }
+
+/* ------------------------------------------------------------------ */
+/* ScrollArea — a region with its own groove-and-keycap scrollbar      */
+/* ------------------------------------------------------------------ */
+
+.skeuo-scroll-area {
+  position: relative;
+  overscroll-behavior: contain;
+  outline: none;
+  border-radius: var(--sk-radius-well);
+}
+.skeuo-scroll-area--vertical { overflow-x: hidden; overflow-y: auto; }
+.skeuo-scroll-area--horizontal { overflow-x: auto; overflow-y: hidden; }
+.skeuo-scroll-area--both { overflow: auto; }
+.skeuo-scroll-area:not(.skeuo-scroll-area--well):focus-visible { box-shadow: 0 0 0 3px var(--c-glow); }
+
+/* In a well, content slides under the lip: a shade appears at an edge only
+ * while there is more content beyond it. The covers (local) scroll with the
+ * content and hide the shades (scroll) once an end is reached. */
+.skeuo-scroll-area--well {
+  --scroll-floor: var(--sk-well-bottom);
+  padding: 4px 6px;
+  background:
+    linear-gradient(var(--scroll-floor) 30%, transparent) top / 100% 22px no-repeat local,
+    linear-gradient(transparent, var(--scroll-floor) 70%) bottom / 100% 22px no-repeat local,
+    radial-gradient(farthest-side at 50% 0, var(--sk-well-shade), transparent) top / 100% 10px no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, var(--sk-well-shade), transparent) bottom / 100% 10px no-repeat scroll,
+    var(--scroll-floor);
+}
+.skeuo-scroll-area--well.skeuo-scroll-area--horizontal {
+  background:
+    linear-gradient(90deg, var(--scroll-floor) 30%, transparent) left / 22px 100% no-repeat local,
+    linear-gradient(90deg, transparent, var(--scroll-floor) 70%) right / 22px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, var(--sk-well-shade), transparent) left / 10px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, var(--sk-well-shade), transparent) right / 10px 100% no-repeat scroll,
+    var(--scroll-floor);
+}
+.skeuo-scroll-area--well:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); border-color: var(--c-main); }

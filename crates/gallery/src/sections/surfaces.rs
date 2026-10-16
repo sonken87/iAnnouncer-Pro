@@ -5,6 +5,12 @@ use crate::{Demo, DemoGrid, DemoRow};
 
 /// Page-local helpers for the demos (not part of skeuo-ui).
 const SURFACES_CSS: &str = r#"
+.sd-scroll-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.sd-log-row { display: flex; gap: 12px; padding: 6px 4px; font-size: 13px; border-bottom: 1px solid var(--sk-cut); box-shadow: 0 1px 0 var(--sk-catch); }
+.sd-log-row:last-child { border-bottom: 0; box-shadow: none; }
+.sd-log-time { font-variant-numeric: tabular-nums; color: var(--sk-ink-2); }
+.sd-scroll-strip { display: flex; gap: 8px; padding: 6px 2px 10px; width: max-content; }
+.sd-scroll-chip { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; font-size: 12px; white-space: nowrap; }
 .sd-plate { width: 132px; height: 92px; padding: 12px; display: flex; flex-direction: column; justify-content: flex-end; }
 .sd-plate b { font-size: 13px; font-weight: 600; }
 .sd-avatar { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; font: 600 13px/1 var(--skeuo-font); }
@@ -43,7 +49,70 @@ pub fn SurfacesSection() -> Element {
         AccordionDemo {}
         AppBarDemo {}
         DrawerDemo {}
+        ScrollAreaDemo {}
         LayoutDemo {}
+    }
+}
+
+/// Broadcast log lines for the ScrollArea demo.
+const LOG: [(&str, &str); 14] = [
+    ("06:00:00", "Station ID · jingle 12"),
+    ("06:00:08", "Morning Drive · live"),
+    ("06:14:30", "Traffic report · Studio B"),
+    ("06:15:10", "Bed · Sunrise loop"),
+    ("06:29:45", "Weather · automated"),
+    ("06:30:00", "News headlines"),
+    ("06:34:20", "Interview · phone line 2"),
+    ("06:44:55", "Ad break · 3 spots"),
+    ("06:47:30", "Music · Tom Misch"),
+    ("06:51:02", "Listener call-in"),
+    ("06:58:40", "Sweeper · jingle 4"),
+    ("07:00:00", "News on the hour"),
+    ("07:05:00", "Sports desk"),
+    ("07:12:30", "Music · Nils Frahm"),
+];
+
+#[component]
+fn ScrollAreaDemo() -> Element {
+    rsx! {
+        Demo {
+            title: "ScrollArea · scrollbars",
+            description: "every scrollbar is a groove with a small keycap thumb · ScrollArea gives a region its own scroll; in a well, content slides under the lip with a shade at the edge",
+            div { class: "sd-scroll-grid",
+                div {
+                    p { class: "skeuo-label", style: "margin: 0 0 6px", "Well · vertical" }
+                    ScrollArea { variant: ScrollAreaVariant::Well, height: "180px", aria_label: "Broadcast log",
+                        for (time , item) in LOG {
+                            div { class: "sd-log-row",
+                                span { class: "sd-log-time", "{time}" }
+                                span { "{item}" }
+                            }
+                        }
+                    }
+                }
+                div {
+                    p { class: "skeuo-label", style: "margin: 0 0 6px", "Plain · vertical" }
+                    ScrollArea { max_height: "180px",
+                        for (time , item) in LOG {
+                            div { class: "sd-log-row",
+                                span { class: "sd-log-time", "{time}" }
+                                span { "{item}" }
+                            }
+                        }
+                    }
+                }
+                div {
+                    p { class: "skeuo-label", style: "margin: 0 0 6px", "Well · horizontal" }
+                    ScrollArea { variant: ScrollAreaVariant::Well, direction: ScrollDirection::Horizontal,
+                        div { class: "sd-scroll-strip",
+                            for (time , item) in LOG {
+                                div { class: "sd-scroll-chip skeuo-key", b { "{time}" } span { "{item}" } }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

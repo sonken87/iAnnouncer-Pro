@@ -1,4 +1,5 @@
-//! Surfaces and layout: Paper, Card, Accordion, AppBar, Toolbar, Drawer, SkeuoBox, Container, Stack, Grid.
+//! Surfaces and layout: Paper, Card, Accordion, AppBar, Toolbar, Drawer, SkeuoBox, Container, Stack, Grid,
+//! ScrollArea.
 //!
 //! Surfaces are plates of aluminium (`.skeuo-chassis`); the layout pieces
 //! (`SkeuoBox`, `Container`, `Stack`, `Grid`) are invisible structure with
@@ -11,6 +12,7 @@ mod drawer;
 mod grid;
 mod layout;
 mod paper;
+mod scroll_area;
 
 pub use accordion::{
     Accordion, AccordionActions, AccordionActionsProps, AccordionDetails, AccordionDetailsProps,
@@ -30,3 +32,4 @@ pub use layout::{
     StackProps,
 };
 pub use paper::{Paper, PaperProps, PaperVariant, chassis_level};
+pub use scroll_area::{ScrollArea, ScrollAreaProps, ScrollAreaVariant, ScrollDirection};

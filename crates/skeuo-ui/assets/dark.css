@@ -94,6 +94,11 @@ SKEUO_DARK {
   --sk-scrim: rgba(0, 0, 0, 0.55);
   --sk-sheen: rgba(255, 255, 255, 0.08);
   --sk-error-ink: var(--skeuo-error-light);
+  --sk-scroll-track: rgba(255, 255, 255, 0.05);
+  --sk-scroll-track-edge: rgba(0, 0, 0, 0.5);
+  /* The black thumb is a shade lighter than a keycap so it shows on dark wells. */
+  --sk-scroll-thumb: #3a3a3d;
+  --sk-scroll-thumb-edge: rgba(255, 255, 255, 0.16);
 
   --sk-elev-1: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 10px -6px rgba(0, 0, 0, 0.7);
   --sk-elev-2: 0 1px 2px rgba(0, 0, 0, 0.5), 0 12px 28px -14px rgba(0, 0, 0, 0.8);
