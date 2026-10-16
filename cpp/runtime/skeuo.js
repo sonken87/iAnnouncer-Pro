@@ -177,7 +177,9 @@
     for (const a of Array.from(o.attributes)) if (!(a.name in next)) o.removeAttribute(a.name);
     o.__skAttrs = next;
     syncProps(o, prev, next, mark);
-    morphChildren(o, n, mark);
+    // Elements marked data-sk-ignore own their children (e.g. a Leaflet map):
+    // only their attributes are patched.
+    if (!("data-sk-ignore" in next)) morphChildren(o, n, mark);
   }
 
   function morphChildren(oldParent, newParent, mark) {
@@ -219,5 +221,6 @@
 
   for (const t of DOM_TYPES) document.addEventListener(t, onDomEvent, false);
   autofocus();
-  window.__sk = { apply, ready: !!send };
+  // idle(): no event waiting for, or travelling to, C++ (used by tests).
+  window.__sk = { apply, ready: !!send, idle: () => !busy && queue.length === 0 };
 })();

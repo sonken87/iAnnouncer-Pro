@@ -98,7 +98,7 @@ const std::string& stylesheet() {
         for (std::string_view part : {assets::tokens_css, assets::materials_css, assets::inputs_css,
                                       assets::selection_css, assets::data_display_css,
                                       assets::feedback_css, assets::surfaces_css,
-                                      assets::navigation_css}) {
+                                      assets::navigation_css, assets::leaflet_css, assets::map_css}) {
             out += part;
         }
         out += "\n";

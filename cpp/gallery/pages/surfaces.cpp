@@ -6,6 +6,12 @@ namespace {
 
 /// Page-local helpers for the demos (not part of skeuo-ui).
 const char* const kSurfacesCss = R"CSS(
+.sd-scroll-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.sd-log-row { display: flex; gap: 12px; padding: 6px 4px; font-size: 13px; border-bottom: 1px solid var(--sk-cut); box-shadow: 0 1px 0 var(--sk-catch); }
+.sd-log-row:last-child { border-bottom: 0; box-shadow: none; }
+.sd-log-time { font-variant-numeric: tabular-nums; color: var(--sk-ink-2); }
+.sd-scroll-strip { display: flex; gap: 8px; padding: 6px 2px 10px; width: max-content; }
+.sd-scroll-chip { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; font-size: 12px; white-space: nowrap; }
 .sd-plate { width: 132px; height: 92px; padding: 12px; display: flex; flex-direction: column; justify-content: flex-end; }
 .sd-plate b { font-size: 13px; font-weight: 600; }
 .sd-avatar { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; font: 600 13px/1 var(--skeuo-font); }
@@ -321,6 +327,43 @@ Node LayoutDemo() {
 
 }  // namespace
 
+/// Broadcast log lines for the ScrollArea demo.
+const std::pair<const char*, const char*> kLog[] = {
+    {"06:00:00", "Station ID · jingle 12"},   {"06:00:08", "Morning Drive · live"},
+    {"06:14:30", "Traffic report · Studio B"}, {"06:15:10", "Bed · Sunrise loop"},
+    {"06:29:45", "Weather · automated"},       {"06:30:00", "News headlines"},
+    {"06:34:20", "Interview · phone line 2"},  {"06:44:55", "Ad break · 3 spots"},
+    {"06:47:30", "Music · Tom Misch"},         {"06:51:02", "Listener call-in"},
+    {"06:58:40", "Sweeper · jingle 4"},        {"07:00:00", "News on the hour"},
+    {"07:05:00", "Sports desk"},               {"07:12:30", "Music · Nils Frahm"},
+};
+
+Node ScrollAreaDemo() {
+    auto rows = [] {
+        Node out;
+        for (auto [time, item] : kLog)
+            out.add_child(el("div").cls("sd-log-row").child(el("span").cls("sd-log-time").child(time)).child(el("span").child(item)));
+        return out;
+    };
+    Node strip = el("div").cls("sd-scroll-strip");
+    for (auto [time, item] : kLog)
+        strip.child(el("div").cls("sd-scroll-chip skeuo-key").child(el("b").child(time)).child(el("span").child(item)));
+    auto label = [](const char* text) { return el("p").cls("skeuo-label").style("margin: 0 0 6px").child(text); };
+    return Demo("ScrollArea · scrollbars",
+                "every scrollbar is a groove with a small keycap thumb · ScrollArea gives a region its own scroll; in "
+                "a well, content slides under the lip with a shade at the edge",
+                el("div").cls("sd-scroll-grid")
+                    .child(el("div").child(label("Well · vertical"))
+                               .child(ScrollArea({.variant = ScrollAreaVariant::Well, .height = "180px",
+                                                  .aria_label = "Broadcast log"},
+                                                 rows())))
+                    .child(el("div").child(label("Plain · vertical")).child(ScrollArea({.max_height = "180px"}, rows())))
+                    .child(el("div").child(label("Well · horizontal"))
+                               .child(ScrollArea({.direction = ScrollDirection::Horizontal,
+                                                  .variant = ScrollAreaVariant::Well},
+                                                 std::move(strip)))));
+}
+
 Node SurfacesPage() {
     return {
         el("style").child(raw_html(kSurfacesCss)),
@@ -329,6 +372,7 @@ Node SurfacesPage() {
         AccordionDemo(),
         AppBarDemo(),
         DrawerDemo(),
+        ScrollAreaDemo(),
         LayoutDemo(),
     };
 }

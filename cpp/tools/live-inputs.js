@@ -102,7 +102,8 @@ const { launch } = require("./harness");
       await page.keyboard.press("Enter");
       await page.keyboard.type(line, { delay: 5 });
     }
-    await app.settle(300);
+    // Every keystroke round-trips to C++; wait for the last one to land.
+    await page.waitForFunction((sel) => document.querySelector(sel).getAttribute("rows") === "4", ta, { timeout: 3000 }).catch(() => {});
     const rows = await page.getAttribute(ta, "rows");
     const h1 = (await page.locator(ta).boundingBox()).height;
     const v = await page.inputValue(ta);
@@ -115,7 +116,8 @@ const { launch } = require("./harness");
     await page.keyboard.press("Control+End");
     await page.keyboard.press("Enter");
     await page.keyboard.type("Line three", { delay: 5 });
-    await app.settle(300);
+    // Every keystroke round-trips to C++; wait for the last one to land.
+    await page.waitForFunction((sel) => document.querySelector(sel).getAttribute("rows") === "4", ta, { timeout: 3000 }).catch(() => {});
     const rows = await page.getAttribute(ta, "rows");
     return (await page.isVisible("text=3 line(s)")) && rows === "3" ? true : `rows=${rows}`;
   });

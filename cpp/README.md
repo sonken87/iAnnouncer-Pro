@@ -38,7 +38,9 @@ int main(int argc, char** argv) {
 
 与 Rust 版相同（约 90 个）：Button、IconButton、Fab、ButtonGroup、ToggleButton、TextField、TextareaAutosize、Select、NativeSelect、Autocomplete、TransferList；Checkbox、Radio、Switch、Slider、Rating、Form 系列；Typography、Avatar、Badge、Chip、Divider、List、Table、Tooltip、ImageList；Alert、Backdrop、Modal、Dialog、Progress、Skeleton、Snackbar；Paper、Card、Accordion、AppBar、Drawer、SkeuoBox、Container、Stack、Grid；Tabs、Breadcrumbs、Link、Menu、Popover、Pagination、Stepper、BottomNavigation、SpeedDial、Timeline；Icon、ThemeProvider。
 
-头文件按分类：`include/skeuo/{inputs,selection,data_display,feedback,surfaces,navigation}.hpp`，总入口 `skeuo/skeuo.hpp`。
+另有（不属于 MUI）：全局拟物滚动条与 ScrollArea；MapView / FlightRoute / Navlog 与大圆计算（`skeuo/map.hpp`），用于航线规划和航线图，地图控件与 Rust 版共用同一份脚本和样式。
+
+头文件按分类：`include/skeuo/{inputs,selection,data_display,feedback,surfaces,navigation,map}.hpp`，总入口 `skeuo/skeuo.hpp`。
 
 ## 构建
 
@@ -83,3 +85,4 @@ third_party/webview2/  WebView2 SDK（NuGet，BSD 许可）
 
 - 原生窗口目前只实现了 Windows（WebView2）。macOS（WKWebView）/ Linux（WebKitGTK）宿主可以按 `host/webview2_host.cpp` 的协议补上；页面运行时已支持 WebKit 的消息通道。
 - 每次事件都会整棵重新渲染并比对，适合常规桌面界面；超大列表请自行分页。
+- 地图瓦片默认来自 OpenStreetMap 公共服务器（需联网），其使用政策不允许大流量或商业使用；正式产品请通过 `TileSource` 换成自建或商业瓦片服务（如带航图的航空瓦片）。

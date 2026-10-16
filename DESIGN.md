@@ -23,6 +23,18 @@ new shadows, bevels or gradients.
 | Lettering | `.skeuo-label`, `.skeuo-caption` | labels, helper text, secondary text |
 | Scrim | `.skeuo-scrim` | behind modal surfaces (dialog, drawer, backdrop) |
 
+### Scrollbars and maps
+
+- **Scrollbars** (every scrollbar inside the theme, and the page's): the track is a faint groove, the
+  thumb a small round keycap riding in it (white on silver, black on Space Black). Implemented with the
+  `::-webkit-scrollbar` parts (WebView2/Chromium, WebKit); `scrollbar-color` only as a Firefox fallback.
+  `ScrollArea` in a well shades the edge where more content is hidden, as if it slid under the lip.
+- **Maps** (`MapView`): the map is a screen set into a well; zoom / fit controls are keycaps; the scale
+  bar and attribution are small floating plates; routes are lit lines in the palette color over a dark
+  casing; leg labels are floating plates with a colored underline; waypoints use aeronautical-chart
+  symbols (airport, VOR, NDB, fix, user) with printed idents; the selected waypoint glows like an LED;
+  in dark mode the tiles are inverted and dimmed to sit in the black metal.
+
 ### Elevation
 
 | Level | Shadow | MUI equivalent |

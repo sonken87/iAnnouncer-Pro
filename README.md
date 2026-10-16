@@ -20,9 +20,11 @@
 | 反馈 Feedback | Alert / AlertTitle、Backdrop、Modal、Dialog 全家、CircularProgress、LinearProgress、Skeleton、Snackbar |
 | 容器与布局 Surfaces & layout | Paper、Card 全家、Accordion 全家、AppBar、Toolbar、Drawer、SkeuoBox（即 MUI `Box`）、Container、Stack、Grid（v2） |
 | 导航 Navigation | Tabs / Tab / TabPanel、Breadcrumbs、Link、Menu / MenuItem / MenuList、Popover、Pagination、Stepper 全家、MobileStepper、BottomNavigation、SpeedDial、Timeline |
-| 其他 | Icon（40 个内置图标）、ThemeProvider / Theme（对应 `createTheme`） |
+| 滚动 Scrolling | 全局拟物滚动条（凹槽轨道 + 小键帽滑块，浅色/深色）、ScrollArea（独立滚动区域，可嵌在凹槽里，边缘有阴影） |
+| 地图与航空 Map & aviation | MapView（在线瓦片地图，默认 OpenStreetMap，可配置）：航线按大圆弧绘制并标注真航向 / 海里，航路点按航图符号显示（机场 / VOR / NDB / 定位点 / 自定义点），飞机按航向显示，区域圈；可在图上编辑航线（点击添加、拖动、拖中点插入、双击删除）；Navlog 航段表（航向、距离、累计、预计飞行时间）；`geo` 大圆计算函数 |
+| 其他 | Icon（42 个内置图标）、ThemeProvider / Theme（对应 `createTheme`） |
 
-与 MUI 的差异：每个组件的文档注释里都写明了（例如 Select 的选项以数据传入而不是 `MenuItem` 子元素；MUI 的 `Box` 改名为 `SkeuoBox`，以免遮蔽 Rust 的 `Box`）。
+滚动条和地图不属于 MUI（MUI 使用浏览器原生滚动条，没有地图组件），是在此基础上新增的。与 MUI 的差异：每个组件的文档注释里都写明了（例如 Select 的选项以数据传入而不是 `MenuItem` 子元素；MUI 的 `Box` 改名为 `SkeuoBox`，以免遮蔽 Rust 的 `Box`）。
 
 ## 使用
 
@@ -109,6 +111,8 @@ crates/skeuo-ui/
   assets/tokens.css          设计变量（颜色、圆角、动效）
   assets/materials.css       材质：键帽 / 凹槽 / 轨道 / 铝面板 / 刻线 / 指示灯
   assets/dark.css            深色主题（Space Black）的设计变量
+  assets/map.css, map.js     地图样式与地图控件脚本（Rust / C++ 共用）
+  assets/vendor/leaflet/     Leaflet 1.9.4（BSD-2）
   assets/<分类>.css          各分类组件样式
   src/<分类>/                组件源码（inputs, selection, data_display, feedback, surfaces, navigation）
   tests/<分类>.rs            测试

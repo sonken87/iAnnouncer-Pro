@@ -37,6 +37,7 @@ enum class IconName {
     Info,
     LastPage,
     Mail,
+    Map,
     Menu,
     Mic,
     MoreHoriz,
@@ -44,6 +45,7 @@ enum class IconName {
     Notifications,
     Pause,
     Person,
+    Plane,
     Play,
     Remove,
     Search,
@@ -54,7 +56,7 @@ enum class IconName {
     Warning,
 };
 
-inline constexpr std::array<IconName, 40> kAllIcons = {
+inline constexpr std::array<IconName, 42> kAllIcons = {
     IconName::Add,
     IconName::ArrowBack,
     IconName::ArrowForward,
@@ -80,6 +82,7 @@ inline constexpr std::array<IconName, 40> kAllIcons = {
     IconName::Info,
     IconName::LastPage,
     IconName::Mail,
+    IconName::Map,
     IconName::Menu,
     IconName::Mic,
     IconName::MoreHoriz,
@@ -87,6 +90,7 @@ inline constexpr std::array<IconName, 40> kAllIcons = {
     IconName::Notifications,
     IconName::Pause,
     IconName::Person,
+    IconName::Plane,
     IconName::Play,
     IconName::Remove,
     IconName::Search,

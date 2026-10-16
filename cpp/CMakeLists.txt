@@ -21,6 +21,10 @@ set(SKEUO_ASSETS
   "surfaces_css=${SKEUO_CSS_DIR}/surfaces.css"
   "navigation_css=${SKEUO_CSS_DIR}/navigation.css"
   "dark_css=${SKEUO_CSS_DIR}/dark.css"
+  "leaflet_css=${SKEUO_CSS_DIR}/vendor/leaflet/leaflet.css"
+  "map_css=${SKEUO_CSS_DIR}/map.css"
+  "leaflet_js=${SKEUO_CSS_DIR}/vendor/leaflet/leaflet.js"
+  "map_js=${SKEUO_CSS_DIR}/map.js"
   "runtime_js=${CMAKE_CURRENT_SOURCE_DIR}/runtime/skeuo.js"
 )
 set(asset_files "")

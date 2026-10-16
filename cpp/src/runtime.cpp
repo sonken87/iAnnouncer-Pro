@@ -170,7 +170,8 @@ std::string Runtime::render() {
 std::string Runtime::page() {
     std::string body = render();
     std::string out;
-    out.reserve(body.size() + stylesheet().size() + runtime_script().size() + 1024);
+    out.reserve(body.size() + stylesheet().size() + runtime_script().size() + assets::leaflet_js.size() +
+                assets::map_js.size() + 1024);
     out += "<!doctype html><html><head><meta charset=\"utf-8\">"
            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>";
     out += escape_html(title_);
@@ -180,7 +181,12 @@ std::string Runtime::page() {
     out += head_;
     out += "</head><body><div id=\"sk-root\">";
     out += body;
+    // Leaflet + the map widget (MapView), then the event bridge.
     out += "</div><script>";
+    out += assets::leaflet_js;
+    out += "</script><script>";
+    out += assets::map_js;
+    out += "</script><script>";
     out += runtime_script();
     out += "</script></body></html>";
     return out;

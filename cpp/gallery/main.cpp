@@ -76,6 +76,7 @@ IconName page_icon(Page p) {
         case Page::Feedback: return IconName::Notifications;
         case Page::Surfaces: return IconName::Copy;
         case Page::Navigation: return IconName::ArrowForward;
+        case Page::Map: return IconName::Plane;
         case Page::Icons: return IconName::Star;
     }
     return IconName::Star;
@@ -89,6 +90,7 @@ std::string_view page_intro(Page p) {
         case Page::Feedback: return "Alerts, progress, dialogs and transient messages.";
         case Page::Surfaces: return "Aluminium plates that hold content, and the layout primitives.";
         case Page::Navigation: return "Moving between views: tabs, menus, steppers, pagination and more.";
+        case Page::Map: return "Slippy maps for flight planning: routes, navaids, aircraft and a navigation log.";
         case Page::Icons: return "The built-in icon set, drawn to sit beside SF Pro legends.";
     }
     return "";
@@ -102,6 +104,7 @@ Node page_body(Page p) {
         case Page::Feedback: return FeedbackPage();
         case Page::Surfaces: return SurfacesPage();
         case Page::Navigation: return NavigationPage();
+        case Page::Map: return MapPage();
         case Page::Icons: return IconsPage();
     }
     return {};
@@ -173,6 +176,7 @@ std::string_view page_title(Page p) {
         case Page::Feedback: return "Feedback";
         case Page::Surfaces: return "Surfaces & layout";
         case Page::Navigation: return "Navigation";
+        case Page::Map: return "Map & aviation";
         case Page::Icons: return "Icons";
     }
     return "";
@@ -186,6 +190,7 @@ std::string_view page_slug(Page p) {
         case Page::Feedback: return "feedback";
         case Page::Surfaces: return "surfaces";
         case Page::Navigation: return "navigation";
+        case Page::Map: return "map";
         case Page::Icons: return "icons";
     }
     return "";

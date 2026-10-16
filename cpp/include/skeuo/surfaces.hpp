@@ -483,4 +483,35 @@ struct GridProps {
 /// subtree (up to the next nested container).
 Node Grid(const GridProps& props, Node children);
 
+// ------------------------------------------------------------------ ScrollArea
+
+/// Which way a ScrollArea scrolls.
+enum class ScrollDirection { Vertical, Horizontal, Both };
+
+/// What a ScrollArea is made of.
+enum class ScrollAreaVariant {
+    Plain,  // no material: the content scrolls in place
+    Well,   // a well; content slides under its lip, with edge shades
+};
+
+struct ScrollAreaProps {
+    ScrollDirection direction = ScrollDirection::Vertical;
+    ScrollAreaVariant variant = ScrollAreaVariant::Plain;
+    /// CSS height, e.g. "240px" (fixed height).
+    std::optional<std::string> height = {};
+    /// CSS max-height, e.g. "40vh" (grows with content up to this).
+    std::optional<std::string> max_height = {};
+    /// CSS max-width, for horizontal scrolling.
+    std::optional<std::string> max_width = {};
+    /// Accessible name; makes the region keyboard-focusable.
+    std::optional<std::string> aria_label = {};
+    std::string cls = {};
+    std::string style = {};
+};
+
+/// A region with its own scrollbar (a groove with a keycap thumb). Not part
+/// of MUI. Every scrollbar in the theme is styled the same way; this adds the
+/// sizing, the well and the edge shades.
+Node ScrollArea(const ScrollAreaProps& props, Node children);
+
 }  // namespace skeuo

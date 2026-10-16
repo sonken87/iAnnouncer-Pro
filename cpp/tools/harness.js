@@ -5,6 +5,9 @@
 //   await app.page.click('text=Save');          // events go to the C++ process
 //   await app.close();
 //
+// Options: args, viewport, colorScheme, and setup(page) which runs before the
+// page loads (e.g. to intercept network requests such as map tiles).
+//
 // The app's stdio host prints {"t":"page","html":...} first, then answers
 // every JSON line it is sent. The page's runtime talks to it through
 // window.__skHostSend, which this harness provides.
@@ -19,7 +22,7 @@ function loadPlaywright() {
   return require(path);
 }
 
-async function launch(binary, { args = [], viewport = { width: 1280, height: 900 }, colorScheme = "light" } = {}) {
+async function launch(binary, { args = [], viewport = { width: 1280, height: 900 }, colorScheme = "light", setup } = {}) {
   const { chromium } = loadPlaywright();
   const child = spawn(binary, ["--stdio", ...args], { stdio: ["pipe", "pipe", "inherit"] });
   const lines = readline.createInterface({ input: child.stdout });
@@ -47,14 +50,21 @@ async function launch(binary, { args = [], viewport = { width: 1280, height: 900
     child.stdin.write(msg + "\n");
     return nextLine();
   });
+  // e.g. page.route(...) to serve map tiles offline, before anything loads.
+  if (setup) await setup(page);
   await page.setContent(first.html, { waitUntil: "load" });
 
   return {
     page,
     errors,
     get exchanges() { return exchanges; },
-    /// Waits until queued events have been answered and patched in.
-    async settle(ms = 150) { await page.waitForTimeout(ms); },
+    /// Waits until every queued event has been answered by C++ and patched
+    /// into the page, then `ms` more for CSS/layout (and widgets like the map).
+    async settle(ms = 150) {
+      await page.waitForTimeout(30);
+      await page.waitForFunction(() => window.__sk && window.__sk.idle(), null, { timeout: 10000 }).catch(() => {});
+      await page.waitForTimeout(ms);
+    },
     async close() {
       await browser.close();
       child.stdin.end();

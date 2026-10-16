@@ -11,10 +11,10 @@ namespace gallery {
 
 using namespace skeuo;
 
-enum class Page { Inputs, Selection, DataDisplay, Feedback, Surfaces, Navigation, Icons };
+enum class Page { Inputs, Selection, DataDisplay, Feedback, Surfaces, Navigation, Map, Icons };
 
 inline constexpr Page kAllPages[] = {Page::Inputs,   Page::Selection,  Page::DataDisplay, Page::Feedback,
-                                     Page::Surfaces, Page::Navigation, Page::Icons};
+                                     Page::Surfaces, Page::Navigation, Page::Map,         Page::Icons};
 
 std::string_view page_title(Page p);
 std::string_view page_slug(Page p);
@@ -33,6 +33,7 @@ Node DataDisplayPage();
 Node FeedbackPage();
 Node SurfacesPage();
 Node NavigationPage();
+Node MapPage();
 Node IconsPage();
 
 }  // namespace gallery
