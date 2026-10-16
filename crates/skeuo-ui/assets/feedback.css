@@ -1,0 +1,481 @@
+/* skeuo-ui — feedback: Alert, Backdrop, Modal, Dialog, Progress, Skeleton, Snackbar. */
+
+/* ------------------------------------------------------------------ */
+/* Alert — a flush plate (chassis elev-0, or a flat colored keycap top) */
+/* ------------------------------------------------------------------ */
+
+.skeuo-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 10px 14px;
+  border-radius: var(--sk-radius-well);
+  color: var(--sk-ink);
+  font: 400 13.5px / 20px var(--skeuo-font);
+  text-align: left;
+}
+
+.skeuo-alert__icon {
+  display: flex;
+  flex: none;
+  padding: 0;
+  font-size: 20px;
+  line-height: 20px;
+  color: var(--c-ink);
+}
+.skeuo-alert__message { flex: 1; min-width: 0; }
+.skeuo-alert__title {
+  margin-bottom: 2px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--c-ink);
+}
+.skeuo-alert__action {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  margin: -4px -6px -4px auto;
+  padding-left: 8px;
+}
+
+/* Standard: aluminium washed with the color's tint. */
+.skeuo-alert--standard {
+  border-color: color-mix(in srgb, var(--c-main) 22%, rgba(0, 0, 0, 0.08));
+  background:
+    linear-gradient(var(--c-tint), var(--c-tint)),
+    linear-gradient(180deg, var(--sk-alu-hi), var(--sk-alu-lo));
+}
+
+/* Outlined: plain aluminium with a colored hairline edge. */
+.skeuo-alert--outlined {
+  border: 1px solid color-mix(in srgb, var(--c-main) 60%, transparent);
+}
+
+/* Filled: the flat top of a colored keycap — no travel, contrast legend. */
+.skeuo-alert--filled {
+  --key-travel: 0px;
+  border-radius: var(--sk-radius-well);
+  color: var(--c-contrast);
+}
+.skeuo-alert--filled .skeuo-alert__icon,
+.skeuo-alert--filled .skeuo-alert__title { color: inherit; }
+
+/* Close button: a legend printed on the plate; pressing shades it. */
+.skeuo-alert__close {
+  --focus-ring: 0 0 #0000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--sk-radius-key);
+  background: transparent;
+  color: var(--sk-ink-2);
+  font-size: 16px;
+  box-shadow: var(--focus-ring);
+  outline: none;
+  cursor: pointer;
+  transition: background-color var(--sk-medium) ease;
+}
+.skeuo-alert__close:hover { background: var(--sk-hover); }
+.skeuo-alert__close:active { background: var(--sk-press); }
+.skeuo-alert__close:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); }
+.skeuo-alert--filled .skeuo-alert__close { color: inherit; }
+.skeuo-alert--filled .skeuo-alert__close:hover { background: rgba(255, 255, 255, 0.16); }
+.skeuo-alert--filled .skeuo-alert__close:active { background: rgba(0, 0, 0, 0.1); }
+
+/* ------------------------------------------------------------------ */
+/* Backdrop — the scrim, with its children centered                    */
+/* ------------------------------------------------------------------ */
+
+.skeuo-backdrop {
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.skeuo-backdrop--invisible {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.skeuo-backdrop--inline {
+  position: absolute;
+  z-index: auto;
+  border-radius: inherit;
+  animation: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Modal — scrim + centered, focusable content                         */
+/* ------------------------------------------------------------------ */
+
+.skeuo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+.skeuo-modal--hidden { display: none; }
+.skeuo-modal__content {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  outline: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Dialog — a level-4 floating chassis rising in over the scrim         */
+/* ------------------------------------------------------------------ */
+
+.skeuo-dialog {
+  --dialog-max: 600px;
+  --dialog-gap: 32px;
+
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+}
+.skeuo-dialog--max-xs { --dialog-max: 444px; }
+.skeuo-dialog--max-sm { --dialog-max: 600px; }
+.skeuo-dialog--max-md { --dialog-max: 900px; }
+.skeuo-dialog--max-lg { --dialog-max: 1200px; }
+.skeuo-dialog--max-xl { --dialog-max: 1536px; }
+.skeuo-dialog--max-false { --dialog-max: 100vw; }
+
+.skeuo-dialog__container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  outline: none;
+}
+
+.skeuo-dialog__paper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: var(--dialog-gap);
+  max-width: min(var(--dialog-max), calc(100% - 2 * var(--dialog-gap)));
+  max-height: calc(100% - 2 * var(--dialog-gap));
+  overflow-y: auto;
+  color: var(--sk-ink);
+  outline: none;
+  animation: skeuo-rise-in var(--sk-slow) var(--sk-ease);
+}
+.skeuo-dialog--full-width .skeuo-dialog__paper {
+  width: calc(100% - 2 * var(--dialog-gap));
+}
+
+/* scroll="body": the dialog grows and the scrim scrolls. */
+.skeuo-dialog--scroll-body .skeuo-dialog__container {
+  align-items: flex-start;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.skeuo-dialog--scroll-body .skeuo-dialog__paper {
+  max-height: none;
+  overflow: visible;
+}
+
+.skeuo-dialog--full-screen .skeuo-dialog__paper {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+}
+
+/* inline: an in-flow preview on a small contained scrim. */
+.skeuo-dialog--inline {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  display: flex;
+  padding: 26px;
+  border-radius: var(--sk-radius-chassis);
+  background: var(--sk-scrim);
+}
+.skeuo-dialog--inline .skeuo-dialog__container { flex: 1; height: auto; }
+.skeuo-dialog--inline .skeuo-dialog__paper {
+  margin: 0;
+  max-width: min(var(--dialog-max), 100%);
+  max-height: none;
+  animation: none;
+}
+.skeuo-dialog--inline.skeuo-dialog--full-width .skeuo-dialog__paper { width: 100%; }
+
+.skeuo-dialog__title {
+  flex: none;
+  margin: 0;
+  padding: 18px 24px 8px;
+  font: 600 17px / 1.3 var(--skeuo-font);
+  letter-spacing: -0.015em;
+}
+.skeuo-dialog__content {
+  flex: 1 1 auto;
+  padding: 6px 24px 14px;
+  overflow-y: auto;
+}
+/* Engraved rules above and below (the .skeuo-rule cut, as borders). */
+.skeuo-dialog__content--dividers {
+  padding: 14px 24px;
+  border-top: 1px solid var(--sk-cut);
+  border-bottom: 1px solid var(--sk-cut);
+  box-shadow: inset 0 1px 0 var(--sk-catch), 0 1px 0 var(--sk-catch);
+}
+.skeuo-dialog__text {
+  margin: 0 0 8px;
+  color: var(--sk-ink-2);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.skeuo-dialog__text:last-child { margin-bottom: 0; }
+.skeuo-dialog__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px 18px 18px;
+}
+.skeuo-dialog__actions--spacing { gap: 10px; }
+
+/* ------------------------------------------------------------------ */
+/* CircularProgress — a ring groove with a colored arc                  */
+/* ------------------------------------------------------------------ */
+
+.skeuo-circular {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+}
+/* The groove material on a disc, with the middle masked away. */
+.skeuo-circular__track {
+  position: absolute;
+  inset: 0;
+  -webkit-mask: radial-gradient(closest-side, transparent calc(var(--circular-hole) - 1%), #000 var(--circular-hole));
+  mask: radial-gradient(closest-side, transparent calc(var(--circular-hole) - 1%), #000 var(--circular-hole));
+}
+.skeuo-circular__svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.skeuo-circular__arc {
+  stroke: var(--c-main);
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--sk-slow) var(--sk-ease);
+}
+
+.skeuo-circular--determinate .skeuo-circular__svg { transform: rotate(-90deg); }
+
+.skeuo-circular--indeterminate .skeuo-circular__svg {
+  animation: skeuo-circular-rotate 1.4s linear infinite;
+}
+.skeuo-circular--indeterminate .skeuo-circular__arc {
+  stroke-dasharray: 80px, 200px;
+  stroke-dashoffset: 0;
+  animation: skeuo-circular-dash 1.4s ease-in-out infinite;
+}
+.skeuo-circular--disable-shrink .skeuo-circular__arc { animation: none; }
+
+@keyframes skeuo-circular-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes skeuo-circular-dash {
+  0% { stroke-dasharray: 1px, 200px; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 100px, 200px; stroke-dashoffset: -15px; }
+  100% { stroke-dasharray: 100px, 200px; stroke-dashoffset: -125px; }
+}
+
+/* ------------------------------------------------------------------ */
+/* LinearProgress — a groove with a colored fill                        */
+/* ------------------------------------------------------------------ */
+
+.skeuo-linear {
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+}
+.skeuo-linear__bar,
+.skeuo-linear__buffer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  transition: width var(--sk-slow) var(--sk-ease);
+}
+.skeuo-linear__buffer { opacity: 0.35; }
+
+.skeuo-linear--indeterminate .skeuo-linear__bar,
+.skeuo-linear--query .skeuo-linear__bar {
+  left: -35%;
+  right: 100%;
+  transition: none;
+}
+.skeuo-linear--indeterminate .skeuo-linear__bar--1 {
+  animation: skeuo-linear-bar1 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+.skeuo-linear--indeterminate .skeuo-linear__bar--2 {
+  animation: skeuo-linear-bar2 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite;
+}
+/* Query sweeps from right to left. Mirroring the whole groove would flip
+ * its lighting, so the keyframes are mirrored instead. */
+.skeuo-linear--query .skeuo-linear__bar { left: 100%; right: -35%; }
+.skeuo-linear--query .skeuo-linear__bar--1 {
+  animation: skeuo-linear-query1 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+.skeuo-linear--query .skeuo-linear__bar--2 {
+  animation: skeuo-linear-query2 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite;
+}
+
+@keyframes skeuo-linear-bar1 {
+  0% { left: -35%; right: 100%; }
+  60%, 100% { left: 100%; right: -90%; }
+}
+@keyframes skeuo-linear-bar2 {
+  0% { left: -200%; right: 100%; }
+  60%, 100% { left: 107%; right: -8%; }
+}
+@keyframes skeuo-linear-query1 {
+  0% { right: -35%; left: 100%; }
+  60%, 100% { right: 100%; left: -90%; }
+}
+@keyframes skeuo-linear-query2 {
+  0% { right: -200%; left: 100%; }
+  60%, 100% { right: 107%; left: -8%; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Skeleton — a shallow well with a soft sheen                          */
+/* ------------------------------------------------------------------ */
+
+.skeuo-skeleton {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 0;
+  height: 1.2em;
+}
+.skeuo-skeleton--text {
+  height: auto;
+  border-radius: 4px / 6.7px;
+  transform: scale(1, 0.6);
+  transform-origin: 0 55%;
+}
+.skeuo-skeleton--text:empty::before { content: "\00a0"; }
+.skeuo-skeleton--rectangular { border-radius: 0; }
+.skeuo-skeleton--rounded { border-radius: var(--sk-radius-well); }
+.skeuo-skeleton--circular { border-radius: 50%; }
+
+/* Children only give the skeleton its size. */
+.skeuo-skeleton:not(:empty) { max-width: fit-content; }
+.skeuo-skeleton > * { visibility: hidden; }
+
+.skeuo-skeleton--pulse { animation: skeuo-skeleton-pulse 2s ease-in-out 0.5s infinite; }
+.skeuo-skeleton--wave::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--sk-sheen), transparent);
+  animation: skeuo-skeleton-wave 2s linear 0.5s infinite;
+}
+
+@keyframes skeuo-skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+@keyframes skeuo-skeleton-wave {
+  0% { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(100%); }
+}
+
+/* ------------------------------------------------------------------ */
+/* Snackbar — a light level-3 floating chassis at the window edge       */
+/* ------------------------------------------------------------------ */
+
+.skeuo-snackbar {
+  position: fixed;
+  z-index: 1400;
+  display: flex;
+  justify-content: center;
+}
+.skeuo-snackbar--top { top: 24px; }
+.skeuo-snackbar--bottom { bottom: 24px; }
+.skeuo-snackbar--left { left: 24px; }
+.skeuo-snackbar--right { right: 24px; }
+.skeuo-snackbar--center { left: 50%; transform: translateX(-50%); }
+@media (max-width: 600px) {
+  .skeuo-snackbar:not(.skeuo-snackbar--inline) { left: 8px; right: 8px; transform: none; }
+  .skeuo-snackbar--top { top: 8px; }
+  .skeuo-snackbar--bottom { bottom: 8px; }
+}
+.skeuo-snackbar--inline {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  display: inline-flex;
+  transform: none;
+}
+
+.skeuo-snackbar-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 16px;
+  min-width: 288px;
+  max-width: 568px;
+  padding: 7px 10px 7px 16px;
+  border-radius: var(--sk-radius-well);
+  color: var(--sk-ink);
+  font: 400 13.5px / 1.43 var(--skeuo-font);
+  animation: skeuo-rise-in var(--sk-medium) var(--sk-ease);
+}
+.skeuo-snackbar--inline .skeuo-snackbar-content { animation: none; }
+.skeuo-snackbar-content__message { padding: 6px 0; }
+.skeuo-snackbar-content__action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  margin-right: -2px;
+}
+
+/* The auto-hide countdown: an invisible animation whose end closes the
+ * snackbar. Paused while the pointer or focus is on the snackbar. */
+.skeuo-snackbar__timer {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  animation: skeuo-snackbar-timer var(--snackbar-hide, 6000ms) linear forwards;
+}
+.skeuo-snackbar:hover .skeuo-snackbar__timer,
+.skeuo-snackbar:focus-within .skeuo-snackbar__timer { animation-play-state: paused; }
+/* tokens.css zeroes animation durations for reduced motion; the countdown
+ * is not motion, so keep its real length. */
+@media (prefers-reduced-motion: reduce) {
+  .skeuo-root .skeuo-snackbar .skeuo-snackbar__timer {
+    animation-duration: var(--snackbar-hide, 6000ms) !important;
+  }
+}
+
+@keyframes skeuo-snackbar-timer {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}

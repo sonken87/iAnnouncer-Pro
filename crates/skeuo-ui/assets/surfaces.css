@@ -1,0 +1,548 @@
+/* skeuo-ui — surfaces (aluminium chassis plates) and layout (no material). */
+
+/* ------------------------------------------------------------------ */
+/* Paper — .skeuo-chassis + .skeuo-elev-N                              */
+/* ------------------------------------------------------------------ */
+
+.skeuo-paper {
+  color: var(--sk-ink);
+}
+
+/* Outlined: flush plate with a crisp machined edge. */
+.skeuo-paper--outlined {
+  border: 1px solid var(--sk-chassis-edge);
+}
+
+/* ------------------------------------------------------------------ */
+/* Card                                                                */
+/* ------------------------------------------------------------------ */
+
+.skeuo-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--sk-fast) ease-out,
+    box-shadow var(--sk-fast) ease-out;
+}
+
+.skeuo-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+.skeuo-card-header__avatar { display: flex; flex: none; }
+.skeuo-card-header__content { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+.skeuo-card-header__title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--sk-ink);
+}
+.skeuo-card-header__action { display: flex; flex: none; align-self: flex-start; margin: -4px -8px -4px 0; }
+
+/* Media is set into the plate, full bleed, separated by an engraved edge. */
+.skeuo-card-media {
+  display: block;
+  position: relative;
+  width: 100%;
+  background-color: var(--sk-alu-lo);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-top: 1px solid var(--sk-cut);
+  border-bottom: 1px solid var(--sk-cut);
+}
+.skeuo-card-media:first-child { border-top: 0; }
+.skeuo-card-media--img { object-fit: cover; }
+
+.skeuo-card-content { padding: 16px; }
+.skeuo-card-content:last-child { padding-bottom: 20px; }
+.skeuo-card-content > :first-child { margin-top: 0; }
+.skeuo-card-content > :last-child { margin-bottom: 0; }
+
+.skeuo-card-actions {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px 12px;
+}
+.skeuo-card-actions--spacing { gap: 8px; }
+
+/* The whole card is one large key: hover lightens it, pressing sinks it. */
+.skeuo-card-action-area {
+  --focus-ring: 0 0 #0000;
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.skeuo-card-action-area::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: transparent;
+  box-shadow: var(--focus-ring);
+  pointer-events: none;
+  transition: background-color var(--sk-medium) ease;
+}
+.skeuo-card-action-area:hover:not(:disabled)::after { background: var(--sk-hover); }
+.skeuo-card-action-area:active:not(:disabled)::after { background: var(--sk-press); }
+.skeuo-card-action-area:focus-visible { --focus-ring: inset 0 0 0 3px var(--c-glow); }
+.skeuo-card-action-area:disabled { cursor: not-allowed; opacity: 0.45; }
+.skeuo-card:has(> .skeuo-card-action-area:hover:not(:disabled)) { filter: brightness(1.02); }
+.skeuo-card:has(> .skeuo-card-action-area:active:not(:disabled)) {
+  transform: translateY(1px) scale(0.997);
+  --elev-shadow: var(--sk-elev-1);
+}
+.skeuo-card:has(> .skeuo-card-action-area) { display: flex; flex-direction: column; cursor: pointer; }
+.skeuo-card > .skeuo-card-action-area { display: flex; flex: 1 0 auto; flex-direction: column; align-items: stretch; justify-content: flex-start; }
+
+/* ------------------------------------------------------------------ */
+/* Accordion — stacked chassis sections                                */
+/* ------------------------------------------------------------------ */
+
+.skeuo-accordion {
+  position: relative;
+  border-radius: 0;
+  transition:
+    margin var(--sk-slow) var(--sk-ease),
+    border-radius var(--sk-slow) var(--sk-ease);
+}
+/* Neighbours share an edge: only the ends of a stack are rounded. */
+.skeuo-accordion--rounded:first-of-type {
+  border-top-left-radius: var(--sk-radius-chassis);
+  border-top-right-radius: var(--sk-radius-chassis);
+}
+.skeuo-accordion--rounded:last-of-type {
+  border-bottom-left-radius: var(--sk-radius-chassis);
+  border-bottom-right-radius: var(--sk-radius-chassis);
+}
+/* An expanded section separates from its neighbours (MUI gutters). */
+.skeuo-accordion--gutters.skeuo-accordion--expanded { margin: 14px 0; }
+.skeuo-accordion--gutters.skeuo-accordion--expanded:first-of-type { margin-top: 0; }
+.skeuo-accordion--gutters.skeuo-accordion--expanded:last-of-type { margin-bottom: 0; }
+.skeuo-accordion--gutters.skeuo-accordion--rounded.skeuo-accordion--expanded,
+.skeuo-accordion--gutters.skeuo-accordion--expanded + .skeuo-accordion--rounded {
+  border-top-left-radius: var(--sk-radius-chassis);
+  border-top-right-radius: var(--sk-radius-chassis);
+}
+.skeuo-accordion--gutters.skeuo-accordion--rounded.skeuo-accordion--expanded,
+.skeuo-accordion--rounded:has(+ .skeuo-accordion--gutters.skeuo-accordion--expanded) {
+  border-bottom-left-radius: var(--sk-radius-chassis);
+  border-bottom-right-radius: var(--sk-radius-chassis);
+}
+
+.skeuo-accordion__heading { margin: 0; font: inherit; border-radius: inherit; }
+
+.skeuo-accordion-summary {
+  --focus-ring: 0 0 #0000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: 0 16px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--sk-ink);
+  font: 500 14px / 1.4 var(--skeuo-font);
+  letter-spacing: -0.005em;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  box-shadow: var(--focus-ring);
+  transition:
+    background-color var(--sk-medium) ease,
+    min-height var(--sk-slow) var(--sk-ease);
+}
+.skeuo-accordion--expanded .skeuo-accordion-summary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.skeuo-accordion-summary:hover:not(:disabled) { background: var(--sk-hover); }
+.skeuo-accordion-summary:active:not(:disabled) { background: var(--sk-press); }
+.skeuo-accordion-summary:focus-visible { --focus-ring: inset 0 0 0 3px var(--c-glow); }
+.skeuo-accordion-summary:disabled { cursor: not-allowed; }
+.skeuo-accordion--disabled { opacity: 0.55; filter: grayscale(0.6); }
+.skeuo-accordion--gutters.skeuo-accordion--expanded .skeuo-accordion-summary { min-height: 56px; }
+
+.skeuo-accordion-summary__content {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  margin: 12px 0;
+}
+.skeuo-accordion-summary__expand-icon {
+  display: inline-flex;
+  flex: none;
+  color: var(--sk-ink-2);
+  font-size: 18px;
+  transition: transform var(--sk-slow) var(--sk-ease);
+}
+.skeuo-accordion-summary[aria-expanded="true"] .skeuo-accordion-summary__expand-icon {
+  transform: rotate(180deg);
+}
+
+/* Height animation: a one-row grid that goes from 0fr to 1fr. */
+.skeuo-accordion__collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--sk-slow) var(--sk-ease),
+    visibility 0s linear var(--sk-slow);
+}
+.skeuo-accordion__collapse--open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--sk-slow) var(--sk-ease),
+    visibility 0s;
+}
+.skeuo-accordion__collapse-inner { min-height: 0; overflow: hidden; }
+
+.skeuo-accordion-details {
+  padding: 4px 16px 16px;
+  color: var(--sk-ink);
+}
+.skeuo-accordion-details > :first-child { margin-top: 0; }
+.skeuo-accordion-details > :last-child { margin-bottom: 0; }
+
+.skeuo-accordion-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 8px 12px 12px;
+}
+.skeuo-accordion-actions--spacing { gap: 8px; }
+
+/* ------------------------------------------------------------------ */
+/* AppBar + Toolbar                                                    */
+/* ------------------------------------------------------------------ */
+
+.skeuo-appbar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 100%;
+  z-index: 1100;
+  color: var(--sk-ink);
+}
+.skeuo-appbar--fixed { position: fixed; top: 0; right: 0; left: auto; }
+.skeuo-appbar--absolute { position: absolute; top: 0; right: 0; left: auto; }
+.skeuo-appbar--sticky { position: sticky; top: 0; }
+.skeuo-appbar--static { position: static; }
+.skeuo-appbar--relative { position: relative; }
+
+/* Aluminium bars: the plate's top and side edges run off the window. */
+.skeuo-appbar.skeuo-chassis--square { border-width: 0 0 0.5px; }
+.skeuo-appbar--inherit { color: inherit; }
+.skeuo-appbar--transparent { background: transparent; color: inherit; }
+
+/* Colored bars: a matte colored keycap top with no travel. */
+.skeuo-appbar--colored {
+  --key-travel: 0px;
+  border-radius: 0;
+  color: var(--c-contrast);
+  transition: none;
+}
+.skeuo-appbar--colored.skeuo-appbar--rounded { border-radius: var(--sk-radius-chassis); }
+
+/* Lettering and text buttons printed on a bar take the bar's ink. */
+.skeuo-appbar .skeuo-btn--text { color: inherit; }
+.skeuo-appbar--colored .skeuo-btn--text:hover:not(:disabled) { background: rgba(255, 255, 255, 0.14); }
+.skeuo-appbar--colored .skeuo-btn--text:active:not(:disabled) { background: rgba(0, 0, 0, 0.12); }
+.skeuo-appbar--colored .skeuo-btn--text:focus-visible { --focus-ring: 0 0 0 3px rgba(255, 255, 255, 0.55); }
+
+.skeuo-toolbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+}
+.skeuo-toolbar--dense { min-height: 48px; }
+.skeuo-toolbar--gutters { padding: 0 16px; }
+@media (min-width: 600px) {
+  .skeuo-toolbar--regular { min-height: 64px; }
+  .skeuo-toolbar--gutters { padding: 0 24px; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Drawer                                                              */
+/* ------------------------------------------------------------------ */
+
+.skeuo-drawer--temporary {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+}
+.skeuo-drawer--inline { position: absolute; z-index: 1; overflow: hidden; }
+.skeuo-drawer--inline .skeuo-drawer__scrim { position: absolute; }
+.skeuo-drawer__scrim { z-index: 0; }
+
+.skeuo-drawer__paper {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  outline: none;
+  color: var(--sk-ink);
+}
+.skeuo-drawer--temporary .skeuo-drawer__paper { position: absolute; z-index: 1; }
+
+/* Square on the anchored edge, rounded on the free one. */
+.skeuo-drawer--temporary .skeuo-drawer__paper--left {
+  top: 0; bottom: 0; left: 0;
+  width: var(--drawer-size, 280px);
+  max-width: calc(100% - 32px);
+  border-left: 0;
+  border-radius: 0 var(--sk-radius-chassis) var(--sk-radius-chassis) 0;
+  animation: skeuo-drawer-in-left var(--sk-slow) var(--sk-ease);
+}
+.skeuo-drawer--temporary .skeuo-drawer__paper--right {
+  top: 0; bottom: 0; right: 0;
+  width: var(--drawer-size, 280px);
+  max-width: calc(100% - 32px);
+  border-right: 0;
+  border-radius: var(--sk-radius-chassis) 0 0 var(--sk-radius-chassis);
+  animation: skeuo-drawer-in-right var(--sk-slow) var(--sk-ease);
+}
+.skeuo-drawer--temporary .skeuo-drawer__paper--top {
+  top: 0; left: 0; right: 0;
+  height: var(--drawer-size, auto);
+  max-height: calc(100% - 32px);
+  border-top: 0;
+  border-radius: 0 0 var(--sk-radius-chassis) var(--sk-radius-chassis);
+  animation: skeuo-drawer-in-top var(--sk-slow) var(--sk-ease);
+}
+.skeuo-drawer--temporary .skeuo-drawer__paper--bottom {
+  bottom: 0; left: 0; right: 0;
+  height: var(--drawer-size, auto);
+  max-height: calc(100% - 32px);
+  border-bottom: 0;
+  border-radius: var(--sk-radius-chassis) var(--sk-radius-chassis) 0 0;
+  animation: skeuo-drawer-in-bottom var(--sk-slow) var(--sk-ease);
+}
+
+@keyframes skeuo-drawer-in-left { from { transform: translateX(-100%); } }
+@keyframes skeuo-drawer-in-right { from { transform: translateX(100%); } }
+@keyframes skeuo-drawer-in-top { from { transform: translateY(-100%); } }
+@keyframes skeuo-drawer-in-bottom { from { transform: translateY(100%); } }
+
+/* Docked (persistent / permanent): a flush square plate in normal flow,
+ * with a machined edge toward the content. */
+.skeuo-drawer--docked {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  transition:
+    width var(--sk-slow) var(--sk-ease),
+    height var(--sk-slow) var(--sk-ease);
+}
+.skeuo-drawer--docked.skeuo-drawer--left,
+.skeuo-drawer--docked.skeuo-drawer--right { width: var(--drawer-size, 280px); align-self: stretch; }
+.skeuo-drawer--docked.skeuo-drawer--top,
+.skeuo-drawer--docked.skeuo-drawer--bottom { height: var(--drawer-size, auto); }
+.skeuo-drawer--docked .skeuo-drawer__paper {
+  height: 100%;
+  border-width: 0;
+  transition:
+    transform var(--sk-slow) var(--sk-ease),
+    visibility 0s;
+}
+.skeuo-drawer--docked .skeuo-drawer__paper--left { width: var(--drawer-size, 280px); border-right-width: 1px; }
+.skeuo-drawer--docked .skeuo-drawer__paper--right { width: var(--drawer-size, 280px); border-left-width: 1px; }
+.skeuo-drawer--docked .skeuo-drawer__paper--top { border-bottom-width: 1px; }
+.skeuo-drawer--docked .skeuo-drawer__paper--bottom { border-top-width: 1px; }
+
+.skeuo-drawer--docked.skeuo-drawer--closed.skeuo-drawer--left,
+.skeuo-drawer--docked.skeuo-drawer--closed.skeuo-drawer--right { width: 0; }
+.skeuo-drawer--docked.skeuo-drawer--closed.skeuo-drawer--top,
+.skeuo-drawer--docked.skeuo-drawer--closed.skeuo-drawer--bottom { height: 0; }
+.skeuo-drawer--closed .skeuo-drawer__paper {
+  visibility: hidden;
+  transition:
+    transform var(--sk-slow) var(--sk-ease),
+    visibility 0s linear var(--sk-slow);
+}
+.skeuo-drawer--closed .skeuo-drawer__paper--left { transform: translateX(-100%); }
+.skeuo-drawer--closed .skeuo-drawer__paper--right { transform: translateX(100%); }
+.skeuo-drawer--closed .skeuo-drawer__paper--top { transform: translateY(-100%); }
+.skeuo-drawer--closed .skeuo-drawer__paper--bottom { transform: translateY(100%); }
+
+/* ------------------------------------------------------------------ */
+/* Layout: Box, Container, Stack, Grid — structure only, no material   */
+/* ------------------------------------------------------------------ */
+
+.skeuo-container {
+  display: block;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.skeuo-container--gutters { padding-left: 16px; padding-right: 16px; }
+@media (min-width: 600px) {
+  .skeuo-container--gutters { padding-left: 24px; padding-right: 24px; }
+}
+.skeuo-container--max-xs { max-width: 444px; }
+.skeuo-container--max-sm { max-width: 600px; }
+.skeuo-container--max-md { max-width: 900px; }
+.skeuo-container--max-lg { max-width: 1200px; }
+.skeuo-container--max-xl { max-width: 1536px; }
+@media (min-width: 600px) { .skeuo-container--fixed { max-width: 600px; } }
+@media (min-width: 900px) { .skeuo-container--fixed:not(.skeuo-container--max-xs):not(.skeuo-container--max-sm) { max-width: 900px; } }
+@media (min-width: 1200px) { .skeuo-container--fixed.skeuo-container--max-lg,
+  .skeuo-container--fixed.skeuo-container--max-xl,
+  .skeuo-container--fixed.skeuo-container--max-false { max-width: 1200px; } }
+@media (min-width: 1536px) { .skeuo-container--fixed.skeuo-container--max-xl,
+  .skeuo-container--fixed.skeuo-container--max-false { max-width: 1536px; } }
+
+.skeuo-stack { display: flex; }
+.skeuo-stack--row { flex-direction: row; }
+.skeuo-stack--row-reverse { flex-direction: row-reverse; }
+.skeuo-stack--column { flex-direction: column; }
+.skeuo-stack--column-reverse { flex-direction: column-reverse; }
+ul.skeuo-stack, ol.skeuo-stack { margin: 0; padding: 0; list-style: none; }
+.skeuo-stack--gap { gap: var(--stack-spacing); }
+.skeuo-stack--margin.skeuo-stack--row > * + * { margin-left: var(--stack-spacing); }
+.skeuo-stack--margin.skeuo-stack--row-reverse > * + * { margin-right: var(--stack-spacing); }
+.skeuo-stack--margin.skeuo-stack--column > * + * { margin-top: var(--stack-spacing); }
+.skeuo-stack--margin.skeuo-stack--column-reverse > * + * { margin-bottom: var(--stack-spacing); }
+.skeuo-stack > .skeuo-rule { flex: none; }
+.skeuo-stack--row > .skeuo-rule,
+.skeuo-stack--row-reverse > .skeuo-rule { align-self: stretch; }
+
+/* Grid (MUI v2): items span --grid-size of the parent's columns. */
+.skeuo-grid {
+  --grid-parent-columns: 12;
+  --grid-parent-gap: 0px;
+  min-width: 0;
+}
+.skeuo-grid--container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--grid-row-gap) var(--grid-column-gap);
+}
+
+.skeuo-grid--xs-n {
+  flex: 0 0 auto;
+  width: calc(100% * var(--grid-size-xs) / var(--grid-parent-columns)
+    - (var(--grid-parent-columns) - var(--grid-size-xs)) * (var(--grid-parent-gap) / var(--grid-parent-columns)));
+}
+.skeuo-grid--xs-auto { flex: 0 0 auto; width: auto; max-width: none; }
+.skeuo-grid--xs-grow { flex: 1 1 0; width: auto; max-width: 100%; }
+.skeuo-grid--xs-offset {
+  margin-left: calc(100% * var(--grid-offset-xs) / var(--grid-parent-columns)
+    + var(--grid-parent-gap) * var(--grid-offset-xs) / var(--grid-parent-columns));
+}
+.skeuo-grid--xs-offset-auto { margin-left: auto; }
+
+@media (min-width: 600px) {
+  .skeuo-grid--sm-n {
+    flex: 0 0 auto;
+    width: calc(100% * var(--grid-size-sm) / var(--grid-parent-columns)
+      - (var(--grid-parent-columns) - var(--grid-size-sm)) * (var(--grid-parent-gap) / var(--grid-parent-columns)));
+  }
+  .skeuo-grid--sm-auto { flex: 0 0 auto; width: auto; max-width: none; }
+  .skeuo-grid--sm-grow { flex: 1 1 0; width: auto; max-width: 100%; }
+  .skeuo-grid--sm-offset {
+    margin-left: calc(100% * var(--grid-offset-sm) / var(--grid-parent-columns)
+      + var(--grid-parent-gap) * var(--grid-offset-sm) / var(--grid-parent-columns));
+  }
+  .skeuo-grid--sm-offset-auto { margin-left: auto; }
+}
+@media (min-width: 900px) {
+  .skeuo-grid--md-n {
+    flex: 0 0 auto;
+    width: calc(100% * var(--grid-size-md) / var(--grid-parent-columns)
+      - (var(--grid-parent-columns) - var(--grid-size-md)) * (var(--grid-parent-gap) / var(--grid-parent-columns)));
+  }
+  .skeuo-grid--md-auto { flex: 0 0 auto; width: auto; max-width: none; }
+  .skeuo-grid--md-grow { flex: 1 1 0; width: auto; max-width: 100%; }
+  .skeuo-grid--md-offset {
+    margin-left: calc(100% * var(--grid-offset-md) / var(--grid-parent-columns)
+      + var(--grid-parent-gap) * var(--grid-offset-md) / var(--grid-parent-columns));
+  }
+  .skeuo-grid--md-offset-auto { margin-left: auto; }
+}
+@media (min-width: 1200px) {
+  .skeuo-grid--lg-n {
+    flex: 0 0 auto;
+    width: calc(100% * var(--grid-size-lg) / var(--grid-parent-columns)
+      - (var(--grid-parent-columns) - var(--grid-size-lg)) * (var(--grid-parent-gap) / var(--grid-parent-columns)));
+  }
+  .skeuo-grid--lg-auto { flex: 0 0 auto; width: auto; max-width: none; }
+  .skeuo-grid--lg-grow { flex: 1 1 0; width: auto; max-width: 100%; }
+  .skeuo-grid--lg-offset {
+    margin-left: calc(100% * var(--grid-offset-lg) / var(--grid-parent-columns)
+      + var(--grid-parent-gap) * var(--grid-offset-lg) / var(--grid-parent-columns));
+  }
+  .skeuo-grid--lg-offset-auto { margin-left: auto; }
+}
+@media (min-width: 1536px) {
+  .skeuo-grid--xl-n {
+    flex: 0 0 auto;
+    width: calc(100% * var(--grid-size-xl) / var(--grid-parent-columns)
+      - (var(--grid-parent-columns) - var(--grid-size-xl)) * (var(--grid-parent-gap) / var(--grid-parent-columns)));
+  }
+  .skeuo-grid--xl-auto { flex: 0 0 auto; width: auto; max-width: none; }
+  .skeuo-grid--xl-grow { flex: 1 1 0; width: auto; max-width: 100%; }
+  .skeuo-grid--xl-offset {
+    margin-left: calc(100% * var(--grid-offset-xl) / var(--grid-parent-columns)
+      + var(--grid-parent-gap) * var(--grid-offset-xl) / var(--grid-parent-columns));
+  }
+  .skeuo-grid--xl-offset-auto { margin-left: auto; }
+}
+
+/* ------------------------------------------------------------------ */
+/* ScrollArea — a region with its own groove-and-keycap scrollbar      */
+/* ------------------------------------------------------------------ */
+
+.skeuo-scroll-area {
+  position: relative;
+  overscroll-behavior: contain;
+  outline: none;
+  border-radius: var(--sk-radius-well);
+}
+.skeuo-scroll-area--vertical { overflow-x: hidden; overflow-y: auto; }
+.skeuo-scroll-area--horizontal { overflow-x: auto; overflow-y: hidden; }
+.skeuo-scroll-area--both { overflow: auto; }
+.skeuo-scroll-area:not(.skeuo-scroll-area--well):focus-visible { box-shadow: 0 0 0 3px var(--c-glow); }
+
+/* In a well, content slides under the lip: a shade appears at an edge only
+ * while there is more content beyond it. The covers (local) scroll with the
+ * content and hide the shades (scroll) once an end is reached. */
+.skeuo-scroll-area--well {
+  --scroll-floor: var(--sk-well-bottom);
+  padding: 4px 6px;
+  background:
+    linear-gradient(var(--scroll-floor) 30%, transparent) top / 100% 22px no-repeat local,
+    linear-gradient(transparent, var(--scroll-floor) 70%) bottom / 100% 22px no-repeat local,
+    radial-gradient(farthest-side at 50% 0, var(--sk-well-shade), transparent) top / 100% 10px no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, var(--sk-well-shade), transparent) bottom / 100% 10px no-repeat scroll,
+    var(--scroll-floor);
+}
+.skeuo-scroll-area--well.skeuo-scroll-area--horizontal {
+  background:
+    linear-gradient(90deg, var(--scroll-floor) 30%, transparent) left / 22px 100% no-repeat local,
+    linear-gradient(90deg, transparent, var(--scroll-floor) 70%) right / 22px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, var(--sk-well-shade), transparent) left / 10px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, var(--sk-well-shade), transparent) right / 10px 100% no-repeat scroll,
+    var(--scroll-floor);
+}
+.skeuo-scroll-area--well:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); border-color: var(--c-main); }

@@ -1,0 +1,494 @@
+/* skeuo-ui — selection controls and forms: Checkbox, Radio, Switch, Slider,
+ * Rating, FormControl & friends. Built from keycaps, grooves, LEDs and
+ * lettering; see materials.css. */
+
+/* ------------------------------------------------------------------ */
+/* Checkbox — a small square keycap; checked = colored cap + check      */
+/* ------------------------------------------------------------------ */
+
+.skeuo-checkbox {
+  --cb: 18px;
+  --cb-pad: 8px;
+
+  display: inline-flex;
+  flex: none;
+  padding: var(--cb-pad);
+  vertical-align: middle;
+}
+.skeuo-checkbox--small { --cb: 15px; --cb-pad: 6px; }
+.skeuo-checkbox--large { --cb: 22px; --cb-pad: 11px; }
+
+.skeuo-checkbox__cap,
+.skeuo-radio__cap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.skeuo-checkbox__cap {
+  --key-edge: var(--sk-key-edge);
+  width: var(--cb);
+  height: var(--cb);
+  border-radius: max(calc(var(--sk-radius-key) - 2px), 3px);
+}
+.skeuo-checkbox--small .skeuo-checkbox__cap,
+.skeuo-radio--small .skeuo-radio__cap { --key-travel: 1px; }
+.skeuo-checkbox--large .skeuo-checkbox__cap,
+.skeuo-radio--large .skeuo-radio__cap { --key-travel: 2px; }
+.skeuo-checkbox__cap.skeuo-key--filled { --key-edge: rgba(0, 0, 0, 0.12); }
+
+/* The real input sits inside the cap, invisible, and covers the padding
+ * around it so the hit area is as big as MUI's. */
+.skeuo-checkbox__input,
+.skeuo-radio__input {
+  position: absolute;
+  inset: calc(-1 * var(--cb-pad, var(--rd-pad)));
+  width: auto;
+  height: auto;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+  z-index: 1;
+}
+
+.skeuo-checkbox__mark {
+  width: 80%;
+  height: 80%;
+  stroke-width: 2.6;
+  pointer-events: none;
+  animation: skeuo-selection-pop var(--sk-medium) var(--sk-ease);
+}
+
+@keyframes skeuo-selection-pop {
+  from { opacity: 0; transform: scale(0.55); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Radio — a small round keycap with an LED that lights when selected   */
+/* ------------------------------------------------------------------ */
+
+.skeuo-radio {
+  --rd: 18px;
+  --rd-pad: 8px;
+  --rd-led: 7px;
+
+  display: inline-flex;
+  flex: none;
+  padding: var(--rd-pad);
+  vertical-align: middle;
+}
+.skeuo-radio--small { --rd: 15px; --rd-pad: 6px; --rd-led: 6px; }
+.skeuo-radio--large { --rd: 22px; --rd-pad: 11px; --rd-led: 9px; }
+
+.skeuo-radio__cap {
+  --key-edge: var(--sk-key-edge);
+  width: var(--rd);
+  height: var(--rd);
+}
+.skeuo-radio__input { inset: calc(-1 * var(--rd-pad)); }
+
+.skeuo-radio__led {
+  width: var(--rd-led);
+  height: var(--rd-led);
+  pointer-events: none;
+  transition: background var(--sk-medium) var(--sk-ease), box-shadow var(--sk-medium) var(--sk-ease),
+    opacity var(--sk-medium) var(--sk-ease);
+}
+.skeuo-radio__led.skeuo-led--off { opacity: 0.45; }
+.skeuo-radio--checked .skeuo-radio__led { animation: skeuo-selection-pop var(--sk-medium) var(--sk-ease); }
+/* A white LED would vanish on a white cap: neutral lights in graphite. */
+.skeuo-radio.skeuo-color-neutral .skeuo-led:not(.skeuo-led--off) {
+  --c-light: var(--sk-ink-2);
+  --c-main: var(--sk-ink);
+  --c-glow: rgba(0, 0, 0, 0.18);
+}
+
+/* ------------------------------------------------------------------ */
+/* Switch — a groove with a sliding round keycap thumb                  */
+/* ------------------------------------------------------------------ */
+
+.skeuo-switch {
+  --sw-w: 36px;
+  --sw-groove: 14px;
+  --sw-thumb: 20px;
+  --sw-pad: 7px;
+
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  width: calc(var(--sw-w) + 2 * var(--sw-pad));
+  height: calc(var(--sw-thumb) + 2 * var(--sw-pad));
+  vertical-align: middle;
+}
+.skeuo-switch--small { --sw-w: 28px; --sw-groove: 10px; --sw-thumb: 15px; --sw-pad: 6px; }
+.skeuo-switch--large { --sw-w: 46px; --sw-groove: 18px; --sw-thumb: 26px; --sw-pad: 9px; }
+
+.skeuo-switch__track {
+  position: absolute;
+  top: 50%;
+  left: var(--sw-pad);
+  right: var(--sw-pad);
+  height: var(--sw-groove);
+  translate: 0 -50%;
+}
+.skeuo-switch__fill {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 100% 0 0 round 999px);
+  transition: clip-path var(--sk-medium) var(--sk-ease);
+}
+.skeuo-switch--checked .skeuo-switch__fill { clip-path: inset(0 0 0 0 round 999px); }
+
+.skeuo-switch__thumb {
+  position: absolute;
+  top: 50%;
+  left: var(--sw-pad);
+  width: var(--sw-thumb);
+  height: var(--sw-thumb);
+  translate: 0 -50%;
+  pointer-events: none;
+  transition:
+    translate var(--sk-medium) var(--sk-ease),
+    transform var(--sk-fast) ease-out,
+    box-shadow var(--sk-fast) ease-out,
+    filter 120ms ease;
+}
+.skeuo-switch--small .skeuo-switch__thumb { --key-travel: 1px; }
+.skeuo-switch--large .skeuo-switch__thumb { --key-travel: 2px; }
+.skeuo-switch--checked .skeuo-switch__thumb { translate: calc(var(--sw-w) - var(--sw-thumb)) -50%; }
+
+.skeuo-switch__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.skeuo-switch:not(.skeuo-switch--disabled):hover .skeuo-switch__thumb { filter: brightness(1.035); }
+.skeuo-switch:not(.skeuo-switch--disabled):active .skeuo-switch__thumb {
+  --key-travel: 0.5px;
+  transform: translateY(1px);
+}
+.skeuo-switch:has(.skeuo-switch__input:focus-visible) .skeuo-switch__thumb {
+  --focus-ring: 0 0 0 3px var(--c-glow);
+}
+
+/* A white fill would read as "off": neutral grooves light in graphite. */
+.skeuo-switch.skeuo-color-neutral,
+.skeuo-slider.skeuo-color-neutral {
+  --c-light: var(--sk-ink-3);
+  --c-main: var(--sk-ink-2);
+  --c-glow: rgba(0, 0, 0, 0.18);
+}
+
+/* ------------------------------------------------------------------ */
+/* Slider — a groove rail with a lit fill and round keycap thumbs       */
+/* ------------------------------------------------------------------ */
+
+.skeuo-slider {
+  --sl-thumb: 18px;
+  --sl-rail: 6px;
+  --sl-box: 30px;
+
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  touch-action: none;
+}
+.skeuo-slider--small { --sl-thumb: 14px; --sl-rail: 4px; --sl-box: 24px; }
+.skeuo-slider--large { --sl-thumb: 24px; --sl-rail: 8px; --sl-box: 40px; }
+
+.skeuo-slider--horizontal { width: 100%; height: var(--sl-box); }
+.skeuo-slider--horizontal.skeuo-slider--labelled { margin-bottom: 18px; }
+.skeuo-slider--vertical { width: var(--sl-box); height: 100%; min-height: 160px; }
+.skeuo-slider--vertical.skeuo-slider--labelled { margin-right: 40px; }
+
+.skeuo-slider__rail { position: absolute; }
+.skeuo-slider--horizontal .skeuo-slider__rail {
+  top: 50%; left: 0; right: 0; height: var(--sl-rail); translate: 0 -50%;
+}
+.skeuo-slider--vertical .skeuo-slider__rail {
+  left: 50%; top: 0; bottom: 0; width: var(--sl-rail); translate: -50% 0;
+}
+
+.skeuo-slider__track { position: absolute; }
+.skeuo-slider--horizontal .skeuo-slider__track {
+  top: 0; bottom: 0; left: var(--a); width: calc(var(--b) - var(--a));
+}
+.skeuo-slider--vertical .skeuo-slider__track {
+  left: 0; right: 0; bottom: var(--a); height: calc(var(--b) - var(--a));
+}
+
+/* Ticks are small holes punched into the rail; on the lit fill they show
+ * as light dots. */
+.skeuo-slider__mark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--sk-ink-3);
+  pointer-events: none;
+}
+.skeuo-slider__mark--active { background: rgba(255, 255, 255, 0.85); }
+.skeuo-slider--horizontal .skeuo-slider__mark { left: var(--p); top: 50%; translate: -50% -50%; }
+.skeuo-slider--vertical .skeuo-slider__mark { bottom: var(--p); left: 50%; translate: -50% 50%; }
+
+.skeuo-slider__mark-label {
+  position: absolute;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.skeuo-slider--horizontal .skeuo-slider__mark-label {
+  left: var(--p);
+  top: calc(50% + var(--sl-thumb) / 2 + 5px);
+  translate: -50% 0;
+}
+.skeuo-slider--vertical .skeuo-slider__mark-label {
+  bottom: var(--p);
+  left: calc(50% + var(--sl-thumb) / 2 + 6px);
+  translate: 0 50%;
+}
+
+.skeuo-slider__thumb {
+  position: absolute;
+  width: var(--sl-thumb);
+  height: var(--sl-thumb);
+  pointer-events: none;
+}
+.skeuo-slider--small .skeuo-slider__thumb { --key-travel: 1px; }
+.skeuo-slider--large .skeuo-slider__thumb { --key-travel: 2px; }
+.skeuo-slider--horizontal .skeuo-slider__thumb { left: var(--p); top: 50%; translate: -50% -50%; }
+.skeuo-slider--vertical .skeuo-slider__thumb { bottom: var(--p); left: 50%; translate: -50% 50%; }
+
+/* The value label: a small floating chassis bubble above the thumb. */
+.skeuo-slider__value-label {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  translate: -50% 0;
+  min-width: 28px;
+  padding: 3px 7px;
+  border-radius: var(--sk-radius-key);
+  color: var(--sk-ink);
+  font: 600 11.5px / 1.2 var(--skeuo-font);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  scale: 0.85;
+  transform-origin: 50% 100%;
+  transition: opacity var(--sk-medium) var(--sk-ease), scale var(--sk-medium) var(--sk-ease);
+}
+.skeuo-slider--vertical .skeuo-slider__value-label {
+  bottom: 50%;
+  left: auto;
+  right: calc(100% + 8px);
+  translate: 0 50%;
+  transform-origin: 100% 50%;
+}
+.skeuo-slider__value-label--on,
+.skeuo-slider__input--0:is(:hover, :focus-visible, :active) ~ .skeuo-slider__thumb--0 .skeuo-slider__value-label,
+.skeuo-slider__input--1:is(:hover, :focus-visible, :active) ~ .skeuo-slider__thumb--1 .skeuo-slider__value-label {
+  opacity: 1;
+  scale: 1;
+}
+
+/* The native range inputs: invisible, on top, and as long as the rail
+ * plus one thumb so the native thumb centre travels exactly over it. */
+.skeuo-slider__input {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.skeuo-slider--horizontal .skeuo-slider__input {
+  top: 50%;
+  left: calc(var(--sl-thumb) / -2);
+  width: calc(100% + var(--sl-thumb));
+  height: var(--sl-thumb);
+  translate: 0 -50%;
+}
+.skeuo-slider--vertical .skeuo-slider__input {
+  left: 50%;
+  top: calc(var(--sl-thumb) / -2);
+  width: var(--sl-thumb);
+  height: calc(100% + var(--sl-thumb));
+  translate: -50% 0;
+  writing-mode: vertical-lr;
+  direction: rtl;
+}
+.skeuo-slider__input::-webkit-slider-runnable-track { height: 100%; background: transparent; }
+.skeuo-slider__input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: var(--sl-thumb);
+  height: var(--sl-thumb);
+  border-radius: 999px;
+  pointer-events: auto;
+}
+.skeuo-slider__input::-moz-range-thumb {
+  width: var(--sl-thumb);
+  height: var(--sl-thumb);
+  border: 0;
+  border-radius: 999px;
+  pointer-events: auto;
+}
+/* Two overlaid inputs: only their thumbs take the pointer. */
+.skeuo-slider--range .skeuo-slider__input { pointer-events: none; }
+
+.skeuo-slider__input--0:hover:not(:disabled) ~ .skeuo-slider__thumb--0,
+.skeuo-slider__input--1:hover:not(:disabled) ~ .skeuo-slider__thumb--1 { filter: brightness(1.035); }
+.skeuo-slider__input--0:active:not(:disabled) ~ .skeuo-slider__thumb--0,
+.skeuo-slider__input--1:active:not(:disabled) ~ .skeuo-slider__thumb--1 {
+  --key-travel: 0.5px;
+  transform: translateY(1px);
+}
+.skeuo-slider__input--0:focus-visible ~ .skeuo-slider__thumb--0,
+.skeuo-slider__input--1:focus-visible ~ .skeuo-slider__thumb--1 {
+  --focus-ring: 0 0 0 3px var(--c-glow);
+}
+
+/* ------------------------------------------------------------------ */
+/* Rating — stars printed on the aluminium                             */
+/* ------------------------------------------------------------------ */
+
+.skeuo-rating {
+  --rt: 24px;
+
+  display: inline-flex;
+  gap: 1px;
+  font-size: var(--rt);
+  line-height: 1;
+  vertical-align: middle;
+}
+.skeuo-rating--small { --rt: 18px; }
+.skeuo-rating--large { --rt: 30px; }
+
+.skeuo-rating__item {
+  position: relative;
+  display: inline-flex;
+  transition: scale var(--sk-medium) var(--sk-ease);
+}
+.skeuo-rating__item--active { scale: 1.15; }
+
+.skeuo-rating__icon {
+  --focus-ring: 0 0 #0000;
+  position: relative;
+  display: inline-flex;
+  border-radius: 6px;
+  box-shadow: var(--focus-ring);
+}
+.skeuo-rating__empty { color: var(--sk-ink-3); }
+.skeuo-rating__fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: inline-flex;
+  overflow: hidden;
+  color: var(--c-ink);
+}
+.skeuo-rating__item:has(.skeuo-rating__input:focus-visible) .skeuo-rating__icon {
+  --focus-ring: 0 0 0 3px var(--c-glow);
+}
+
+.skeuo-rating__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+.skeuo-rating__hit--first { right: 50%; }
+.skeuo-rating__hit--second { left: 50%; }
+.skeuo-rating__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.skeuo-rating--disabled { opacity: 0.45; filter: grayscale(0.6); }
+.skeuo-rating--disabled .skeuo-rating__hit { cursor: not-allowed; }
+
+/* ------------------------------------------------------------------ */
+/* Disabled controls                                                   */
+/* ------------------------------------------------------------------ */
+
+.skeuo-switch--disabled,
+.skeuo-slider--disabled {
+  filter: grayscale(0.6);
+  opacity: 0.45;
+}
+.skeuo-switch--disabled .skeuo-switch__input,
+.skeuo-slider--disabled .skeuo-slider__input { cursor: not-allowed; }
+
+/* ------------------------------------------------------------------ */
+/* Form wiring: FormControl, FormLabel, FormControlLabel, FormGroup,    */
+/* RadioGroup, FormHelperText                                          */
+/* ------------------------------------------------------------------ */
+
+.skeuo-form-control {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: top;
+}
+.skeuo-form-control--full-width { display: flex; width: 100%; }
+
+.skeuo-form-label { display: block; padding: 0; }
+legend.skeuo-form-label { margin-bottom: 4px; }
+.skeuo-form-label--error { color: var(--sk-error-ink); }
+.skeuo-form-label--disabled { color: var(--sk-ink-3); }
+.skeuo-form-label__asterisk { color: var(--skeuo-error-main); }
+
+.skeuo-form-control-label {
+  display: inline-flex;
+  align-items: center;
+  margin-inline: -8px 0;
+  color: var(--sk-ink);
+  font: 400 14px / 1.35 var(--skeuo-font);
+  cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  -webkit-tap-highlight-color: transparent;
+}
+.skeuo-form-control-label--start { flex-direction: row-reverse; margin-inline: 0 -8px; }
+.skeuo-form-control-label--top { flex-direction: column-reverse; margin-inline: 8px; gap: 0; }
+.skeuo-form-control-label--bottom { flex-direction: column; margin-inline: 8px; gap: 0; }
+.skeuo-form-control-label--top .skeuo-form-control-label__label,
+.skeuo-form-control-label--bottom .skeuo-form-control-label__label { font-size: 12px; color: var(--sk-ink-2); }
+.skeuo-form-control-label--disabled { cursor: not-allowed; }
+.skeuo-form-control-label--disabled .skeuo-form-control-label__label { color: var(--sk-ink-3); }
+
+.skeuo-form-group,
+.skeuo-radio-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.skeuo-form-group--row,
+.skeuo-radio-group--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 16px;
+}
+
+.skeuo-form-helper-text { margin: 0; }
+.skeuo-form-helper-text--error { color: var(--sk-error-ink); }
+.skeuo-form-helper-text--disabled { color: var(--sk-ink-3); }

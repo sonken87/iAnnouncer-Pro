@@ -1,0 +1,213 @@
+/* skeuo-ui — map (MapView). Leaflet's own stylesheet is loaded first; these
+ * rules restyle it in the Magic Keyboard language:
+ *   the map is a screen set into a well; zoom/fit controls are keycaps;
+ *   routes are lit lines in the palette color with a dark casing; leg labels
+ *   are small floating plates; waypoints are aeronautical-chart symbols with
+ *   printed idents; in dark mode the tiles are dimmed to match Space Black. */
+
+.skeuo-map {
+  --skm-fill: var(--sk-key);
+  position: relative;
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  isolation: isolate;
+}
+.skeuo-map__viewport {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+.skeuo-map__canvas {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, var(--sk-well-top), var(--sk-well-bottom));
+  font-family: var(--skeuo-font);
+}
+.skeuo-map__events { display: none; }
+
+/* The well's inner shade lies over the map, like glass set into metal. */
+.skeuo-map::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 800;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 2px 4px var(--sk-well-shade), inset 0 0 0 0.5px var(--sk-hairline);
+}
+
+.skeuo-map .leaflet-container { background: transparent; font: inherit; outline: none; }
+.skeuo-map .leaflet-container:focus-visible { box-shadow: inset 0 0 0 3px var(--c-glow); }
+
+/* Dark mode: dim the (light) tiles so the map sits in the black metal. */
+.skeuo-root[data-skeuo-mode="dark"] .skeuo-map__tiles {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.55);
+}
+@media (prefers-color-scheme: dark) {
+  .skeuo-root[data-skeuo-mode="system"] .skeuo-map__tiles {
+    filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.55);
+  }
+}
+
+/* ---- controls: keycaps ------------------------------------------------ */
+.skeuo-map .leaflet-top.leaflet-left { top: 10px; left: 10px; }
+.skeuo-map .leaflet-control { margin: 0; }
+.skeuo-map__keys { display: flex; flex-direction: column; gap: 6px; }
+.skeuo-map__key {
+  --key-travel: 1.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+}
+.skeuo-map__key[hidden] { display: none; }
+
+.skeuo-map .leaflet-bottom.leaflet-left { bottom: 10px; left: 10px; }
+.skeuo-map__scale {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sk-float-hi) 88%, transparent);
+  box-shadow: 0 0 0 0.5px var(--sk-chassis-edge), 0 1px 3px var(--sk-ambient);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sk-ink-2);
+}
+.skeuo-map__scale-bar {
+  height: 5px;
+  border: 1.5px solid var(--sk-ink-2);
+  border-top: 0;
+}
+
+.skeuo-map .leaflet-control-attribution {
+  margin: 0 8px 8px 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sk-float-hi) 85%, transparent);
+  color: var(--sk-ink-2);
+  font-size: 10px;
+}
+.skeuo-map .leaflet-control-attribution a { color: var(--c-ink); }
+
+/* ---- routes ------------------------------------------------------------ */
+.skeuo-map__leg-casing {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.skeuo-root[data-skeuo-mode="dark"] .skeuo-map__leg-casing { stroke: rgba(0, 0, 0, 0.7); }
+.skeuo-map__leg {
+  fill: none;
+  stroke: var(--c-main);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.skeuo-map__leg-label { background: none; border: 0; }
+.skeuo-map__leg-label--hidden { display: none; }
+.skeuo-map__leg-label span {
+  display: inline-block;
+  transform: translate(-50%, -50%);
+  padding: 2px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--sk-ink);
+  background: linear-gradient(180deg, var(--sk-float-hi), var(--sk-float-lo));
+  box-shadow: inset 0 0 0 0.5px var(--sk-chassis-edge), inset 0 -2px 0 -0.5px var(--c-main), 0 1px 3px var(--sk-ambient);
+}
+
+/* Mid-leg insert handle: a small white keycap knob. */
+.skeuo-map__insert span {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--sk-key);
+  box-shadow: inset 0 0 0 1.5px var(--c-main), 0 1px 0 var(--sk-key-side), 0 1px 3px var(--sk-ambient);
+  opacity: 0;
+  transition: opacity var(--sk-medium) ease;
+}
+.skeuo-map:hover .skeuo-map__insert span { opacity: 0.9; }
+.skeuo-map__insert { cursor: copy; }
+
+/* ---- waypoints & markers ---------------------------------------------- */
+.skeuo-map__waypoint,
+.skeuo-map__marker {
+  background: none;
+  border: 0;
+  color: var(--c-main);
+}
+.skeuo-map__symbol {
+  display: block;
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 1px 1px var(--sk-ambient));
+}
+.skeuo-map__symbol svg { display: block; }
+.skeuo-map__waypoint--editable { cursor: grab; }
+.skeuo-map__waypoint--editable:active { cursor: grabbing; }
+
+/* Selected waypoint: an LED glow around the symbol. */
+.skeuo-map__waypoint--selected .skeuo-map__symbol {
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px var(--c-glow), 0 0 10px var(--c-glow);
+}
+
+/* Ident printed beside the symbol, with a halo so it reads on any tile. */
+.skeuo-map__tag {
+  position: absolute;
+  left: 26px;
+  top: 2px;
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: var(--sk-ink);
+  text-shadow:
+    0 0 2px var(--sk-page-hi), 0 0 2px var(--sk-page-hi),
+    0 0 3px var(--sk-page-hi), 0 0 4px var(--sk-page-hi);
+  pointer-events: none;
+}
+.skeuo-map__tag small { font-size: 10px; font-weight: 600; color: var(--sk-ink-2); }
+
+.skeuo-map__marker--aircraft { color: var(--c-main); }
+.skeuo-map__marker--aircraft .skeuo-map__symbol { transition: transform var(--sk-slow) var(--sk-ease); }
+
+/* ---- areas ------------------------------------------------------------- */
+.skeuo-map__area {
+  fill: var(--c-main);
+  fill-opacity: 0.12;
+  stroke: var(--c-main);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+}
+.skeuo-map__area-label { background: none; border: 0; }
+.skeuo-map__area-label span {
+  display: inline-block;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-ink);
+  text-shadow: 0 0 3px var(--sk-page-hi), 0 0 3px var(--sk-page-hi);
+}
+
+/* Nothing in the map should animate for users who asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  .skeuo-map .leaflet-zoom-anim .leaflet-zoom-animated { transition: none !important; }
+}

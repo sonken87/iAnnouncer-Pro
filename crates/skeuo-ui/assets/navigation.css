@@ -1,0 +1,553 @@
+/* skeuo-ui — navigation: Tabs, Breadcrumbs, Link, Menu, Popover, Pagination,
+ * Stepper, MobileStepper, BottomNavigation, SpeedDial, Timeline. */
+
+/* ------------------------------------------------------------------ */
+/* Tabs — a segmented control: shallow well tray, selected = keycap      */
+/* ------------------------------------------------------------------ */
+
+.skeuo-tabs {
+  --tab-height: 28px;
+  --tab-pad: 14px;
+  --tab-font: 13px;
+
+  display: flex;
+  min-width: 0;
+}
+.skeuo-tabs--small { --tab-height: 22px; --tab-pad: 10px; --tab-font: 12px; }
+.skeuo-tabs--large { --tab-height: 36px; --tab-pad: 18px; --tab-font: 14px; }
+.skeuo-tabs--centered { justify-content: center; }
+.skeuo-tabs--vertical { flex-direction: column; align-items: flex-start; }
+
+.skeuo-tabs__tray {
+  display: inline-flex;
+  gap: 2px;
+  max-width: 100%;
+  padding: 3px;
+}
+.skeuo-tabs--vertical .skeuo-tabs__tray { flex-direction: column; align-items: stretch; }
+.skeuo-tabs--full-width .skeuo-tabs__tray { flex: 1; }
+.skeuo-tabs--full-width .skeuo-tab { flex: 1 1 0; }
+.skeuo-tabs--scrollable .skeuo-tabs__tray {
+  overflow: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.skeuo-tabs--scrollable .skeuo-tabs__tray::-webkit-scrollbar { display: none; }
+
+.skeuo-tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--tab-height);
+  padding: 0 var(--tab-pad);
+  border: 0;
+  font: 500 var(--tab-font) / 1.2 var(--skeuo-font);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.skeuo-tabs--vertical .skeuo-tab { justify-content: flex-start; }
+
+/* Unselected segments: legends printed on the tray. */
+.skeuo-tab:not(.skeuo-tab--selected) {
+  --focus-ring: 0 0 #0000;
+  border-radius: calc(var(--sk-radius-well) - 3px);
+  background: transparent;
+  color: var(--sk-ink-2);
+  box-shadow: var(--focus-ring);
+  transition: background-color var(--sk-medium) ease, color var(--sk-medium) ease;
+}
+.skeuo-tab:not(.skeuo-tab--selected):hover:not(:disabled) { background: var(--sk-hover); color: var(--sk-ink); }
+.skeuo-tab:not(.skeuo-tab--selected):active:not(:disabled) { background: var(--sk-press); }
+.skeuo-tab:not(.skeuo-tab--selected):focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); }
+.skeuo-tab:disabled { cursor: not-allowed; opacity: 0.45; }
+
+/* The selected segment: a raised white keycap in the tray. */
+.skeuo-tab--selected {
+  --key-travel: 1px;
+  --key-ink: var(--c-ink);
+  border-radius: calc(var(--sk-radius-well) - 3px);
+  font-weight: 600;
+  cursor: default;
+}
+
+.skeuo-tab--icon-top,
+.skeuo-tab--icon-bottom { flex-direction: column; gap: 3px; padding-block: 6px; }
+.skeuo-tab--icon-bottom { flex-direction: column-reverse; }
+.skeuo-tab--icon-end { flex-direction: row-reverse; }
+.skeuo-tab__icon { display: inline-flex; font-size: 1.3em; }
+.skeuo-tab--wrapped { max-width: 150px; white-space: normal; text-align: center; }
+
+.skeuo-tab-panel { padding: 14px 4px 4px; border-radius: var(--sk-radius-key); outline: none; }
+.skeuo-tab-panel:focus-visible { box-shadow: 0 0 0 3px var(--c-glow); }
+.skeuo-tab-panel[hidden] { display: none; }
+
+/* ------------------------------------------------------------------ */
+/* Breadcrumbs & Link — printed lettering                              */
+/* ------------------------------------------------------------------ */
+
+.skeuo-breadcrumbs { font-size: 13px; color: var(--sk-ink-2); }
+.skeuo-breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.skeuo-breadcrumbs__item { display: inline-flex; align-items: center; gap: 5px; }
+.skeuo-breadcrumbs__item--current { color: var(--sk-ink); font-weight: 500; }
+.skeuo-breadcrumbs__separator { display: inline-flex; color: var(--sk-ink-3); font-size: 12px; user-select: none; }
+.skeuo-breadcrumbs__collapsed {
+  --key-travel: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 6px;
+  --key-ink: var(--sk-ink-2);
+  font-size: 15px;
+}
+
+.skeuo-link {
+  --focus-ring: 0 0 #0000;
+  color: var(--c-ink);
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2.5px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: var(--focus-ring);
+  transition: text-decoration-color var(--sk-medium) ease;
+}
+.skeuo-link:hover { text-decoration-color: currentColor; }
+.skeuo-link:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); }
+.skeuo-link--underline-none,
+.skeuo-link--underline-none:hover,
+.skeuo-link--underline-hover { text-decoration-line: none; }
+.skeuo-link--underline-hover:hover { text-decoration-line: underline; }
+.skeuo-link--button { padding: 0; border: 0; background: none; }
+.skeuo-breadcrumbs .skeuo-link.skeuo-color-neutral { color: var(--sk-ink-2); }
+.skeuo-breadcrumbs .skeuo-link.skeuo-color-neutral:hover { color: var(--sk-ink); }
+
+/* ------------------------------------------------------------------ */
+/* Popover & Menu — level-3 floating chassis                           */
+/* ------------------------------------------------------------------ */
+
+.skeuo-popover-anchor { position: relative; display: inline-flex; vertical-align: top; }
+.skeuo-popover-anchor--inline { flex-direction: column; align-items: flex-start; gap: 6px; }
+.skeuo-popover-backdrop { position: fixed; inset: 0; z-index: 1300; background: transparent; }
+
+.skeuo-popover {
+  position: absolute;
+  z-index: 1301;
+  min-width: 180px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  outline: none;
+  animation: skeuo-rise-in var(--sk-slow) var(--sk-ease);
+}
+.skeuo-popover--bottom { top: calc(100% + 6px); left: 0; }
+.skeuo-popover--top { bottom: calc(100% + 6px); left: 0; }
+.skeuo-popover--left { right: calc(100% + 6px); top: 0; }
+.skeuo-popover--right { left: calc(100% + 6px); top: 0; }
+.skeuo-popover.skeuo-popover--inline { position: relative; inset: auto; z-index: auto; animation: none; }
+
+.skeuo-menu.skeuo-popover { min-width: 220px; padding: 5px; border-radius: 10px; }
+
+.skeuo-menu-list { margin: 0; padding: 0; list-style: none; outline: none; }
+.skeuo-menu-item__row { display: block; }
+.skeuo-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 26px;
+  padding: 3px 10px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--sk-ink);
+  font: 400 13px / 1.3 var(--skeuo-font);
+  text-align: left;
+  cursor: default;
+  outline: none;
+  user-select: none;
+}
+.skeuo-menu-item--dense { min-height: 22px; padding-block: 1px; font-size: 12.5px; }
+.skeuo-menu-item:hover:not(:disabled),
+.skeuo-menu-item:focus:not(:disabled) {
+  background: var(--c-main);
+  color: var(--c-contrast);
+}
+.skeuo-menu-item:disabled { color: var(--sk-ink-3); }
+
+/* The check column appears only in lists that contain a selected item. */
+.skeuo-menu-item__check { display: none; flex: none; width: 13px; font-size: 13px; }
+.skeuo-menu-list:has(.skeuo-menu-item--selected) .skeuo-menu-item__check { display: inline-flex; }
+.skeuo-menu-item__icon { display: inline-flex; flex: none; font-size: 15px; color: var(--sk-ink-2); }
+.skeuo-menu-item:hover:not(:disabled) .skeuo-menu-item__icon,
+.skeuo-menu-item:focus:not(:disabled) .skeuo-menu-item__icon,
+.skeuo-menu-item:disabled .skeuo-menu-item__icon { color: inherit; }
+.skeuo-menu-item__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.skeuo-menu-item__shortcut {
+  margin-left: 24px;
+  font: 400 12.5px / 1 var(--skeuo-font);
+  letter-spacing: 0.06em;
+  color: var(--sk-ink-3);
+}
+.skeuo-menu-item:hover:not(:disabled) .skeuo-menu-item__shortcut,
+.skeuo-menu-item:focus:not(:disabled) .skeuo-menu-item__shortcut { color: inherit; opacity: 0.8; }
+.skeuo-menu-item__divider { margin: 5px 10px; }
+
+/* ------------------------------------------------------------------ */
+/* Pagination — page keycaps; the current one latched and colored     */
+/* ------------------------------------------------------------------ */
+
+.skeuo-pagination__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.skeuo-pagination-item {
+  --pi: 30px;
+  --focus-ring: 0 0 #0000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--pi);
+  height: var(--pi);
+  padding: 0 7px;
+  border-radius: 999px;
+  font: 500 13px / 1 var(--skeuo-font);
+  font-variant-numeric: tabular-nums;
+}
+.skeuo-pagination-item--small { --pi: 24px; --key-travel: 1px; padding: 0 5px; font-size: 12px; }
+.skeuo-pagination-item--large { --pi: 38px; --key-travel: 2px; padding: 0 9px; font-size: 15px; }
+.skeuo-pagination-item--rounded { border-radius: var(--sk-radius-key); }
+.skeuo-pagination-item .skeuo-icon { font-size: 1.2em; }
+
+/* Text variant: printed numbers on the aluminium. */
+.skeuo-pagination-item--text:not(.skeuo-key):not(.skeuo-pagination-item--ellipsis) {
+  border: 0;
+  background: transparent;
+  color: var(--sk-ink);
+  cursor: pointer;
+  outline: none;
+  box-shadow: var(--focus-ring);
+  transition: background-color var(--sk-medium) ease;
+}
+.skeuo-pagination-item--text:not(.skeuo-key):hover:not(:disabled) { background: var(--sk-hover); }
+.skeuo-pagination-item--text:not(.skeuo-key):active:not(:disabled) { background: var(--sk-press); }
+.skeuo-pagination-item--text:not(.skeuo-key):focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); }
+.skeuo-pagination-item--text:not(.skeuo-key):disabled { cursor: not-allowed; opacity: 0.45; }
+.skeuo-pagination-item.skeuo-key:not(.skeuo-key--filled) { --key-ink: var(--sk-ink); }
+.skeuo-pagination-item--selected { font-weight: 600; }
+.skeuo-pagination-item--ellipsis { color: var(--sk-ink-2); letter-spacing: 0.05em; user-select: none; }
+
+/* ------------------------------------------------------------------ */
+/* Stepper — round keycap indicators joined by grooves                 */
+/* ------------------------------------------------------------------ */
+
+.skeuo-stepper { display: flex; }
+.skeuo-stepper--horizontal { flex-direction: row; align-items: center; }
+.skeuo-stepper--vertical { flex-direction: column; }
+
+.skeuo-step { display: flex; align-items: center; min-width: 0; }
+.skeuo-stepper--horizontal .skeuo-step--joined { flex: 1; }
+.skeuo-stepper--vertical .skeuo-step { flex-direction: column; align-items: stretch; }
+
+.skeuo-step-connector { display: block; flex: 1; min-width: 16px; height: 4px; margin: 0 10px; }
+.skeuo-step-connector__fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  transition: width var(--sk-slow) var(--sk-ease), height var(--sk-slow) var(--sk-ease);
+}
+.skeuo-step-connector__fill--on { width: 100%; }
+.skeuo-stepper--vertical .skeuo-step-connector { flex: none; width: 4px; height: 18px; min-width: 0; margin: 3px 0 3px 11px; }
+.skeuo-stepper--vertical .skeuo-step-connector__fill { width: 100%; height: 0; }
+.skeuo-stepper--vertical .skeuo-step-connector__fill--on { height: 100%; }
+
+.skeuo-stepper--alternative-label { align-items: flex-start; }
+.skeuo-stepper--alternative-label .skeuo-step { position: relative; flex: 1; flex-direction: column; }
+.skeuo-stepper--alternative-label .skeuo-step-connector {
+  position: absolute;
+  top: 11px;
+  left: calc(-50% + 24px);
+  right: calc(50% + 24px);
+  margin: 0;
+}
+.skeuo-stepper--alternative-label .skeuo-step-label { flex-direction: column; gap: 8px; text-align: center; }
+
+.skeuo-step-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--sk-ink-2);
+  font: 500 13px / 1.3 var(--skeuo-font);
+}
+.skeuo-step-label--active { color: var(--sk-ink); font-weight: 600; }
+.skeuo-step-label--completed { color: var(--sk-ink); }
+.skeuo-step-label--disabled { color: var(--sk-ink-3); }
+.skeuo-step-label--error { color: var(--sk-error-ink); }
+.skeuo-step-label__text { display: inline-flex; flex-direction: column; gap: 1px; }
+.skeuo-step-label--error .skeuo-step-label__optional { color: var(--sk-error-ink); }
+
+/* The indicator: a small round keycap with a number legend. */
+.skeuo-step-icon {
+  --key-travel: 1.5px;
+  --key-ink: var(--sk-ink-2);
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  font: 600 12px / 1 var(--skeuo-font);
+  font-variant-numeric: tabular-nums;
+}
+.skeuo-step-icon.skeuo-key--filled { --key-ink: var(--c-contrast); }
+.skeuo-step-icon .skeuo-icon { font-size: 15px; }
+/* Active: lit from inside, like an LED behind the cap. */
+.skeuo-step-icon--active { --focus-ring: 0 0 0 3px var(--c-glow), 0 0 12px 2px var(--c-glow); }
+
+.skeuo-step-button {
+  --focus-ring: 0 0 #0000;
+  margin: -6px -8px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--sk-radius-well);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  box-shadow: var(--focus-ring);
+  transition: background-color var(--sk-medium) ease;
+}
+.skeuo-step-button:hover:not(:disabled) { background: var(--sk-hover); }
+.skeuo-step-button:active:not(:disabled) { background: var(--sk-press); }
+.skeuo-step-button:focus-visible { --focus-ring: 0 0 0 3px var(--c-glow); }
+.skeuo-step-button:disabled { cursor: default; }
+.skeuo-stepper--alternative-label .skeuo-step-button { align-self: center; }
+
+.skeuo-step-content { position: relative; margin-left: 11px; padding: 6px 0 6px 25px; min-height: 10px; }
+.skeuo-step-content__line { position: absolute; top: 3px; bottom: -3px; left: 0; display: block; width: 4px; }
+.skeuo-step:last-child .skeuo-step-content__line { display: none; }
+.skeuo-step-content__body {
+  font-size: 13px;
+  color: var(--sk-ink-2);
+  animation: skeuo-fade-in var(--sk-medium) var(--sk-ease);
+}
+
+/* MobileStepper — a small bar with LEDs, a groove or a counter. */
+.skeuo-mobile-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px;
+}
+.skeuo-mobile-stepper--bottom,
+.skeuo-mobile-stepper--top { position: fixed; left: 0; right: 0; z-index: 1000; border-radius: 0; }
+.skeuo-mobile-stepper--bottom { bottom: 0; }
+.skeuo-mobile-stepper--top { top: 0; }
+.skeuo-mobile-stepper__end { display: inline-flex; }
+.skeuo-mobile-stepper__dots { display: flex; gap: 8px; }
+.skeuo-mobile-stepper__dot { width: 8px; height: 8px; transition: background var(--sk-medium) ease; }
+.skeuo-mobile-stepper__progress { display: block; flex: 1; height: 6px; }
+.skeuo-mobile-stepper__fill { display: block; height: 100%; transition: width var(--sk-slow) var(--sk-ease); }
+.skeuo-mobile-stepper__text { font: 500 13px / 1 var(--skeuo-font); font-variant-numeric: tabular-nums; color: var(--sk-ink-2); }
+
+/* ------------------------------------------------------------------ */
+/* BottomNavigation — a chassis bar of keys                            */
+/* ------------------------------------------------------------------ */
+
+.skeuo-bottom-nav { display: flex; justify-content: center; gap: 8px; padding: 8px; }
+.skeuo-bottom-nav__action {
+  --key-ink: var(--sk-ink-2);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 64px;
+  max-width: 168px;
+  height: 50px;
+  padding: 0 8px;
+  font: 500 11.5px / 1.1 var(--skeuo-font);
+}
+.skeuo-bottom-nav__action--selected { --key-ink: var(--c-ink); font-weight: 600; }
+.skeuo-bottom-nav__icon { display: inline-flex; font-size: 20px; }
+
+/* ------------------------------------------------------------------ */
+/* SpeedDial — a large colored round key; actions fan out              */
+/* ------------------------------------------------------------------ */
+
+.skeuo-speed-dial {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  transition: transform var(--sk-medium) var(--sk-ease), opacity var(--sk-medium) ease;
+}
+.skeuo-speed-dial--up { flex-direction: column-reverse; }
+.skeuo-speed-dial--down { flex-direction: column; }
+.skeuo-speed-dial--left { flex-direction: row-reverse; }
+.skeuo-speed-dial--right { flex-direction: row; }
+.skeuo-speed-dial--hidden { transform: scale(0); opacity: 0; visibility: hidden; }
+
+.skeuo-speed-dial__fab {
+  --key-travel: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  font-size: 24px;
+}
+
+.skeuo-speed-dial__actions { display: flex; align-items: center; gap: 12px; }
+.skeuo-speed-dial--up .skeuo-speed-dial__actions { flex-direction: column-reverse; }
+.skeuo-speed-dial--down .skeuo-speed-dial__actions { flex-direction: column; }
+.skeuo-speed-dial--left .skeuo-speed-dial__actions { flex-direction: row-reverse; }
+.skeuo-speed-dial--right .skeuo-speed-dial__actions { flex-direction: row; }
+
+.skeuo-speed-dial-action {
+  position: relative;
+  display: inline-flex;
+  opacity: 0;
+  transform: scale(0.4);
+  pointer-events: none;
+  transition: transform var(--sk-medium) var(--sk-ease), opacity var(--sk-medium) ease;
+}
+.skeuo-speed-dial--open .skeuo-speed-dial-action { opacity: 1; transform: none; pointer-events: auto; }
+.skeuo-speed-dial--open .skeuo-speed-dial-action:nth-child(2) { transition-delay: 30ms; }
+.skeuo-speed-dial--open .skeuo-speed-dial-action:nth-child(3) { transition-delay: 60ms; }
+.skeuo-speed-dial--open .skeuo-speed-dial-action:nth-child(4) { transition-delay: 90ms; }
+.skeuo-speed-dial--open .skeuo-speed-dial-action:nth-child(n + 5) { transition-delay: 120ms; }
+
+.skeuo-speed-dial-action__key {
+  --key-ink: var(--sk-ink-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+.skeuo-speed-dial-action__tooltip {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 10px);
+  padding: 4px 9px;
+  border-radius: 7px;
+  color: var(--sk-ink);
+  font: 500 12px / 1.3 var(--skeuo-font);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: opacity var(--sk-medium) ease;
+}
+.skeuo-speed-dial--left .skeuo-speed-dial-action__tooltip,
+.skeuo-speed-dial--right .skeuo-speed-dial-action__tooltip {
+  top: auto;
+  right: auto;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.skeuo-speed-dial-action:hover .skeuo-speed-dial-action__tooltip,
+.skeuo-speed-dial-action:focus-within .skeuo-speed-dial-action__tooltip,
+.skeuo-speed-dial-action--tooltip-open .skeuo-speed-dial-action__tooltip { opacity: 1; }
+
+.skeuo-speed-dial-icon { position: relative; display: inline-flex; }
+.skeuo-speed-dial-icon__icon,
+.skeuo-speed-dial-icon__open-icon { display: inline-flex; transition: transform var(--sk-medium) var(--sk-ease), opacity var(--sk-medium) ease; }
+.skeuo-speed-dial-icon--open .skeuo-speed-dial-icon__icon { transform: rotate(45deg); }
+.skeuo-speed-dial-icon__open-icon { position: absolute; inset: 0; opacity: 0; transform: rotate(-45deg); }
+.skeuo-speed-dial-icon--swap.skeuo-speed-dial-icon--open .skeuo-speed-dial-icon__icon { opacity: 0; }
+.skeuo-speed-dial-icon--swap.skeuo-speed-dial-icon--open .skeuo-speed-dial-icon__open-icon { opacity: 1; transform: none; }
+
+/* ------------------------------------------------------------------ */
+/* Timeline — LEDs joined by a groove                                  */
+/* ------------------------------------------------------------------ */
+
+.skeuo-timeline {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+}
+.skeuo-timeline-item { display: flex; min-height: 62px; }
+.skeuo-timeline--left .skeuo-timeline-item,
+.skeuo-timeline--alternate .skeuo-timeline-item:nth-child(even),
+.skeuo-timeline--alternate-reverse .skeuo-timeline-item:nth-child(odd),
+.skeuo-timeline .skeuo-timeline-item.skeuo-timeline-item--left { flex-direction: row-reverse; }
+.skeuo-timeline .skeuo-timeline-item.skeuo-timeline-item--right { flex-direction: row; }
+
+/* Alternating timelines keep the separator centered even without
+ * opposite content. */
+.skeuo-timeline--alternate .skeuo-timeline-item:not(:has(.skeuo-timeline-opposite))::before,
+.skeuo-timeline--alternate-reverse .skeuo-timeline-item:not(:has(.skeuo-timeline-opposite))::before {
+  content: "";
+  flex: 1;
+}
+
+.skeuo-timeline-opposite {
+  flex: 1;
+  margin: 0;
+  padding: 4px 16px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.skeuo-timeline-content { flex: 1; padding: 2px 16px 16px; text-align: left; font-size: 13.5px; }
+.skeuo-timeline--left .skeuo-timeline-content,
+.skeuo-timeline--alternate .skeuo-timeline-item:nth-child(even) .skeuo-timeline-content,
+.skeuo-timeline--alternate-reverse .skeuo-timeline-item:nth-child(odd) .skeuo-timeline-content,
+.skeuo-timeline-item--left .skeuo-timeline-content { text-align: right; }
+.skeuo-timeline--left .skeuo-timeline-opposite,
+.skeuo-timeline--alternate .skeuo-timeline-item:nth-child(even) .skeuo-timeline-opposite,
+.skeuo-timeline--alternate-reverse .skeuo-timeline-item:nth-child(odd) .skeuo-timeline-opposite,
+.skeuo-timeline-item--left .skeuo-timeline-opposite { text-align: left; }
+.skeuo-timeline .skeuo-timeline-item--right .skeuo-timeline-content { text-align: left; }
+.skeuo-timeline .skeuo-timeline-item--right .skeuo-timeline-opposite { text-align: right; }
+
+.skeuo-timeline-separator { display: flex; flex: none; flex-direction: column; align-items: center; }
+.skeuo-timeline-dot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  margin: 6px 0;
+  color: var(--c-contrast);
+}
+.skeuo-timeline-dot:has(> *) { width: 28px; height: 28px; margin: 2px 0; font-size: 15px; }
+.skeuo-timeline-dot--outlined { border: 2px solid var(--c-main); color: var(--c-ink); }
+.skeuo-timeline-dot--grey {
+  --c-light: #d1d1d6;
+  --c-main: #a1a1a6;
+  --c-dark: #8e8e93;
+  --c-contrast: #ffffff;
+  --c-ink: var(--sk-ink-2);
+  --c-glow: transparent;
+}
+.skeuo-timeline-connector { display: block; flex: 1; width: 4px; min-height: 12px; margin: 2px 0; }

@@ -1,0 +1,349 @@
+/*
+ * skeuo-ui — materials.
+ *
+ * Every component is assembled from these few physical materials. Do not
+ * invent new shadows or gradients in component CSS; compose these classes
+ * and set their variables instead. See DESIGN.md.
+ *
+ *   .skeuo-key      raised keycap: pressable things, thumbs, knobs
+ *   .skeuo-well     recessed well: anything you type into or that holds a value
+ *   .skeuo-groove   narrow recessed channel: tracks (slider, switch, progress)
+ *   .skeuo-chassis  raised aluminium plate: surfaces, bars, menus, dialogs
+ *   .skeuo-rule     engraved hairline: dividers
+ *   .skeuo-led      indicator light: badges, status dots
+ *   .skeuo-label / .skeuo-caption  printed lettering
+ *   .skeuo-scrim    dimming layer behind modal surfaces
+ */
+
+/* ------------------------------------------------------------------ */
+/* Keycap                                                              */
+/* ------------------------------------------------------------------ */
+
+/* A Magic Keyboard keycap: flat matte top, a thin visible side whose
+ * height is the key travel, and a soft contact shadow. When pressed the cap
+ * moves down by its travel while the side collapses, so the bottom edge
+ * stays put. Set --key-* to restyle; never change the geometry. */
+.skeuo-key {
+  --key-travel: 1.5px;
+  --key-color: var(--sk-key);
+  --key-side: var(--sk-key-side);
+  --key-edge: var(--sk-key-edge);
+  --key-ink: var(--sk-ink);
+  --focus-ring: 0 0 #0000;
+
+  position: relative;
+  border: 0;
+  border-radius: var(--sk-radius-key);
+  color: var(--key-ink);
+  font-family: var(--skeuo-font);
+  background:
+    linear-gradient(180deg, var(--sk-key-sheen-top), var(--sk-key-sheen-bottom)),
+    var(--key-color);
+  box-shadow:
+    inset 0 0 0 0.5px var(--key-edge),                          /* cap edge */
+    0 var(--key-travel) 0 var(--key-side),                      /* cap side */
+    0 calc(var(--key-travel) + 0.5px) 1.5px var(--sk-contact),  /* contact */
+    0 calc(var(--key-travel) + 2px) 6px -2px var(--sk-ambient),
+    var(--focus-ring);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--sk-fast) ease-out,
+    box-shadow var(--sk-fast) ease-out,
+    background-color var(--sk-medium) var(--sk-ease),
+    filter 120ms ease;
+}
+
+/* Interactive keys. */
+.skeuo-key--pressable { cursor: pointer; user-select: none; }
+.skeuo-key--pressable:hover:not(:disabled):not([aria-disabled="true"]) { filter: var(--sk-key-hover); }
+
+/* Pressed: while held, or latched down (.skeuo-key--down, e.g. a selected
+ * toggle button or the active segment). */
+.skeuo-key--pressable:active:not(:disabled):not([aria-disabled="true"]),
+.skeuo-key--down {
+  transform: translateY(calc(var(--key-travel) - 0.5px));
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.045), rgba(0, 0, 0, 0.015)),
+    var(--key-color);
+  box-shadow:
+    inset 0 0 0 0.5px var(--key-edge),
+    0 0.5px 0 var(--key-side),
+    0 1px 1px var(--sk-ambient),
+    var(--focus-ring);
+}
+
+/* Colored keycap: palette color top, darker side, contrast legend. */
+.skeuo-key--filled {
+  --key-color: var(--c-main);
+  --key-side: var(--c-dark);
+  --key-edge: rgba(0, 0, 0, 0.12);
+  --key-ink: var(--c-contrast);
+}
+
+/* Small round knob (slider / switch thumbs, radio caps). */
+.skeuo-key--round { border-radius: 999px; }
+
+/* macOS-style focus ring, keyboard focus only. */
+.skeuo-key:focus-visible,
+.skeuo-key--focus-within:has(:focus-visible) {
+  --focus-ring: 0 0 0 3px var(--c-glow);
+}
+
+.skeuo-key:disabled,
+.skeuo-key[aria-disabled="true"] {
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+  opacity: 0.45;
+}
+
+/* ------------------------------------------------------------------ */
+/* Well                                                                */
+/* ------------------------------------------------------------------ */
+
+/* A well cut into the aluminium: darker top lip with a shade under it, a
+ * catch-light on the bottom lip. Text fields, selects, segmented controls,
+ * list boxes. */
+.skeuo-well {
+  --focus-ring: 0 0 #0000;
+
+  border: 1px solid var(--sk-well-rim);
+  border-top-color: var(--sk-well-rim-top);
+  border-bottom-color: var(--sk-well-rim-bottom);
+  border-radius: var(--sk-radius-well);
+  background: linear-gradient(180deg, var(--sk-well-top) 0%, var(--sk-well-mid) 30%, var(--sk-well-bottom) 100%);
+  box-shadow:
+    inset 0 2px 3px var(--sk-well-shade),
+    inset 0 1px 1px var(--sk-well-shade),
+    0 1px 0 var(--sk-catch-strong),
+    var(--focus-ring);
+  transition: box-shadow var(--sk-medium) ease, border-color var(--sk-medium) ease;
+}
+
+/* Wells that take focus light their rim in the palette color. */
+.skeuo-well--focusable:focus-within {
+  --focus-ring: 0 0 0 3px var(--c-glow);
+  border-color: var(--c-main);
+}
+
+/* A shallow, borderless recess (MUI "filled" variants, segmented control
+ * backgrounds). */
+.skeuo-well--shallow {
+  border-color: transparent;
+  background: var(--sk-shallow);
+  box-shadow:
+    inset 0 1px 2px var(--sk-well-shade),
+    0 1px 0 var(--sk-catch),
+    var(--focus-ring);
+}
+.skeuo-well--shallow.skeuo-well--focusable:focus-within {
+  background: var(--sk-shallow-focus);
+}
+
+/* ------------------------------------------------------------------ */
+/* Groove                                                              */
+/* ------------------------------------------------------------------ */
+
+/* A narrow rounded channel: slider rails, switch tracks, progress bars.
+ * Fill it with .skeuo-groove__fill (palette color, lit from above). */
+.skeuo-groove {
+  position: relative;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--sk-groove-top), var(--sk-groove-bottom));
+  box-shadow:
+    inset 0 1px 2px var(--sk-groove-shade),
+    inset 0 0 0 0.5px var(--sk-hairline),
+    0 1px 0 var(--sk-catch-strong);
+}
+.skeuo-groove__fill {
+  border-radius: inherit;
+  background: linear-gradient(180deg, var(--c-light), var(--c-main) 70%);
+  box-shadow:
+    inset 0 1px 1px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.15);
+}
+
+/* ------------------------------------------------------------------ */
+/* Chassis                                                             */
+/* ------------------------------------------------------------------ */
+
+/* A raised plate of aluminium. Elevation only changes the cast shadow.
+ *   0 flush · 1 resting card · 2 raised panel · 3 menu/popover · 4 dialog */
+.skeuo-chassis {
+  border-radius: var(--sk-radius-chassis);
+  border: 0.5px solid var(--sk-chassis-edge);
+  background: linear-gradient(180deg, var(--sk-alu-hi), var(--sk-alu-lo));
+  box-shadow:
+    inset 0 1px 0 var(--sk-catch-strong),
+    var(--elev-shadow, var(--sk-elev-1));
+}
+.skeuo-elev-0 { --elev-shadow: 0 0 #0000; }
+.skeuo-elev-1 { --elev-shadow: var(--sk-elev-1); }
+.skeuo-elev-2 { --elev-shadow: var(--sk-elev-2); }
+.skeuo-elev-3 { --elev-shadow: var(--sk-elev-3); }
+.skeuo-elev-4 { --elev-shadow: var(--sk-elev-4); }
+
+/* Floating surfaces (menus, popovers, tooltips, dialogs) are a touch
+ * lighter so they read as closer to the light. */
+.skeuo-chassis--float {
+  background: linear-gradient(180deg, var(--sk-float-hi), var(--sk-float-lo));
+}
+
+/* Square-cornered chassis (app bars, drawers glued to the window edge). */
+.skeuo-chassis--square { border-radius: 0; }
+
+/* ------------------------------------------------------------------ */
+/* Rule, LED, lettering, scrim                                         */
+/* ------------------------------------------------------------------ */
+
+/* An engraved hairline: dark cut with a catch-light under it. */
+.skeuo-rule {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--sk-cut);
+  box-shadow: 0 1px 0 var(--sk-catch);
+}
+.skeuo-rule--vertical {
+  align-self: stretch;
+  border-top: 0;
+  border-left: 1px solid var(--sk-cut);
+  box-shadow: 1px 0 0 var(--sk-catch);
+}
+
+/* An indicator light, like the caps-lock LED. */
+.skeuo-led {
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 35%, var(--c-light), var(--c-main) 75%);
+  box-shadow:
+    0 0 0 0.5px var(--sk-cut),
+    0 0 6px var(--c-glow);
+}
+.skeuo-led--off {
+  background: radial-gradient(circle at 50% 35%, var(--sk-led-off-hi), var(--sk-led-off-lo) 75%);
+  box-shadow: inset 0 1px 1px var(--sk-groove-shade), 0 1px 0 var(--sk-catch);
+}
+
+/* Lettering printed on the aluminium. */
+.skeuo-label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--sk-ink-2);
+}
+.skeuo-caption {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--sk-ink-2);
+}
+
+/* Dims everything behind a modal surface. */
+.skeuo-scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--sk-scrim);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  animation: skeuo-fade-in var(--sk-medium) var(--sk-ease);
+}
+
+@keyframes skeuo-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Floating surfaces appear by rising slightly toward the light. */
+@keyframes skeuo-rise-in {
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Icons inherit color and size from the lettering they sit next to. */
+.skeuo-icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: -0.125em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Scrollbars                                                          */
+/* ------------------------------------------------------------------ */
+
+/* Every scrollbar inside the UI: the track is a faint groove, the thumb a
+ * small round keycap riding in it (white on silver, black on Space Black).
+ * The ::-webkit-scrollbar parts cover Chromium (WebView2) and WebKit; the
+ * standard scrollbar-color is only a Firefox fallback, because in Chromium it
+ * would replace the styled parts with a flat bar. */
+.skeuo-root,
+html:has(> body .skeuo-root) {
+  --sk-scroll-size: 12px;
+  --sk-scroll-track: rgba(0, 0, 0, 0.07);
+  --sk-scroll-track-edge: rgba(0, 0, 0, 0.1);
+  --sk-scroll-thumb: var(--sk-key, #fbfbfc);
+  --sk-scroll-thumb-side: var(--sk-key-side, #c6c7cb);
+  --sk-scroll-thumb-edge: rgba(0, 0, 0, 0.22);
+}
+
+.skeuo-root ::-webkit-scrollbar,
+html:has(> body .skeuo-root)::-webkit-scrollbar {
+  width: var(--sk-scroll-size);
+  height: var(--sk-scroll-size);
+}
+.skeuo-root ::-webkit-scrollbar-corner,
+html:has(> body .skeuo-root)::-webkit-scrollbar-corner { background: transparent; }
+
+.skeuo-root ::-webkit-scrollbar-track,
+html:has(> body .skeuo-root)::-webkit-scrollbar-track {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+  background-color: var(--sk-scroll-track);
+  box-shadow: inset 0 1px 1px var(--sk-scroll-track-edge);
+}
+
+.skeuo-root ::-webkit-scrollbar-thumb,
+html:has(> body .skeuo-root)::-webkit-scrollbar-thumb {
+  min-height: 32px;
+  min-width: 32px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+  background-color: var(--sk-scroll-thumb);
+  box-shadow:
+    inset 0 0 0 0.5px var(--sk-scroll-thumb-edge),  /* cap edge */
+    inset 0 -1.5px 0 var(--sk-scroll-thumb-side);   /* cap side */
+}
+.skeuo-root ::-webkit-scrollbar-thumb:hover,
+html:has(> body .skeuo-root)::-webkit-scrollbar-thumb:hover { filter: brightness(1.04); }
+.skeuo-root ::-webkit-scrollbar-thumb:active,
+html:has(> body .skeuo-root)::-webkit-scrollbar-thumb:active {
+  box-shadow:
+    inset 0 0 0 0.5px var(--sk-scroll-thumb-edge),
+    inset 0 1px 1px var(--sk-scroll-thumb-side);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .skeuo-root,
+  .skeuo-root * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--sk-scroll-thumb-side) transparent;
+  }
+}
+
+/* The document scrollbar sits outside .skeuo-root, so it gets the dark
+ * values here (the root's tokens are not inherited by <html>). */
+html:has(> body .skeuo-root[data-skeuo-mode="dark"]) {
+  --sk-scroll-track: rgba(255, 255, 255, 0.05);
+  --sk-scroll-track-edge: rgba(0, 0, 0, 0.5);
+  --sk-scroll-thumb: #3a3a3d;
+  --sk-scroll-thumb-side: #050506;
+  --sk-scroll-thumb-edge: rgba(255, 255, 255, 0.16);
+}
+@media (prefers-color-scheme: dark) {
+  html:has(> body .skeuo-root[data-skeuo-mode="system"]) {
+    --sk-scroll-track: rgba(255, 255, 255, 0.05);
+    --sk-scroll-track-edge: rgba(0, 0, 0, 0.5);
+    --sk-scroll-thumb: #3a3a3d;
+    --sk-scroll-thumb-side: #050506;
+    --sk-scroll-thumb-edge: rgba(255, 255, 255, 0.16);
+  }
+}
